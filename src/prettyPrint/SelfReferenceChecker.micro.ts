@@ -1,7 +1,7 @@
 import {SelfReferenceChecker} from "./SelfReferenceChecker";
 import {assertException, assertThat} from "../assertThat";
 import {match} from "../match";
-import {CompactPrettyPrinter} from "./CompactPrettyPrinter";
+import {PrettyPrinter} from "./PrettyPrinter";
 
 describe("SelfReferenceChecker", () => {
     it("finds no self reference", () => {

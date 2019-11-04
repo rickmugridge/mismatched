@@ -1,12 +1,12 @@
 import {assertThat} from "../assertThat";
-import {CompactPrettyPrinter} from "./CompactPrettyPrinter";
+import {PrettyPrinter} from "./PrettyPrinter";
 import {Colour} from "../Colour";
 
-describe("CompactPrettyPrinter():", () => {
-    let prettyPrinter: CompactPrettyPrinter;
+describe("PrettyPrinter():", () => {
+    let prettyPrinter: PrettyPrinter;
 
     beforeEach(() => {
-        prettyPrinter = new CompactPrettyPrinter([], 20);
+        prettyPrinter = new PrettyPrinter([], 20);
     });
 
     describe("Simple values:", () => {
@@ -172,7 +172,7 @@ describe("CompactPrettyPrinter():", () => {
         it("80 characters width with complexity of 50", () => {
 
 
-            prettyPrinter = new CompactPrettyPrinter([], 80, 50);
+            prettyPrinter = new PrettyPrinter([], 80, 50);
             assertThat('\n' + prettyPrinter.render(value))
                 .is(`
 {
@@ -199,7 +199,7 @@ describe("CompactPrettyPrinter():", () => {
         it("80 characters width with default complexity of 20", () => {
 
 
-            prettyPrinter = new CompactPrettyPrinter([], 80, 10);
+            prettyPrinter = new PrettyPrinter([], 80, 10);
             assertThat('\n' + prettyPrinter.render(value))
                 .is(`
 {
@@ -226,7 +226,7 @@ describe("CompactPrettyPrinter():", () => {
         it("80 characters width with maxComplexity of 5", () => {
 
 
-            prettyPrinter = new CompactPrettyPrinter([], 80, 5);
+            prettyPrinter = new PrettyPrinter([], 80, 5);
             assertThat('\n' + prettyPrinter.render(value))
                 .is(`
 {
@@ -253,7 +253,7 @@ describe("CompactPrettyPrinter():", () => {
         it("80 characters width with maxComplexity of 1", () => {
 
 
-            prettyPrinter = new CompactPrettyPrinter([], 80, 1);
+            prettyPrinter = new PrettyPrinter([], 80, 1);
             assertThat('\n' + prettyPrinter.render(value))
                 .is(`
 {
@@ -300,7 +300,7 @@ describe("CompactPrettyPrinter():", () => {
     });
 
     it("Date", () => {
-        prettyPrinter = new CompactPrettyPrinter([]);
+        prettyPrinter = new PrettyPrinter([]);
         assertThat(prettyPrinter.render({d: new Date(1566509915958), e: 3}))
             .is("{d: Date(\"2019-08-22T21:38:35.958Z\"), e: 3}")
     });
@@ -315,7 +315,7 @@ describe("CompactPrettyPrinter():", () => {
             theClass: Hide,
             toString: (hide: Hide) => 'Hide(' + hide.f + ')'
         }];
-        prettyPrinter = new CompactPrettyPrinter(customPrinters, 20);
+        prettyPrinter = new PrettyPrinter(customPrinters, 20);
         assertThat(prettyPrinter.render({d: new Hide(12, 1566509915958, 1566509915958), e: 3}))
             .is("{d: Hide(12), e: 3}");
     });
@@ -347,7 +347,7 @@ describe("CompactPrettyPrinter():", () => {
 
     it("Uses mock name", () => {
         const sym = Symbol("test");
-        prettyPrinter = new CompactPrettyPrinter([], 80, 10, sym);
+        prettyPrinter = new PrettyPrinter([], 80, 10, sym);
         const obj: any = {};
         obj[sym] = "MOCK";
         assertThat(prettyPrinter.render(obj)).is(`"MOCK"`);

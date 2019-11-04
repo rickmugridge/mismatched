@@ -5,7 +5,7 @@ import {matchMaker} from "./matcher/matchMaker";
 import {fail} from "assert";
 import {match} from "./match";
 import {ofType} from "./ofType";
-import {CompactPrettyPrinter} from "./prettyPrint/CompactPrettyPrinter";
+import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 
 export function assertThat<T>(actual: any) {
     return new Assertion(actual);
@@ -97,7 +97,7 @@ expected: '${JSON.stringify(message)}'`);
     }
 
     logExceptionFail(message: string, matcher: DiffMatcher<any>) {
-        console.log(message, new CompactPrettyPrinter().render(matcher.describe()));
+        console.log(message, new PrettyPrinter().render(matcher.describe()));
     }
 
     private match(expected: DiffMatcher<T> | any) {

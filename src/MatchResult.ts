@@ -1,5 +1,5 @@
 import {ofType} from "./ofType";
-import {CompactPrettyPrinter} from "./prettyPrint/CompactPrettyPrinter";
+import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 import {Colour} from "./Colour";
 
 export class MatchResult {
@@ -14,7 +14,7 @@ export class MatchResult {
     }
 
     bad() {
-        console.log(new CompactPrettyPrinter().render(this.diff));
+        console.log(new PrettyPrinter().render(this.diff));
         throw new Error("Problem");
     }
 

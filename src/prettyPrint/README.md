@@ -1,4 +1,4 @@
-# CompactPrettyPrinter for displaying Any JS
+# PrettyPrinter for displaying Any JS
 
 This is an alternative to `JSON.stringify()`.
 

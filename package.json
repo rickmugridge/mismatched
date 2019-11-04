@@ -1,7 +1,7 @@
 {
-  "name": "expected",
+  "name": "reckonOn",
   "version": "1.0.0",
-  "description": "A matching/assertion framework that outputs mismatches as diff trees (Typescript)",
+  "description": "A matching/assertion framework in Typescript that outputs mismatches as diff trees",
   "author": {
     "name": "Rick Mugridge",
     "email": "rick.mugridge@hypr.co.nz"
@@ -22,7 +22,8 @@
     "clean": "rimraf dist/**",
     "compile": "tsc -p .",
     "test:micro": "npm run clean && npm run compile && npm run retest:micro",
-    "retest:micro": "mocha --exit \"./dist/src/**/*.micro.js\""
+    "retest:micro": "mocha --exit \"./dist/src/**/*.micro.js\"",
+    "publishIt": "npm login && npm publish"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.3",

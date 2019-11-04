@@ -45,11 +45,11 @@ We can see above that:
    - Eg, because we don't care about some part of it (eg, a field which is randomly generated)
    - Eg, because we don't need to be too specific (some number, some array)
   
-when matching fails, and the changes are minor, it provides feedback in a diff form (where it makes sense). Eg:
+when matching fails, and the changes are minor, it provides feedback as a "diff tree". Eg:
 
 ![failed](MatchFail.png)
 
-Where the expected address number was 4.
+When the `address.number` was 3 but was expected to be 4.
 
 ## AssertThat
 

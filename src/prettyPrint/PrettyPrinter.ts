@@ -4,7 +4,7 @@ import {ArrayTile, FieldTile, ObjectTile, SimpleTile, Tile} from "./tile/Tile";
 import {SelfReferenceChecker} from "./SelfReferenceChecker";
 import {PropertyName} from "./PropertyName";
 
-export class CompactPrettyPrinter {
+export class PrettyPrinter {
     selfReference = new SelfReferenceChecker();
 
     constructor(private customPrettyPrinters: Array<CustomPrettyPrinter> = [],
