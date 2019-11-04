@@ -1,4 +1,4 @@
-# tsDiffMatcher
+# mismatched
 
 A Typescript-based matcher or assertion framework, inspired by Hamcrest (https://en.wikipedia.org/wiki/Hamcrest).
 
