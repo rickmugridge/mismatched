@@ -1,0 +1,38 @@
+{
+  "name": "expected",
+  "version": "1.0.0",
+  "description": "A matching/assertion framework that outputs mismatches as diff trees (Typescript)",
+  "author": {
+    "name": "Rick Mugridge",
+    "email": "rick.mugridge@hypr.co.nz"
+  },
+  "keywords": ["matcher", "assertion", "diff"],
+  "license": "Apache 2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rickmugridge/expected"
+  },
+  "homepage": "https://github.com/rickmugridge/expected",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=10.13.0"
+  },
+  "scripts": {
+    "clean": "rimraf dist/**",
+    "compile": "tsc -p .",
+    "test:micro": "npm run clean && npm run compile && npm run retest:micro",
+    "retest:micro": "mocha --exit \"./dist/src/**/*.micro.js\""
+  },
+  "devDependencies": {
+    "@types/mocha": "^5.2.3",
+    "@types/node": "~9.4.6",
+    "mocha": "^5.2.0",
+    "rimraf": "^2.6.2",
+    "ts-node": "^6.2.0",
+    "typescript": "3.5.2"
+  },
+  "dependencies": {
+    "fast-array-diff": "^0.2.0"
+  }
+}
