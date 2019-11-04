@@ -9,6 +9,7 @@ This const provides a good summary of the matchers:
 ```
 export const match = {
     isEquals: IsEqualsMatcher.make,
+    it: ItMatcher.make,
     array: {
         match: ArrayMatcher.make,
         contains: ArrayContainsMatcher.make,
@@ -113,6 +114,25 @@ This is used by default when matching a primitive type (other than a string or N
         });
 ```
 
+### It Matcher: Same object
+
+This passes if the same object is provided (ie, tested by `===`).
+
+For examples:
+
+```
+    it('object itself', () => {
+        const actual = {a: "b"};
+        assertThat(actual).is(match.it(actual));
+        assertThat(actual).isNot(match.it({a: "b"}));
+    });
+
+    it('array itself', () => {
+        const actual = [1, 2, 3];
+        assertThat(actual).is(match.it(actual));
+        assertThat(actual).isNot(match.it([1, 2, 3]));
+    });
+```
 ### Array Matchers
 
 The `array` matchers allow for "exact" and partial matching on an array. 

@@ -22,6 +22,10 @@ class Assertion<T> {
         }
     }
 
+    isIt(expected: object) {
+        return this.is(match.it(expected));
+    }
+
     isNot(expected: DiffMatcher<T> | any) {
         return this.is(match.not(matchMaker(expected)));
     }
@@ -51,7 +55,7 @@ expected: '${JSON.stringify(message)}'`);
         }
     }
 
-    throws(expected: any) {
+    throws(expected: any = match.any()) {
         if (!ofType.isFunction(this.actual)) {
             throw new Error("Need to use the form: assertThat(()=> expression).throws('error')");
         }
@@ -72,7 +76,7 @@ expected: '${JSON.stringify(message)}'`);
         }
     }
 
-    catches(expected: any): Promise<unknown> {
+    catches(expected: any = match.any()): Promise<unknown> {
         if (!ofType.isFunction(this.actual)) {
             throw new Error("Need to use the form: assertThat(()=> expression).catches('error')");
         }

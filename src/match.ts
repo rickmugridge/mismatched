@@ -8,13 +8,15 @@ import {OptionalMatcher} from "./matcher/OptionalMatcher";
 import {NotMatcher} from "./matcher/NotMatcher";
 import {AnyMatcher} from "./matcher/AnyMatcher";
 import {PredicateMatcher} from "./matcher/PredicateMatcher";
-import {stringMatcher, StringMatcher} from "./matcher/StringMatcher";
+import {stringMatcher} from "./matcher/StringMatcher";
 import {ofType} from "./ofType";
 import {numberMatcher} from "./matcher/NumberMatcher";
 import {instanceOfMatcher} from "./matcher/instanceOfMatcher";
+import {ItMatcher} from "./matcher/ItMatcher";
 
 export const match = {
     isEquals: IsEqualsMatcher.make,
+    it: ItMatcher.make,
     array: {
         match: ArrayMatcher.make,
         contains: ArrayContainsMatcher.make,
@@ -46,7 +48,7 @@ export const match = {
     allOf: AllOfMatcher.make,
     optional: OptionalMatcher.make,
     not: NotMatcher.make,
-    instanceOf:instanceOfMatcher.instanceOf,
+    instanceOf: instanceOfMatcher.instanceOf,
     ofType: {
         array: () => PredicateMatcher.make(ofType.isArray, "ofType.array"),
         function: () => PredicateMatcher.make(ofType.isFunction, "ofType.function"),

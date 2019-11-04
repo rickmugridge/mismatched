@@ -114,7 +114,7 @@ This checks that a suitable exception has been thrown, based on the provided lam
             }).throws(match.instanceOf(Error));
 ```
 
-The `throws()` take an arbitrary value or matcher.
+The `throws()` optionally take an arbitrary value or matcher; a `match.any()` is used by default.
 The assertion fails if:
 
   - a function is not provided to `assertThat()`; or 
@@ -132,7 +132,7 @@ This checks that a Promise result has been rejected. For example:
         });
 ```
 
-The `catches()` take an arbitrary value or matcher.
+The `catches()` optionally take an arbitrary value or matcher; a `match.any()` is used by default.
 The assertion fails if:
 
   - a function is not provided to `assertThat()`; or

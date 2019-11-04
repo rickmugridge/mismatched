@@ -9,9 +9,21 @@ describe("assertThat():", () => {
             const actual = 3.4;
             assertThat(actual).is(actual);
         });
+
         it('mismatches', () => {
             assertThat(3.4).failsWith(3.5,
                 {[MatchResult.was]: 3.4, [MatchResult.expected]: 3.5});
+        });
+    });
+
+    describe("isIt():", () => {
+        it('matches', () => {
+            const actual = {f: 3.4};
+            assertThat(actual).isIt(actual);
+        });
+
+        it('mismatches', () => {
+            assertThat(() => assertThat({f: 3.4}).isIt({f: 3.4})).throws();
         });
     });
 
@@ -55,6 +67,12 @@ describe("assertThat():", () => {
             assertThat(() => {
                 throw new Error("error");
             }).throws(match.instanceOf(Error));
+        });
+
+        it("Matches with no expectation", () => {
+            assertThat(() => {
+                throw new Error("error");
+            }).throws();
         });
 
         it("Mismatches", () => {
