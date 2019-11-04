@@ -1,7 +1,7 @@
 import {DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 
-export class ItMatcher implements DiffMatcher<any> {
+export class ItIsMatcher implements DiffMatcher<any> {
     constructor(private expected: any) {
     }
 
@@ -13,10 +13,10 @@ export class ItMatcher implements DiffMatcher<any> {
     }
 
     describe(): any {
-        return {itIsNotTheSameObjectAs: MatchResult.describe(this.expected)};
+        return {itIsTheSameObjectAs: MatchResult.describe(this.expected)};
     }
 
     static make(expected: any) {
-        return new ItMatcher(expected);
+        return new ItIsMatcher(expected);
     }
 }

@@ -22,8 +22,8 @@ class Assertion<T> {
         }
     }
 
-    isIt(expected: object) {
-        return this.is(match.it(expected));
+    itIs(expected: object) {
+        return this.is(match.itIs(expected));
     }
 
     isNot(expected: DiffMatcher<T> | any) {

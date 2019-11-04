@@ -12,11 +12,11 @@ import {stringMatcher} from "./matcher/StringMatcher";
 import {ofType} from "./ofType";
 import {numberMatcher} from "./matcher/NumberMatcher";
 import {instanceOfMatcher} from "./matcher/instanceOfMatcher";
-import {ItMatcher} from "./matcher/ItMatcher";
+import {ItIsMatcher} from "./matcher/ItIsMatcher";
 
 export const match = {
     isEquals: IsEqualsMatcher.make,
-    it: ItMatcher.make,
+    itIs: ItIsMatcher.make,
     array: {
         match: ArrayMatcher.make,
         contains: ArrayContainsMatcher.make,

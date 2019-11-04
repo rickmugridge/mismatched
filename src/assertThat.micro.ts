@@ -16,14 +16,14 @@ describe("assertThat():", () => {
         });
     });
 
-    describe("isIt():", () => {
+    describe("itIs():", () => {
         it('matches', () => {
             const actual = {f: 3.4};
-            assertThat(actual).isIt(actual);
+            assertThat(actual).itIs(actual);
         });
 
         it('mismatches', () => {
-            assertThat(() => assertThat({f: 3.4}).isIt({f: 3.4})).throws();
+            assertThat(() => assertThat({f: 3.4}).itIs({f: 3.4})).throws();
         });
     });
 

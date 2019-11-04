@@ -27,7 +27,7 @@ export class StringMatcher implements DiffMatcher<string> {
 }
 
 export const stringMatcher = {
-    match: StringMatcher.make,
+    match: (expected: string) => StringMatcher.make(expected),
     startsWith: (expected: string) => PredicateMatcher.make(value => value.startsWith(expected),
         {"string.startsWith": expected}),
     endsWith: (expected: string) => PredicateMatcher.make(value => value.endsWith(expected),
