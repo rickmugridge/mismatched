@@ -21,7 +21,7 @@ export class StringMatcher implements DiffMatcher<string> {
         return this.expected;
     }
 
-    static make(expected: string) {
+    static make(expected: string): any {
         return new StringMatcher(expected);
     }
 }

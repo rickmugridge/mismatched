@@ -18,7 +18,7 @@ export class NotMatcher<T> implements DiffMatcher<T> {
         return {not: this.matcher.describe()};
     }
 
-    static make<T>(matcher: DiffMatcher<T> | any) {
+    static make<T>(matcher: DiffMatcher<T> | any): any {
         return new NotMatcher(matchMaker(matcher));
     }
 }

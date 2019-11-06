@@ -29,7 +29,7 @@ export class ArrayContainsMatcher<T> implements DiffMatcher<Array<T>> {
         return {"array.contains": this.expected.describe()};
     }
 
-    static make<T>(expected: DiffMatcher<T> | any): ArrayContainsMatcher<T> {
+    static make<T>(expected: DiffMatcher<T> | any): any {
         return new ArrayContainsMatcher<T>(matchMaker(expected));
     }
 }
@@ -63,7 +63,7 @@ export class ArrayEveryMatcher<T> implements DiffMatcher<Array<T>> {
         return {"array.every": this.expected.describe()};
     }
 
-    static make<T>(expected: DiffMatcher<T> | any): ArrayEveryMatcher<T> {
+    static make<T>(expected: DiffMatcher<T> | any): any {
         return new ArrayEveryMatcher<T>(matchMaker(expected));
     }
 }
@@ -102,7 +102,7 @@ export class ArrayMatcher<T> implements DiffMatcher<Array<T>> {
         return this.expected.map(e => e.describe());
     }
 
-    static make<T>(expected: Array<DiffMatcher<T> | any>): ArrayMatcher<T> {
+    static make<T>(expected: Array<DiffMatcher<T> | any>): any {
         return new ArrayMatcher<T>(expected.map(e => matchMaker(e)));
     }
 }
@@ -122,7 +122,7 @@ export class ArrayLengthMatcher<T> implements DiffMatcher<Array<T>> {
         return {"array.length": this.expected};
     }
 
-    static make<T>(expected: number): ArrayLengthMatcher<T> {
+    static make<T>(expected: number): any {
         return new ArrayLengthMatcher<T>(expected);
     }
 }

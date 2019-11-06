@@ -22,7 +22,7 @@ export class OptionalMatcher<T> implements DiffMatcher<T> {
         return {optional: this.matcher.describe()};
     }
 
-    static make<T>(matcher: DiffMatcher<T> | any) {
+    static make<T>(matcher: DiffMatcher<T> | any): any {
         return new OptionalMatcher(matchMaker(matcher));
     }
 }

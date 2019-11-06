@@ -11,7 +11,7 @@ export class AnyMatcher<T> implements DiffMatcher<T> {
         return {any: ""}
     }
 
-    static make<T>() {
+    static make<T>(): any {
         return new AnyMatcher();
     }
 }

@@ -28,7 +28,7 @@ export class AllOfMatcher<T> implements DiffMatcher<T> {
         return {allOf: this.matchers.map(m => m.describe())}
     }
 
-    static make<T>(matchers: Array<DiffMatcher<T> | any>) {
+    static make<T>(matchers: Array<DiffMatcher<T> | any>): any {
         return new AllOfMatcher(matchers.map(m => matchMaker(m)));
     }
 }

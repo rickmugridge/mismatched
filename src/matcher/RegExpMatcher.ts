@@ -17,7 +17,7 @@ export class RegExpMatcher implements DiffMatcher<any> {
         return MatchResult.describe(this.expected.toString());
     }
 
-    static make(expected: RegExp) {
+    static make(expected: RegExp): any {
         return new RegExpMatcher(expected);
     }
 }

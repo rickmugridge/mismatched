@@ -17,7 +17,7 @@ export class PredicateMatcher implements DiffMatcher<any> {
         return this.description;
     }
 
-    static make<T>(predicate: (v: any) => boolean, description: any) {
+    static make<T>(predicate: (v: any) => boolean, description: any): any {
         return new PredicateMatcher(predicate, description);
     }
 }

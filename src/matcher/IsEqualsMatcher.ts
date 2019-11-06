@@ -16,7 +16,7 @@ export class IsEqualsMatcher implements DiffMatcher<any> {
         return MatchResult.describe(this.expected);
     }
 
-    static make(expected: any) {
+    static make(expected: any): any {
         return new IsEqualsMatcher(expected);
     }
 }

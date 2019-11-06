@@ -37,7 +37,7 @@ export class ObjectSomeMatcher<T> implements DiffMatcher<T> {
         return {"obj.some": concatObjects(this.expected.map(e => e.describe()))};
     }
 
-    static make<T extends object>(expected: Array<DiffMatcher<T>> | object): ObjectSomeMatcher<T> {
+    static make<T extends object>(expected: Array<DiffMatcher<T>> | object): any {
         return new ObjectSomeMatcher<T>(DiffFieldMatcher.makeAll<T>(expected));
     }
 }
@@ -82,7 +82,7 @@ export class ObjectMatcher<T extends object> implements DiffMatcher<T> {
         return concatObjects(this.expected.map(e => e.describe()));
     }
 
-    static make<T extends object>(expected: Array<DiffMatcher<T>> | object): ObjectMatcher<T> {
+    static make<T extends object>(expected: Array<DiffMatcher<T>> | object): any {
         return new ObjectMatcher<T>(DiffFieldMatcher.makeAll<T>(expected));
     }
 }
