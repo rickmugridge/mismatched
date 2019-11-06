@@ -82,6 +82,6 @@ export interface CustomPrettyPrinter {
 }
 
 function cleanString(value: string) {
-    return value.replace(/"/, "\"");
+    return '"' + value.replace(/"/, "\"") + '"';
 }
 

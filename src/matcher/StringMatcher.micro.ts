@@ -2,7 +2,7 @@ import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
 
-describe("IsEqualsMatcher:", () => {
+describe("StringMatcher:", () => {
     it('string', () => {
         const actual = "a";
         assertThat(actual).is(match.string.match(actual));
