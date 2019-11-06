@@ -1,14 +1,13 @@
 import * as diff from "fast-array-diff";
 import {Colour} from "../Colour";
 import {PrettyPrinter} from "../prettyPrint/PrettyPrinter";
-import {MismatchedConfig} from "../MismatchedConfig";
 
 export class StringDiff {
     static expectedDiff(expected: string, actual: string): string {
         const expecteds = Array.from(expected);
         const deltas = diff.getPatch(expecteds, Array.from(actual), compare);
         let offset = 0;
-        new PrettyPrinter(MismatchedConfig.customPrettyPrinters).logToConsole(deltas);
+        PrettyPrinter.make().logToConsole(deltas);
         deltas.forEach(delta => {
             switch (delta.type) {
                 case "add":

@@ -1,7 +1,6 @@
 import {ofType} from "./ofType";
 import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 import {Colour} from "./Colour";
-import {MismatchedConfig} from "./MismatchedConfig";
 
 export class MatchResult {
     public matchRate: number;
@@ -15,7 +14,7 @@ export class MatchResult {
     }
 
     bad() {
-        console.log(new PrettyPrinter(MismatchedConfig.customPrettyPrinters).render(this.diff));
+        console.log(PrettyPrinter.make().render(this.diff));
         throw new Error("Problem");
     }
 

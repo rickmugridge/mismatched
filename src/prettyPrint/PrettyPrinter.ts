@@ -7,7 +7,19 @@ import {PropertyName} from "./PropertyName";
 export class PrettyPrinter {
     selfReference = new SelfReferenceChecker();
 
-    constructor(private customPrettyPrinters: Array<CustomPrettyPrinter> = [],
+    static customPrettyPrinters: Array<CustomPrettyPrinter> = [];
+
+    static addCustomPrettyPrinter(custom: CustomPrettyPrinter) {
+        this.customPrettyPrinters.push(custom);
+    }
+
+    static make(lineWidth = 80,
+                maxComplexity = 10,
+                symbolForMockName?: any): PrettyPrinter {
+        return new PrettyPrinter(PrettyPrinter.customPrettyPrinters, lineWidth, maxComplexity, symbolForMockName);
+    }
+
+    private constructor(private customPrettyPrinters: Array<CustomPrettyPrinter> = [],
                 private lineWidth = 80,
                 private maxComplexity = 10,
                 private symbolForMockName?: any) {
@@ -73,7 +85,6 @@ export class PrettyPrinter {
         }
     }
 }
-
 
 export interface CustomPrettyPrinter {
     theClass: Function;

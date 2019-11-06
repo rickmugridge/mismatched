@@ -6,7 +6,7 @@ describe("PrettyPrinter():", () => {
     let prettyPrinter: PrettyPrinter;
 
     beforeEach(() => {
-        prettyPrinter = new PrettyPrinter([], 20);
+        prettyPrinter = PrettyPrinter.make(20);
     });
 
     describe("Simple values:", () => {
@@ -172,7 +172,7 @@ describe("PrettyPrinter():", () => {
         it("80 characters width with complexity of 50", () => {
 
 
-            prettyPrinter = new PrettyPrinter([], 80, 50);
+            prettyPrinter = PrettyPrinter.make(80, 50);
             assertThat('\n' + prettyPrinter.render(value))
                 .is(`
 {
@@ -199,7 +199,7 @@ describe("PrettyPrinter():", () => {
         it("80 characters width with default complexity of 20", () => {
 
 
-            prettyPrinter = new PrettyPrinter([], 80, 10);
+            prettyPrinter = PrettyPrinter.make(80, 10);
             assertThat('\n' + prettyPrinter.render(value))
                 .is(`
 {
@@ -226,7 +226,7 @@ describe("PrettyPrinter():", () => {
         it("80 characters width with maxComplexity of 5", () => {
 
 
-            prettyPrinter = new PrettyPrinter([], 80, 5);
+            prettyPrinter = PrettyPrinter.make(80, 5);
             assertThat('\n' + prettyPrinter.render(value))
                 .is(`
 {
@@ -251,9 +251,7 @@ describe("PrettyPrinter():", () => {
 }`);
         });
         it("80 characters width with maxComplexity of 1", () => {
-
-
-            prettyPrinter = new PrettyPrinter([], 80, 1);
+            prettyPrinter = PrettyPrinter.make(80, 1);
             assertThat('\n' + prettyPrinter.render(value))
                 .is(`
 {
@@ -300,7 +298,7 @@ describe("PrettyPrinter():", () => {
     });
 
     it("Date", () => {
-        prettyPrinter = new PrettyPrinter([]);
+        prettyPrinter = PrettyPrinter.make();
         assertThat(prettyPrinter.render({d: new Date(1566509915958), e: 3}))
             .is("{d: Date(\"2019-08-22T21:38:35.958Z\"), e: 3}")
     });
@@ -311,11 +309,12 @@ describe("PrettyPrinter():", () => {
             }
         }
 
-        const customPrinters = [{
+        const customPrinter = {
             theClass: Hide,
             toString: (hide: Hide) => 'Hide(' + hide.f + ')'
-        }];
-        prettyPrinter = new PrettyPrinter(customPrinters, 20);
+        };
+        PrettyPrinter.addCustomPrettyPrinter(customPrinter);
+        prettyPrinter = PrettyPrinter.make(20);
         assertThat(prettyPrinter.render({d: new Hide(12, 1566509915958, 1566509915958), e: 3}))
             .is("{d: Hide(12), e: 3}");
     });
@@ -347,7 +346,7 @@ describe("PrettyPrinter():", () => {
 
     it("Uses mock name", () => {
         const sym = Symbol("test");
-        prettyPrinter = new PrettyPrinter([], 80, 10, sym);
+        prettyPrinter = PrettyPrinter.make(80, 10, sym);
         const obj: any = {};
         obj[sym] = "MOCK";
         assertThat(prettyPrinter.render(obj)).is(`"MOCK"`);
