@@ -348,7 +348,7 @@ describe("PrettyPrinter():", () => {
         const sym = Symbol("test");
         prettyPrinter = PrettyPrinter.make(80, 10, sym);
         const obj: any = {};
-        obj[sym] = "MOCK";
+        obj[sym] = () => "MOCK";
         assertThat(prettyPrinter.render(obj)).is(`"MOCK"`);
         assertThat(prettyPrinter.render({obj})).is(`{obj: "MOCK"}`);
     });

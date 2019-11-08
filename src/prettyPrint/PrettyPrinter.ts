@@ -72,7 +72,7 @@ export class PrettyPrinter {
                 }
             }
             if (value[this.symbolForMockName]) {
-                return new SimpleTile('"' + value[this.symbolForMockName] + '"');
+                return new SimpleTile('"' + value[this.symbolForMockName]() + '"');
             }
             const fields = this.selfReference.recurse(context, value, () =>
                 Object.keys(value).map(key => {

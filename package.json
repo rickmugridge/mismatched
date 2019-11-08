@@ -1,6 +1,6 @@
 {
   "name": "mismatched",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A matching/assertion framework in Typescript that outputs mismatches as diff trees",
   "author": {
     "name": "Rick Mugridge",
