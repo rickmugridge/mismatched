@@ -6,10 +6,13 @@ import {fail} from "assert";
 import {match} from "./match";
 import {ofType} from "./ofType";
 import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
+import {MatchResult} from "./MatchResult";
 
 export function assertThat<T>(actual: any) {
     return new Assertion(actual);
 }
+
+const printer = PrettyPrinter.make();
 
 class Assertion<T> {
     constructor(private actual: any) {
@@ -44,14 +47,14 @@ class Assertion<T> {
         }
     }
 
-    // THis is used internally for testing error messages:
+    // This is used internally for testing error messages:
     failsWith(expected: any, message: object) {
         const result = this.match(expected);
         const matchResult = assertThat(result.diff).match(message);
         if (!matchResult.passed()) {
             throw new Error(`Incorrect message: 
-actual:   '${JSON.stringify(result.diff)}' 
-expected: '${JSON.stringify(message)}'`);
+actual:   '${printer.render(result.diff)}' 
+expected: '${printer.render(message)}'`);
         }
     }
 

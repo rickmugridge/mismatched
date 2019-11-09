@@ -13,6 +13,8 @@ import {ofType} from "./ofType";
 import {numberMatcher} from "./matcher/NumberMatcher";
 import {instanceOfMatcher} from "./matcher/instanceOfMatcher";
 import {ItIsMatcher} from "./matcher/ItIsMatcher";
+import {MappedMatcher} from "./matcher/MappedMatcher";
+import {ErrorMatcher} from "./matcher/ErrorMatcher";
 
 export const match = {
     isEquals: IsEqualsMatcher.make,
@@ -58,5 +60,7 @@ export const match = {
         regExp: () => PredicateMatcher.make(ofType.isRegExp, "ofType.regExp"),
         symbol: () => PredicateMatcher.make(ofType.isSymbol, "ofType.symbol")
     },
-    predicate: PredicateMatcher.make
+    predicate: PredicateMatcher.make,
+    mapped: MappedMatcher.make,
+    errorMessage: ErrorMatcher.make
 };

@@ -124,4 +124,9 @@ describe("assertThat():", () => {
                     e => assertThat(e).is(4));
         });
     });
+
+    it("error", () => {
+        console.log(JSON.stringify(new Error("ab")))
+        assertThat(new Error("a")).is(new Error("a"))
+    });
 });

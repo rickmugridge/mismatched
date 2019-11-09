@@ -14,7 +14,7 @@ export class MatchResult {
     }
 
     bad() {
-        console.log(PrettyPrinter.make().render(this.diff));
+        PrettyPrinter.make().logToConsole(this.diff);
         throw new Error("Problem");
     }
 

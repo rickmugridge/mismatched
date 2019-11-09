@@ -20,9 +20,9 @@ export class PrettyPrinter {
     }
 
     private constructor(private customPrettyPrinters: Array<CustomPrettyPrinter> = [],
-                private lineWidth = 80,
-                private maxComplexity = 10,
-                private symbolForMockName?: any) {
+                        private lineWidth = 80,
+                        private maxComplexity = 10,
+                        private symbolForMockName?: any) {
     }
 
     render(value: any): string {
@@ -65,6 +65,10 @@ export class PrettyPrinter {
             if (value instanceof Date) {
                 return new SimpleTile('Date(' + JSON.stringify(value) + ')');
             }
+            if (value instanceof Error) {
+                // Error doesn't have a proper property 'message'
+                return this.tileObject(context, {errorMessage: value.message});
+            }
             if (this.customPrettyPrinters.length > 0) {
                 const custom = this.customPrettyPrinters.find(c => value instanceof c.theClass);
                 if (custom) {
@@ -72,7 +76,8 @@ export class PrettyPrinter {
                 }
             }
             if (value[this.symbolForMockName]) {
-                return new SimpleTile('"' + value[this.symbolForMockName]() + '"');
+                const mockName = value[this.symbolForMockName](); // todo escape this in case of embedded "
+                return new SimpleTile(`"${mockName}"`);
             }
             const fields = this.selfReference.recurse(context, value, () =>
                 Object.keys(value).map(key => {

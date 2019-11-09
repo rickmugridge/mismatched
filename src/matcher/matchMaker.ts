@@ -7,6 +7,11 @@ import {RegExpMatcher} from "./RegExpMatcher";
 import {StringMatcher} from "./StringMatcher";
 import {PredicateMatcher} from "./PredicateMatcher";
 import {numberMatcher} from "./NumberMatcher";
+import {AllOfMatcher} from "./AllOfMatcher";
+import Instance = WebAssembly.Instance;
+import {instanceOfMatcher} from "./instanceOfMatcher";
+import {MappedMatcher} from "./MappedMatcher";
+import {ErrorMatcher} from "./ErrorMatcher";
 
 export function matchMaker(v: DiffMatcher<any> | any): DiffMatcher<any> {
     if (ofType.isString(v)) {
@@ -28,6 +33,9 @@ export function matchMaker(v: DiffMatcher<any> | any): DiffMatcher<any> {
     if (ofType.isFunction(v)) {
         let predicateDescription = v.name === "" ? "a Function" : v.name + "()";
         return PredicateMatcher.make(v, predicateDescription)
+    }
+    if (ofType.isError(v)) {
+        return ErrorMatcher.make(IsEqualsMatcher.make(v.message));
     }
     if (ofType.isObject(v)) {
         return makeObjectMatcher(v);

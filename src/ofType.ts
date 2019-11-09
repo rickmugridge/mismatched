@@ -47,17 +47,22 @@ function isMatcher(v: any) {
     return isObject(v) && !isUndefined(v.matches) && isFunction(v.matches);
 }
 
+function isError(v) {
+    return v instanceof Error;
+}
+
 export const ofType = {
-    isUndefined,
+    isArray,
+    isBoolean,
+    isError,
+    isFunction,
+    isMatcher,
+    isNaN,
+    isNumber,
     isNull,
     isObject,
-    isArray,
-    isFunction,
-    isString,
-    isNumber,
-    isNaN,
-    isBoolean,
     isRegExp,
+    isString,
     isSymbol,
-    isMatcher
+    isUndefined
 };
