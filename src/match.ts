@@ -61,6 +61,5 @@ export const match = {
         symbol: () => PredicateMatcher.make(ofType.isSymbol, "ofType.symbol")
     },
     predicate: PredicateMatcher.make,
-    mapped: MappedMatcher.make,
-    errorMessage: ErrorMatcher.make
+    mapped: MappedMatcher.make
 };

@@ -103,15 +103,30 @@ Here are the other short-hand flavours related to `is()`, along with their long-
 }
 ```
 
+### `assertThat().throwsError()`
+
+This checks that an exception with the right `message` has been thrown, based on the provided lambda. For example:
+
+```
+        assertThat(() => {
+            throw new Error("error");
+        }).throwsError("error");
+        assertThat(() => {
+            throw new Error("error");
+        }).throwsError(match.string.startsWith("err"));
+```
+
+The second assertion above shows the use of `mismatched` matching on some part of the message string.
+
 ### `assertThat().throws()`
 
-This checks that a suitable exception has been thrown, based on the provided lambda. For example:
+This checks more generally that a suitable exception has been thrown, based on the provided lambda. For example:
 
 ```
        it("assertThat().throws()", () => {
             assertThat(() => {
                 throw new Error("error");
-            }).throws(match.instanceOf(Error));
+            }).throws(match.instanceOf(MySpecialisedError));
 ```
 
 The `throws()` optionally take an arbitrary value or matcher; a `match.any()` is used by default.
@@ -207,6 +222,7 @@ Instead, it is displayed as plain JS, so that it's easy to copy parts of it if a
 
 The display aims to layout the JS object/value to make it convenient to read.
 It tries to strike a balance between all being on one line and being spread out over many lines.
+Either extreme can make it difficult to read.
 See [PrettyPrinter](./src/prettyPrint/README.md)
 
 ## Things to do

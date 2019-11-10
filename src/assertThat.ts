@@ -6,7 +6,7 @@ import {fail} from "assert";
 import {match} from "./match";
 import {ofType} from "./ofType";
 import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
-import {MatchResult} from "./MatchResult";
+import {ErrorMatcher} from "./matcher/ErrorMatcher";
 
 export function assertThat<T>(actual: any) {
     return new Assertion(actual);
@@ -77,6 +77,10 @@ expected: '${printer.render(message)}'`);
             this.logExceptionFail("Expected an exception matching:", matcher);
             throw new Error("Problem");
         }
+    }
+
+    throwsError(message: string) {
+        return this.throws(ErrorMatcher.make(message));
     }
 
     catches(expected: any = match.any()): Promise<unknown> {

@@ -3,26 +3,35 @@ import {Appender} from "./Appender";
 import {ArrayTile, FieldTile, ObjectTile, SimpleTile, Tile} from "./tile/Tile";
 import {SelfReferenceChecker} from "./SelfReferenceChecker";
 import {PropertyName} from "./PropertyName";
+import {isUndefined} from "util";
 
 export class PrettyPrinter {
     selfReference = new SelfReferenceChecker();
 
-    static customPrettyPrinters: Array<CustomPrettyPrinter> = [];
+    static symbolForMockName: any | undefined;
+    static customPrettyPrinters = new Map<string, CustomPrettyPrinter>();
 
     static addCustomPrettyPrinter(custom: CustomPrettyPrinter) {
-        this.customPrettyPrinters.push(custom);
+        this.customPrettyPrinters.set(typeof custom.theClass, custom);
     }
 
     static make(lineWidth = 80,
                 maxComplexity = 10,
                 symbolForMockName?: any): PrettyPrinter {
-        return new PrettyPrinter(PrettyPrinter.customPrettyPrinters, lineWidth, maxComplexity, symbolForMockName);
+        if (symbolForMockName) {
+            PrettyPrinter.symbolForMockName = symbolForMockName; // Just use the latest one
+        }
+        return new PrettyPrinter(lineWidth, maxComplexity);
     }
 
-    private constructor(private customPrettyPrinters: Array<CustomPrettyPrinter> = [],
-                        private lineWidth = 80,
-                        private maxComplexity = 10,
-                        private symbolForMockName?: any) {
+    static isMock(value: any): boolean {
+        return ofType.isFunction(value) &&
+            PrettyPrinter.symbolForMockName &&
+            !isUndefined(value[PrettyPrinter.symbolForMockName]);
+    }
+
+    private constructor(private lineWidth = 80,
+                        private maxComplexity = 10) {
     }
 
     render(value: any): string {
@@ -36,14 +45,21 @@ export class PrettyPrinter {
     }
 
     private tile(context: string, value: any): Tile {
+        if (PrettyPrinter.isMock(value)) {
+            const mockName = value[PrettyPrinter.symbolForMockName]();
+            return this.tileObject(context, {mock: mockName});
+        }
         if (ofType.isRegExp(value)) {
             return new SimpleTile(value);
+        }
+        if (ofType.isSymbol(value)) {
+            return new SimpleTile(value.toString());
         }
         if (ofType.isString(value)) {
             return new SimpleTile(cleanString(value));
         }
         if (ofType.isFunction(value)) {
-            return new SimpleTile('function'); // todo consider toString() of it
+            return this.tileObject(context, this.functionDetails(value));
         }
         if (ofType.isArray(value)) {
             try {
@@ -60,6 +76,30 @@ export class PrettyPrinter {
         return new SimpleTile(value);
     }
 
+    private functionDetails(fn: Function) {
+        try { // who knows when some weird JS will make this fail
+            if (fn.toString) {
+                let details = fn.toString();
+                let fullFunction = false;
+                if (details.startsWith("function ")) {
+                    fullFunction = true;
+                    details = details.substring("function ".length);
+                }
+                let bracket = details.indexOf(")");
+                if (bracket < 0) {
+                    bracket = 30;
+                }
+                details = details.substring(0, bracket + 1);
+                if (fullFunction) {
+                    return {function: details}
+                }
+                return {arrow: details + " =>"};
+            }
+        } catch (e) {
+        }
+        return {function: "no details"};
+    }
+
     private tileObject(context: string, value: object) {
         try {
             if (value instanceof Date) {
@@ -69,15 +109,9 @@ export class PrettyPrinter {
                 // Error doesn't have a proper property 'message'
                 return this.tileObject(context, {errorMessage: value.message});
             }
-            if (this.customPrettyPrinters.length > 0) {
-                const custom = this.customPrettyPrinters.find(c => value instanceof c.theClass);
-                if (custom) {
-                    return new SimpleTile(custom.toString(value));
-                }
-            }
-            if (value[this.symbolForMockName]) {
-                const mockName = value[this.symbolForMockName](); // todo escape this in case of embedded "
-                return new SimpleTile(`"${mockName}"`);
+            const custom = PrettyPrinter.customPrettyPrinters.get(value.constructor.name);
+            if (custom) {
+                return new SimpleTile(custom.toString(value));
             }
             const fields = this.selfReference.recurse(context, value, () =>
                 Object.keys(value).map(key => {

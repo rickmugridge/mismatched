@@ -6,6 +6,7 @@ import {RegExpMatcher} from "./RegExpMatcher";
 import {matchMaker} from "./matchMaker";
 import {StringMatcher} from "./StringMatcher";
 import {PredicateMatcher} from "./PredicateMatcher";
+import {PrettyPrinter} from "..";
 
 describe("makeMatcher():", () => {
     const isEqualsMatcher = match.instanceOf(IsEqualsMatcher);
@@ -55,5 +56,20 @@ describe("makeMatcher():", () => {
 
     it("regExp", () => {
         assertThat(matchMaker(/ab/)).is(match.instanceOf(RegExpMatcher));
+    });
+
+    it("mock", () => {
+        const pseudoMockSymbol = Symbol("pseudoMock");
+        PrettyPrinter.make(80, 10, pseudoMockSymbol); // register it
+        const mock = new Proxy(() => 3, {
+            get: (target, propKey: symbol, receiver) => {
+                if (propKey === PrettyPrinter.symbolForMockName) {
+                    return () => ({mock: "mockName"});
+                }
+                return undefined;
+            }
+        });
+        assertThat(matchMaker(mock)).is(match.instanceOf(IsEqualsMatcher));
+        assertThat(mock).is(mock);
     });
 });

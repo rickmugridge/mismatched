@@ -93,6 +93,15 @@ describe("assertThat():", () => {
         });
     });
 
+    it("throwsError()", () => {
+        assertThat(() => {
+            throw new Error("error");
+        }).throwsError("error");
+        assertThat(() => {
+            throw new Error("error");
+        }).throwsError(match.string.startsWith("err"));
+    });
+
     describe("catches():", () => {
         it("Matches", () => {
             const fn = () => Promise.reject(4);

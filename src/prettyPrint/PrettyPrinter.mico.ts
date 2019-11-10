@@ -29,6 +29,10 @@ describe("PrettyPrinter():", () => {
         it("regExp", () => {
             assertThat(prettyPrinter.render(/a.b/)).is('/a.b/');
         });
+
+        it("symbol", () => {
+            assertThat(prettyPrinter.render(Symbol("ab"))).is('Symbol(ab)');
+        });
     });
 
     describe("Short Array", () => {
@@ -303,6 +307,22 @@ describe("PrettyPrinter():", () => {
             .is("{d: Date(\"2019-08-22T21:38:35.958Z\"), e: 3}")
     });
 
+    describe("function", () => {
+        it("arrow", () => {
+            prettyPrinter = PrettyPrinter.make();
+            assertThat(prettyPrinter.render((a, b) => a))
+                .is('{arrow: "(a, b) =>"}')
+        });
+        it("function", () => {
+            function someFunction(a:number, b) {
+                return a;
+            }
+            prettyPrinter = PrettyPrinter.make();
+            assertThat(prettyPrinter.render(someFunction))
+                .is('{"function": "someFunction(a, b)"}')
+        });
+    });
+
     it("has a custom pretty printer", () => {
         class Hide {
             constructor(public f: number, public g: number, public h: number) {
@@ -349,8 +369,8 @@ describe("PrettyPrinter():", () => {
         prettyPrinter = PrettyPrinter.make(80, 10, sym);
         const obj: any = {};
         obj[sym] = () => "MOCK";
-        assertThat(prettyPrinter.render(obj)).is(`"MOCK"`);
-        assertThat(prettyPrinter.render({obj})).is(`{obj: "MOCK"}`);
+        assertThat(prettyPrinter.render(obj)).is(`{mock: "MOCK"}`);
+        assertThat(prettyPrinter.render({obj})).is(`{obj: {mock: "MOCK"}}`);
     });
 
 });
