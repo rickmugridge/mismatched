@@ -30,6 +30,10 @@ export class PrettyPrinter {
             !isUndefined(value[PrettyPrinter.symbolForMockName]);
     }
 
+    static logToConsole(value: any) {
+        return PrettyPrinter.make().logToConsole(value);
+    }
+
     private constructor(private lineWidth = 80,
                         private maxComplexity = 10) {
     }

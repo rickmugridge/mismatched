@@ -112,8 +112,8 @@ expected: '${printer.render(message)}'`);
     }
 
     private match(expected: DiffMatcher<T> | any) {
-        const diffMatcher = matchMaker(expected);
-        return diffMatcher.matches(this.actual);
+        const matcher = matchMaker(expected);
+        return matcher.matches(this.actual);
     }
 }
 

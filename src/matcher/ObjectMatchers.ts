@@ -4,6 +4,58 @@ import {isUndefined} from "util";
 import {matchMaker} from "./matchMaker";
 import {MatchResult} from "../MatchResult";
 
+export class ObjectMatcher<T extends object> implements DiffMatcher<T> {
+    constructor(private expected: Array<DiffFieldMatcher<T>>) {
+    }
+
+    matches(actual: T): MatchResult {
+        if (!ofType.isObject(actual)) {
+            return MatchResult.wasExpected(actual, this.describe(), 1, 0);
+        }
+         const results = {};
+        let errors = 0;
+        let compares = 0;
+        let matches = 0;
+        this.expected.forEach(e => {
+            const result = e.matches(actual);
+            if (result.passed()) {
+                results[e.fieldName] = actual[e.fieldName];
+            } else {
+                results[e.fieldName] = result.diff;
+                errors += 1;
+            }
+            compares += result.compares;
+            matches += result.matches;
+        });
+        const unexpected: any = {};
+        let wasUnexpected = false;
+        Object.keys(actual).forEach(key => {
+            // Careful, as a field may have an explicit value of undefined:
+            if (!isUndefined(actual[key]) && isUndefined(results[key])) {
+                unexpected[key] = actual[key];
+                errors += 1;
+                compares += 1;
+                wasUnexpected = true;
+            }
+        });
+        if (wasUnexpected) {
+            results[MatchResult.unexpected] = unexpected;
+        }
+        if (errors === 0) {
+            return MatchResult.good(compares);
+        }
+        return new MatchResult(results, compares, matches);
+    }
+
+    describe(): any {
+        return concatObjects(this.expected.map(e => e.describe()));
+    }
+
+    static make<T extends object>(expected: Array<DiffMatcher<T>> | object): any {
+        return new ObjectMatcher<T>(DiffFieldMatcher.makeAll<T>(expected));
+    }
+}
+
 export class ObjectSomeMatcher<T> implements DiffMatcher<T> {
     constructor(private expected: Array<DiffFieldMatcher<T>>) {
     }
@@ -39,51 +91,6 @@ export class ObjectSomeMatcher<T> implements DiffMatcher<T> {
 
     static make<T extends object>(expected: Array<DiffMatcher<T>> | object): any {
         return new ObjectSomeMatcher<T>(DiffFieldMatcher.makeAll<T>(expected));
-    }
-}
-
-export class ObjectMatcher<T extends object> implements DiffMatcher<T> {
-    constructor(private expected: Array<DiffFieldMatcher<T>>) {
-    }
-
-    matches(actual: T): MatchResult {
-        if (!ofType.isObject(actual)) {
-            return MatchResult.wasExpected(actual, this.describe(), 1, 0);
-        }
-        const results = {};
-        let errors = 0;
-        let compares = 0;
-        let matches = 0;
-        this.expected.forEach(e => {
-            const result = e.matches(actual);
-            if (result.passed()) {
-                results[e.fieldName] = actual[e.fieldName];
-            } else {
-                results[e.fieldName] = result.diff;
-                errors += 1;
-            }
-            compares += result.compares;
-            matches += result.matches;
-        });
-        Object.keys(actual).forEach(key => {
-            // Careful, as a field may have an explicit value of undefined:
-            if (!isUndefined(actual[key]) && isUndefined(results[key])) {
-                results[key] = {[MatchResult.unexpected]: actual[key]};
-                errors += 1;
-            }
-        });
-        if (errors === 0) {
-            return MatchResult.good(compares);
-        }
-        return new MatchResult(results, compares, matches);
-    }
-
-    describe(): any {
-        return concatObjects(this.expected.map(e => e.describe()));
-    }
-
-    static make<T extends object>(expected: Array<DiffMatcher<T>> | object): any {
-        return new ObjectMatcher<T>(DiffFieldMatcher.makeAll<T>(expected));
     }
 }
 
