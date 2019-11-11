@@ -6,6 +6,7 @@ describe("RegExpMatcher:", () => {
     it("Matches", () => {
         assertThat("ab").is(match.regEx.match(/a./));
         assertThat("ab").is(match.regEx.match(/ab/));
+        assertThat(/[ap]\.?m?\.?/i).is(/[ap]\.?m?\.?/i);
     });
 
     it("Mismatches", () => {

@@ -7,6 +7,9 @@ export class RegExpMatcher implements DiffMatcher<any> {
     }
 
     matches(actual: any): MatchResult {
+        if (ofType.isRegExp(actual) && actual.toString() === this.expected.toString()) {
+            return MatchResult.good(1);
+        }
         if (ofType.isString(actual) && actual.match(this.expected)) {
             return MatchResult.good(1);
         }
