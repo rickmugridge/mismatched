@@ -9,10 +9,10 @@ export class PrettyPrinter {
     selfReference = new SelfReferenceChecker();
 
     static symbolForMockName: any | undefined;
-    static customPrettyPrinters = new Map<string, CustomPrettyPrinter>();
+    private static customPrettyPrinters = new Map<string, (t: any) => string>();
 
-    static addCustomPrettyPrinter(custom: CustomPrettyPrinter) {
-        this.customPrettyPrinters.set(typeof custom.theClass, custom);
+    static addCustomPrettyPrinter(theClass: Function, toString: (t: any) => string) {
+        this.customPrettyPrinters.set(theClass.name, toString);
     }
 
     static make(lineWidth = 80,
@@ -113,9 +113,9 @@ export class PrettyPrinter {
                 // Error doesn't have a proper property 'message'
                 return this.tileObject(context, {errorMessage: value.message});
             }
-            const custom = PrettyPrinter.customPrettyPrinters.get(value.constructor.name);
-            if (custom) {
-                return new SimpleTile(custom.toString(value));
+            const customToString = PrettyPrinter.customPrettyPrinters.get(value.constructor.name);
+            if (customToString) {
+                return new SimpleTile(customToString(value));
             }
             const fields = this.selfReference.recurse(context, value, () =>
                 Object.keys(value).map(key => {
@@ -127,12 +127,6 @@ export class PrettyPrinter {
             return new SimpleTile(e.message); // todo Change this to a auto-coloured Tile
         }
     }
-}
-
-export interface CustomPrettyPrinter {
-    theClass: Function;
-
-    toString(t: any): string;
 }
 
 function cleanString(value: string) {

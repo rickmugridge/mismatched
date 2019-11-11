@@ -314,9 +314,10 @@ describe("PrettyPrinter():", () => {
                 .is('{arrow: "(a, b) =>"}')
         });
         it("function", () => {
-            function someFunction(a:number, b) {
+            function someFunction(a: number, b) {
                 return a;
             }
+
             prettyPrinter = PrettyPrinter.make();
             assertThat(prettyPrinter.render(someFunction))
                 .is('{"function": "someFunction(a, b)"}')
@@ -329,12 +330,7 @@ describe("PrettyPrinter():", () => {
             }
         }
 
-        const customPrinter = {
-            theClass: Hide,
-            toString: (hide: Hide) => 'Hide(' + hide.f + ')'
-        };
-        PrettyPrinter.addCustomPrettyPrinter(customPrinter);
-        prettyPrinter = PrettyPrinter.make(20);
+        PrettyPrinter.addCustomPrettyPrinter(Hide, (hide: Hide) => 'Hide(' + hide.f + ')');
         assertThat(prettyPrinter.render({d: new Hide(12, 1566509915958, 1566509915958), e: 3}))
             .is("{d: Hide(12), e: 3}");
     });
@@ -367,7 +363,7 @@ describe("PrettyPrinter():", () => {
     it("Uses mock name", () => {
         const sym = Symbol("test");
         prettyPrinter = PrettyPrinter.make(80, 10, sym);
-        const obj: any = {};
+        const obj = new Function();
         obj[sym] = () => "MOCK";
         assertThat(prettyPrinter.render(obj)).is(`{mock: "MOCK"}`);
         assertThat(prettyPrinter.render({obj})).is(`{obj: {mock: "MOCK"}}`);
