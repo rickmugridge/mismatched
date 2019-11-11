@@ -215,8 +215,6 @@ These counts are provided by all matchers. The `matchRate` will also be used whe
 We aim to provide a useful output when a match fails. 
 The results are provided as a JS object, which shows what matched and what didn't in a diff tree.
 
-(Some example would be good here...)
-
 The results are displayed by a pretty printer, which does not display it in JSON format.
 Instead, it is displayed as plain JS, so that it's easy to copy parts of it if a test is not right.
 
@@ -229,3 +227,4 @@ See [PrettyPrinter](./src/prettyPrint/README.md)
 
   - wire in the string diffing
   - add array diffing
+  - Allow for matching an expected object (in `is()`)) that includes self-references (ie, cycles).
