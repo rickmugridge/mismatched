@@ -1,5 +1,5 @@
 import {assertThat} from "../../assertThat";
-import {SimpleTile} from "./Tile";
+import {SimpleTile} from "./SimpleTile";
 
 describe("SimpleTile", () => {
     it("Short string", () => {

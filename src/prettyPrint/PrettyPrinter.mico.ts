@@ -369,4 +369,22 @@ describe("PrettyPrinter():", () => {
         assertThat(prettyPrinter.render({obj})).is(`{obj: {mock: "MOCK"}}`);
     });
 
+    describe("Handles pseudoCall", () => {
+        prettyPrinter = PrettyPrinter.make(80);
+
+        it("No args", () => {
+            const obj = {
+                [PrettyPrinter.symbolForPseudoCall]: "tar.get",
+                args: []
+            };
+            assertThat(prettyPrinter.render(obj)).is("tar.get()");
+        });
+        it("With args", () => {
+            const obj = {
+                [PrettyPrinter.symbolForPseudoCall]: "fn",
+                args: [1, true, "a"]
+            };
+            assertThat(prettyPrinter.render(obj)).is('fn(1, true, "a")');
+        });
+    });
 });

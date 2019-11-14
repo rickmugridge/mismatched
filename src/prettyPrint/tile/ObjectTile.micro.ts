@@ -1,6 +1,7 @@
 import {assertThat} from "../../assertThat";
-import {FieldTile, ObjectTile, SimpleTile} from "./Tile";
 import {Appender} from "../Appender";
+import {FieldTile, ObjectTile} from "./ObjectTile";
+import {SimpleTile} from "./SimpleTile";
 
 describe("ObjectTile", () => {
     it("No fields", () => {

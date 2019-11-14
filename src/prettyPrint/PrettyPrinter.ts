@@ -1,13 +1,18 @@
 import {ofType} from "../ofType";
 import {Appender} from "./Appender";
-import {ArrayTile, FieldTile, ObjectTile, SimpleTile, Tile} from "./tile/Tile";
 import {SelfReferenceChecker} from "./SelfReferenceChecker";
 import {PropertyName} from "./PropertyName";
 import {isUndefined} from "util";
+import {Tile} from "./tile/Tile";
+import {SimpleTile} from "./tile/SimpleTile";
+import {ArrayTile} from "./tile/ArrayTile";
+import {PseudoCallTile} from "./tile/PseudoCallTile";
+import {FieldTile, ObjectTile} from "./tile/ObjectTile";
 
 export class PrettyPrinter {
     selfReference = new SelfReferenceChecker();
 
+    static symbolForPseudoCall = Symbol("pseudoCall");
     static symbolForMockName: any | undefined;
     private static customPrettyPrinters = new Map<string, (t: any) => string>();
 
@@ -80,6 +85,36 @@ export class PrettyPrinter {
         return new SimpleTile(value);
     }
 
+    private tileObject(context: string, value: object) {
+        try {
+            const callName = value[PrettyPrinter.symbolForPseudoCall];
+            if (callName && ofType.isArray((value as any).args)) {
+                // {[PrettyPrinter.symbolForPseudoCall]: "obj.method", args: ["a", true]}
+                return new PseudoCallTile(callName, (value as any).args.map(
+                    (v, i) => this.tile(context + "[" + i + "]", v)));
+            }
+            if (value instanceof Date) {
+                return new SimpleTile('Date(' + JSON.stringify(value) + ')');
+            }
+            if (value instanceof Error) {
+                // Error doesn't have a proper property 'message'
+                return this.tileObject(context, {errorMessage: value.message});
+            }
+            const customToString = PrettyPrinter.customPrettyPrinters.get(value.constructor.name);
+            if (customToString) {
+                return new SimpleTile(customToString(value));
+            }
+            const fields = this.selfReference.recurse(context, value, () =>
+                Object.keys(value).map(key => {
+                    const renderedKey = PropertyName.render(key);
+                    return new FieldTile(renderedKey, this.tile(context + renderedKey, value[key]))
+                }));
+            return new ObjectTile(fields);
+        } catch (e) {
+            return new SimpleTile(e.message); // todo Change this to a auto-coloured Tile
+        }
+    }
+
     private functionDetails(fn: Function) {
         try { // who knows when some weird JS will make this fail
             if (fn.toString) {
@@ -102,30 +137,6 @@ export class PrettyPrinter {
         } catch (e) {
         }
         return {function: "no details"};
-    }
-
-    private tileObject(context: string, value: object) {
-        try {
-            if (value instanceof Date) {
-                return new SimpleTile('Date(' + JSON.stringify(value) + ')');
-            }
-            if (value instanceof Error) {
-                // Error doesn't have a proper property 'message'
-                return this.tileObject(context, {errorMessage: value.message});
-            }
-            const customToString = PrettyPrinter.customPrettyPrinters.get(value.constructor.name);
-            if (customToString) {
-                return new SimpleTile(customToString(value));
-            }
-            const fields = this.selfReference.recurse(context, value, () =>
-                Object.keys(value).map(key => {
-                    const renderedKey = PropertyName.render(key);
-                    return new FieldTile(renderedKey, this.tile(context + renderedKey, value[key]))
-                }));
-            return new ObjectTile(fields);
-        } catch (e) {
-            return new SimpleTile(e.message); // todo Change this to a auto-coloured Tile
-        }
     }
 }
 

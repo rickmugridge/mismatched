@@ -1,4 +1,5 @@
-import {FieldTile, Tile} from "./tile/Tile";
+import {Tile} from "./tile/Tile";
+import {FieldTile} from "./tile/ObjectTile";
 
 export class Appender {
     offset = "";
@@ -64,7 +65,6 @@ export class Appender {
         const appender = new Appender();
         tile.render(appender);
         const result = appender.compose();
-        // console.debug("Appender.ts:67", {length: result.length, compose: result}); // todo Remove
         return result.length;
     }
 }

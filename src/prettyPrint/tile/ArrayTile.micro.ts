@@ -1,6 +1,7 @@
 import {assertThat} from "../../assertThat";
-import {ArrayTile, SimpleTile} from "./Tile";
 import {Appender} from "../Appender";
+import {SimpleTile} from "./SimpleTile";
+import {ArrayTile} from "./ArrayTile";
 
 describe("ArrayTile", () => {
     it("Empty", () => {
