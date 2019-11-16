@@ -21,7 +21,7 @@ class Assertion<T> {
     is(expected: DiffMatcher<T> | any) {
         const result = this.match(expected);
         if (!result.passed()) {
-            result.bad();
+            result.bad(this.actual);
         }
     }
 
@@ -36,14 +36,14 @@ class Assertion<T> {
     isAnyOf(expected: Array<DiffMatcher<T> | any>) {
         const result = new AnyOfMatcher(expected.map(e => matchMaker(e))).matches(this.actual);
         if (!result.passed()) {
-            result.bad();
+            result.bad(this.actual);
         }
     }
 
     isAllOf(expected: Array<DiffMatcher<T> | any>) {
         const result = new AllOfMatcher(expected.map(e => matchMaker(e))).matches(this.actual);
         if (!result.passed()) {
-            result.bad();
+            result.bad(this.actual);
         }
     }
 
@@ -65,17 +65,17 @@ expected: '${printer.render(message)}'`);
         const matcher = matchMaker(expected);
         let passed = false;
         try {
-            const result = this.actual();
+            this.actual();
             passed = true;
         } catch (e) {
             const result = matcher.matches(e);
             if (!result.passed()) {
-                result.bad();
+                result.bad(e.message);
             }
         }
         if (passed) {
             this.logExceptionFail("Expected an exception matching:", matcher);
-            throw new Error("Problem");
+            throw new Error("Problem in throws()");
         }
     }
 
@@ -95,16 +95,20 @@ expected: '${printer.render(message)}'`);
             e => {
                 const result = matcher.matches(e);
                 if (!result.passed()) {
-                    result.bad();
+                    result.bad(e.message);
                 }
                 return false;
             }).then(passed => {
             if (passed) {
                 this.logExceptionFail("Expected a promise.catch matching:", matcher);
-                return Promise.reject("Problem");
+                return Promise.reject("Problem in catches()");
             }
             return Promise.resolve();
         });
+    }
+
+    catchesError(message: string) {
+        return this.catches(ErrorMatcher.make(message));
     }
 
     logExceptionFail(message: string, matcher: DiffMatcher<any>) {

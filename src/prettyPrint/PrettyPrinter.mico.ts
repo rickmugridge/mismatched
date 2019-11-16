@@ -372,6 +372,13 @@ describe("PrettyPrinter():", () => {
     describe("Handles pseudoCall", () => {
         prettyPrinter = PrettyPrinter.make(80);
 
+        it("Undefined args", () => {
+            const obj = {
+                [PrettyPrinter.symbolForPseudoCall]: "tar.prop"
+            };
+            assertThat(prettyPrinter.render(obj)).is("tar.prop");
+        });
+
         it("No args", () => {
             const obj = {
                 [PrettyPrinter.symbolForPseudoCall]: "tar.get",
@@ -379,6 +386,7 @@ describe("PrettyPrinter():", () => {
             };
             assertThat(prettyPrinter.render(obj)).is("tar.get()");
         });
+
         it("With args", () => {
             const obj = {
                 [PrettyPrinter.symbolForPseudoCall]: "fn",

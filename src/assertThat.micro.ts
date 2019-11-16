@@ -81,7 +81,7 @@ describe("assertThat():", () => {
                 assertThat(() => 3).throws(match.instanceOf(Error));
                 passed = true;
             } catch (e) {
-                assertThat(e).is({message: "Problem"});
+                assertThat(e).is({message: "Problem in throws()"});
             }
             assertThat(passed).is(false);
         });
@@ -109,15 +109,14 @@ describe("assertThat():", () => {
         });
 
         it("Mismatches", () => {
-            const fn = () => Promise.resolve(4);
-            return assertThat(fn)
+            return assertThat(() => Promise.resolve(4))
                 .catches(4)
-                .catch(e => assertThat(e).is("Problem"));
+                .catch(e => assertThat(e).is("Problem in catches()"));
         });
 
         it("Actual is not a function", () => {
-            const assertonFn = () => assertThat(4).catches("error");
-            return assertThat(assertonFn).throws(match.instanceOf(Error));
+            const assertionFn = () => assertThat(4).catches("error");
+            return assertThat(assertionFn).throws(match.instanceOf(Error));
         });
 
         it("Return from actual function is not a Promise", () => {
@@ -134,8 +133,10 @@ describe("assertThat():", () => {
         });
     });
 
-    it("error", () => {
-        console.log(JSON.stringify(new Error("ab")))
-        assertThat(new Error("a")).is(new Error("a"))
+    it("catchesError()", () => {
+        assertThat(() => Promise.reject(new Error("error")))
+            .catchesError("error");
+        assertThat(() => Promise.reject(new Error("error")))
+            .catchesError(match.string.startsWith("err"));
     });
 });

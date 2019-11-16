@@ -13,8 +13,8 @@ export class MatchResult {
         return this.matchRate >= 1.0;
     }
 
-    bad() {
-        PrettyPrinter.make().logToConsole(this.diff);
+    bad(actual: any) {
+        PrettyPrinter.make().logToConsole({actual, diff: this.diff});
         throw new Error("Problem");
     }
 

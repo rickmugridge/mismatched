@@ -88,10 +88,11 @@ export class PrettyPrinter {
     private tileObject(context: string, value: object) {
         try {
             const callName = value[PrettyPrinter.symbolForPseudoCall];
-            if (callName && ofType.isArray((value as any).args)) {
-                // {[PrettyPrinter.symbolForPseudoCall]: "obj.method", args: ["a", true]}
-                return new PseudoCallTile(callName, (value as any).args.map(
-                    (v, i) => this.tile(context + "[" + i + "]", v)));
+            let valueArgs = (value as any).args;
+            if (callName && (ofType.isArray(valueArgs) || ofType.isUndefined(valueArgs))) {
+                const args = valueArgs ? valueArgs.map(
+                    (v, i) => this.tile(context + "[" + i + "]", v)) : undefined;
+                return new PseudoCallTile(callName, args);
             }
             if (value instanceof Date) {
                 return new SimpleTile('Date(' + JSON.stringify(value) + ')');

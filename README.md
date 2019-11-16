@@ -1,6 +1,6 @@
 # mismatched
 
-A Typescript-based matcher or assertion framework, inspired by Hamcrest (https://en.wikipedia.org/wiki/Hamcrest).
+A Typescript-based assertion and matcher framework, inspired by Hamcrest (https://en.wikipedia.org/wiki/Hamcrest).
 
 ## Examples
 
