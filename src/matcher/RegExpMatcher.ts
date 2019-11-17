@@ -2,8 +2,9 @@ import {DiffMatcher} from "./DiffMatcher";
 import {ofType} from "../ofType";
 import {MatchResult} from "../MatchResult";
 
-export class RegExpMatcher implements DiffMatcher<any> {
+export class RegExpMatcher extends DiffMatcher<any> {
     constructor(private expected: RegExp) {
+        super();
     }
 
     matches(actual: any): MatchResult {

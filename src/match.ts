@@ -14,7 +14,6 @@ import {numberMatcher} from "./matcher/NumberMatcher";
 import {instanceOfMatcher} from "./matcher/instanceOfMatcher";
 import {ItIsMatcher} from "./matcher/ItIsMatcher";
 import {MappedMatcher} from "./matcher/MappedMatcher";
-import {ErrorMatcher} from "./matcher/ErrorMatcher";
 
 export const match = {
     isEquals: IsEqualsMatcher.make,

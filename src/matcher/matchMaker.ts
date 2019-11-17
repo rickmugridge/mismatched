@@ -46,6 +46,8 @@ export function matchMaker(v: DiffMatcher<any> | any): DiffMatcher<any> {
 }
 
 function makeObjectMatcher(obj: object): DiffMatcher<any> {
-    const fieldMatchers = Object.keys(obj).map(key => new DiffFieldMatcher(key, matchMaker(obj[key])));
-    return ObjectMatcher.make(fieldMatchers);
+    const fieldMatchers = Object.keys(obj)
+        .filter(key => !ofType.isFunction(obj[key]))
+        .map(key => new DiffFieldMatcher(key, matchMaker(obj[key])));
+    return ObjectMatcher.make(obj, fieldMatchers);
 }

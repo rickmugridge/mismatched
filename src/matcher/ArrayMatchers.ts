@@ -4,8 +4,9 @@ import {isArray} from "util";
 import {DiffMatcher} from "./DiffMatcher";
 import {IsEqualsMatcher} from "./IsEqualsMatcher";
 
-export class ArrayContainsMatcher<T> implements DiffMatcher<Array<T>> {
+export class ArrayContainsMatcher<T> extends DiffMatcher<Array<T>> {
     constructor(private expected: DiffMatcher<T>) {
+        super();
     }
 
     matches(actual: Array<T>): MatchResult {

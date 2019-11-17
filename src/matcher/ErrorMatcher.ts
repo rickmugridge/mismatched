@@ -3,8 +3,9 @@ import {MatchResult} from "../MatchResult";
 import {matchMaker} from "./matchMaker";
 import {instanceOfMatcher} from "./instanceOfMatcher";
 
-export class ErrorMatcher<T> implements DiffMatcher<T> {
+export class ErrorMatcher<T> extends DiffMatcher<T> {
     constructor(private matcher: DiffMatcher<string> | any) {
+        super();
     }
 
     matches(actual: T): MatchResult {

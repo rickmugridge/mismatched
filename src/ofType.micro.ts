@@ -178,7 +178,7 @@ describe("ofType:", () => {
     describe("isMatcher", () => {
         it("is so", () => {
             expect(ofType.isMatcher(match.isEquals(1)), true);
-            expect(ofType.isMatcher(match.obj.match({f: 3})), true);
+            expect(ofType.isMatcher(match.obj.match({},{f: 3})), true);
         });
         it("is not so", () => {
             expect(ofType.isMatcher(undefined), false);

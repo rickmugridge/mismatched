@@ -2,8 +2,9 @@ import {DiffMatcher} from "./DiffMatcher";
 import {matchMaker} from "./matchMaker";
 import {MatchResult} from "../MatchResult";
 
-export class AnyOfMatcher<T> implements DiffMatcher<T> {
+export class AnyOfMatcher<T> extends DiffMatcher<T> {
     constructor(private matchers: Array<DiffMatcher<T>>) {
+        super();
     }
 
     matches(actual: T): MatchResult {

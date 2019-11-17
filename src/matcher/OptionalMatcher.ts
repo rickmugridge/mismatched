@@ -3,8 +3,9 @@ import {isUndefined} from "util";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "./matchMaker";
 
-export class OptionalMatcher<T> implements DiffMatcher<T> {
+export class OptionalMatcher<T> extends DiffMatcher<T> {
     constructor(private matcher: DiffMatcher<T>) {
+        super();
     }
 
     matches(actual: T): MatchResult {

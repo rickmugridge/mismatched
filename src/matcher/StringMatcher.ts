@@ -3,8 +3,9 @@ import {MatchResult} from "../MatchResult";
 import {ofType} from "../ofType";
 import {PredicateMatcher} from "./PredicateMatcher";
 
-export class StringMatcher implements DiffMatcher<string> {
+export class StringMatcher extends DiffMatcher<string> {
     constructor(private expected: string) {
+        super();
     }
 
     matches(actual: any): MatchResult {

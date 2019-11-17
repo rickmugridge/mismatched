@@ -3,14 +3,15 @@ import {MatchResult} from "../MatchResult";
 import {isFunction} from "util";
 import {ofType} from "../ofType";
 
-export class PredicateMatcher implements DiffMatcher<any> {
+export class PredicateMatcher extends DiffMatcher<any> {
     constructor(private expected: (value: any) => boolean, private description: any) {
+        super();
     }
 
     matches(actual: any): MatchResult {
         const result = this.expected(actual);
-        if (!ofType.isBoolean(result)) {
-            return MatchResult.wasExpected(actual, "Function in 'is()' must return boolean value",
+        if (ofType.isObject(result) && (result as {} as object) instanceof DiffMatcher) {
+            return MatchResult.wasExpected(actual, "Use 'match.any()' rather than 'match.any', etc",
                 1, 0);
         }
         if (result) {

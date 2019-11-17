@@ -2,10 +2,11 @@ import {DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "./matchMaker";
 
-export class MappedMatcher<T> implements DiffMatcher<T> {
+export class MappedMatcher<T> extends DiffMatcher<T> {
     constructor(private map: (t: any) => T,
                 private matcher: DiffMatcher<T> | any,
                 private description: any) {
+        super();
     }
 
     matches(actual: T): MatchResult {

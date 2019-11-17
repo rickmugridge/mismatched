@@ -18,6 +18,13 @@ describe("PredicateMatcher:", () => {
             .failsWith(match.predicate(v => v > 0, {positive: ""}),
                 {[MatchResult.was]: "ab", [MatchResult.expected]: {positive: ""}});
     });
+
+    it("Error when `match.any` is used instead of `match.any()`", () => {
+        assertThat("ab")
+            .failsWith(match.any,
+                {[MatchResult.was]: "ab",
+                    [MatchResult.expected]: "Use 'match.any()' rather than 'match.any', etc"});
+    });
 });
 
 function pred() {

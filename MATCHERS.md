@@ -218,8 +218,6 @@ For example:
 
         it('Explicit', () => {
             assertThat(actual)
-                .is(match.obj.match({name: "hamcrest", address: {number: 3, street: "Oak St", other: [1, 2]}}));
-            assertThat(actual)
                 .is({name: "hamcrest", address: {number: 3, street: "Oak St", other: [1, 2]}});
         });
 
@@ -256,6 +254,7 @@ For example:
             assertThat(actual)
                 .is(match.obj.has({
                     address: {
+                        number: 3,
                         street: "Oak St", 
                         other: match.ofType.array
                     }

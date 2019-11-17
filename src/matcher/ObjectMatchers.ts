@@ -4,15 +4,19 @@ import {isUndefined} from "util";
 import {matchMaker} from "./matchMaker";
 import {MatchResult} from "../MatchResult";
 
-export class ObjectMatcher<T extends object> implements DiffMatcher<T> {
-    constructor(private expected: Array<DiffFieldMatcher<T>>) {
+export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
+    constructor(private expectedObject: object, private expected: Array<DiffFieldMatcher<T>>) {
+        super();
     }
 
     matches(actual: T): MatchResult {
         if (!ofType.isObject(actual)) {
             return MatchResult.wasExpected(actual, this.describe(), 1, 0);
         }
-         const results = {};
+        if (this.expectedObject === actual) {
+            return MatchResult.good(1);
+        }
+        const results = {};
         let errors = 0;
         let compares = 0;
         let matches = 0;
@@ -51,8 +55,8 @@ export class ObjectMatcher<T extends object> implements DiffMatcher<T> {
         return concatObjects(this.expected.map(e => e.describe()));
     }
 
-    static make<T extends object>(expected: Array<DiffMatcher<T>> | object): any {
-        return new ObjectMatcher<T>(DiffFieldMatcher.makeAll<T>(expected));
+    static make<T extends object>(obj: object, expected: Array<DiffMatcher<T>> | object): any {
+        return new ObjectMatcher<T>(obj, DiffFieldMatcher.makeAll<T>(expected));
     }
 }
 

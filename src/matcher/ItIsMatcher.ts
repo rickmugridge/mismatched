@@ -1,8 +1,9 @@
 import {DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 
-export class ItIsMatcher implements DiffMatcher<any> {
+export class ItIsMatcher extends DiffMatcher<any> {
     constructor(private expected: any) {
+        super();
     }
 
     matches(actual: any): MatchResult {
