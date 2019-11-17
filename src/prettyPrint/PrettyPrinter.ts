@@ -9,6 +9,9 @@ import {ArrayTile} from "./tile/ArrayTile";
 import {PseudoCallTile} from "./tile/PseudoCallTile";
 import {FieldTile, ObjectTile} from "./tile/ObjectTile";
 
+export const defaultLineWidth = 80;
+export const defaultMaxComplexity = 30;
+
 export class PrettyPrinter {
     selfReference = new SelfReferenceChecker();
 
@@ -20,8 +23,8 @@ export class PrettyPrinter {
         this.customPrettyPrinters.set(theClass.name, toString);
     }
 
-    static make(lineWidth = 80,
-                maxComplexity = 10,
+    static make(lineWidth = defaultLineWidth,
+                maxComplexity = defaultMaxComplexity,
                 symbolForMockName?: any): PrettyPrinter {
         if (symbolForMockName) {
             PrettyPrinter.symbolForMockName = symbolForMockName; // Just use the latest one
@@ -39,8 +42,8 @@ export class PrettyPrinter {
         return PrettyPrinter.make().logToConsole(value);
     }
 
-    private constructor(private lineWidth = 80,
-                        private maxComplexity = 10) {
+    private constructor(private lineWidth,
+                        private maxComplexity) {
     }
 
     render(value: any): string {

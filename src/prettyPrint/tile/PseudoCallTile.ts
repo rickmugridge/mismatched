@@ -1,6 +1,6 @@
 import {Tile} from "./Tile";
 import {Appender} from "../Appender";
-import {printTiles} from "./printTiles";
+import {printTiles} from "./printSequenceOfTiles";
 
 export class PseudoCallTile implements Tile {
     stringLength: number;
@@ -15,9 +15,15 @@ export class PseudoCallTile implements Tile {
     }
 
     render(appender: Appender) {
+        const newLine = this.stringLength > appender.remaininglineWidth || appender.tooComplex(this.complexity);
+        if (newLine) {
+            appender.newLine();
+        }
         appender.add(this.callName);
         if (this.args) {
-            printTiles(this.args, "(", ")", this.stringLength, appender, this.complexity);
+            appender.add("(");
+            printTiles(this.args, appender);
+            appender.add(")");
         }
     }
 }

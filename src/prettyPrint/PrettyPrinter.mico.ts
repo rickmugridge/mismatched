@@ -6,7 +6,7 @@ describe("PrettyPrinter():", () => {
     let prettyPrinter: PrettyPrinter;
 
     beforeEach(() => {
-        prettyPrinter = PrettyPrinter.make(20);
+        prettyPrinter = PrettyPrinter.make();
     });
 
     describe("Simple values:", () => {
@@ -41,13 +41,7 @@ describe("PrettyPrinter():", () => {
         });
         it("of nested numbers", () => {
             assertThat('\n' + prettyPrinter.render([1, [2.3, 3.4, 4, 5, 3.456789]])).is(`
-[
-  1, 
-  [
-    2.3, 3.4, 4, 5, 
-    3.456789
-  ]
-]`);
+[1, [2.3, 3.4, 4, 5, 3.456789]]`);
         });
         it("of strings", () => {
             assertThat(prettyPrinter.render(["a", "bc"])).is('["a", "bc"]');
@@ -56,15 +50,17 @@ describe("PrettyPrinter():", () => {
 
     describe("Long Array", () => {
         it("of numbers", () => {
-            const value = [1000001, 1000002,
-                1000003, 1000004, 1000005, 1000006, 1000007];
+            const value = [
+                1000001, 1000002, 1000003, 1000004,
+                1000001, 1000002, 1000003, 1000004,
+                1000001, 1000002, 1000003, 1000004,
+                1000001, 1000002, 1000003, 1000004
+            ];
             assertThat('\n' + prettyPrinter.render(value))
                 .is(`
 [
-  1000001, 1000002, 
-  1000003, 1000004, 
-  1000005, 1000006, 
-  1000007
+  1000001, 1000002, 1000003, 1000004, 1000001, 1000002, 1000003, 1000004, 
+  1000001, 1000002, 1000003, 1000004, 1000001, 1000002, 1000003, 1000004
 ]`);
         });
 
@@ -77,12 +73,7 @@ describe("PrettyPrinter():", () => {
                     1000006, [10007]];
             assertThat('\n' + prettyPrinter.render(value))
                 .is(`
-[
-  1000001, 
-  [1, 2, 1003], 
-  1000004, 1000005, 
-  1000006, [10007]
-]`);
+[1000001, [1, 2, 1003], 1000004, 1000005, 1000006, [10007]]`);
         });
     });
 
@@ -98,29 +89,20 @@ describe("PrettyPrinter():", () => {
                 d: {d: false}
             };
             assertThat('\n' + prettyPrinter.render(value)).is(`
-{
-  a: 1, b: {c: "a"}, 
-  d: {d: false}
-}`);
+{a: 1, b: {c: "a"}, d: {d: false}}`);
         });
     });
 
     it("Mixture", () => {
-        const value =
-            {
-                a: [
-                    1, {z: 8},
-                    {y: true}
-                ], b: "a"
-            };
+        const value = {
+            a: [
+                1, {z: 8},
+                {y: true}
+            ], b: "a"
+        };
         assertThat('\n' + prettyPrinter.render(value))
             .is(`
-{
-  a: [
-    1, {z: 8}, 
-    {y: true}
-  ], b: "a"
-}`);
+{a: [1, {z: 8}, {y: true}], b: "a"}`);
     });
 
     describe("Real object", () => {
@@ -148,17 +130,8 @@ describe("PrettyPrinter():", () => {
   calfId: 56, 
   matches: [
     {
-      calfId: 56, 
-      match_id: 1, 
-      match_type: "dam-only", 
-      selection_state: "open", 
-      dam: {
-        animalId: 561
-      }, 
-      loci: {
-        failures: [
-        ]
-      }, 
+      calfId: 56, match_id: 1, match_type: "dam-only", selection_state: "open", 
+      dam: {animalId: 561}, loci: {failures: []}, 
       links: [
         {
           href: "www.example.com/animal-genome/parentage-matching/5/calf/56/match/1", 
@@ -173,9 +146,8 @@ describe("PrettyPrinter():", () => {
   ], links: []
 }`);
         });
+
         it("80 characters width with complexity of 50", () => {
-
-
             prettyPrinter = PrettyPrinter.make(80, 50);
             assertThat('\n' + prettyPrinter.render(value))
                 .is(`
@@ -200,9 +172,7 @@ describe("PrettyPrinter():", () => {
 }`);
         });
 
-        it("80 characters width with default complexity of 20", () => {
-
-
+        it("80 characters width with default complexity of 10", () => {
             prettyPrinter = PrettyPrinter.make(80, 10);
             assertThat('\n' + prettyPrinter.render(value))
                 .is(`
@@ -228,8 +198,6 @@ describe("PrettyPrinter():", () => {
         });
 
         it("80 characters width with maxComplexity of 5", () => {
-
-
             prettyPrinter = PrettyPrinter.make(80, 5);
             assertThat('\n' + prettyPrinter.render(value))
                 .is(`
@@ -254,6 +222,7 @@ describe("PrettyPrinter():", () => {
   ], links: []
 }`);
         });
+
         it("80 characters width with maxComplexity of 1", () => {
             prettyPrinter = PrettyPrinter.make(80, 1);
             assertThat('\n' + prettyPrinter.render(value))
@@ -296,8 +265,8 @@ describe("PrettyPrinter():", () => {
         g.b = g;
         g.a.b = g.a;
         assertThat(prettyPrinter.render(g))
-            .is("{\n  a: {\n    c: 2, \n    b: " +
-                Colour.bg_magenta("self-reference: this.a") + "\n  }, \n  b: " +
+            .is("{\n  a: {c: 2, b: " +
+                Colour.bg_magenta("self-reference: this.a") + "}, \n  b: " +
                 Colour.bg_magenta("self-reference: this.") + "\n}");
     });
 
@@ -310,12 +279,12 @@ describe("PrettyPrinter():", () => {
     describe("function", () => {
         it("arrow", () => {
             prettyPrinter = PrettyPrinter.make();
-            assertThat(prettyPrinter.render((a, b) => a))
+            assertThat(prettyPrinter.render((a, b) => a + b))
                 .is('{arrow: "(a, b) =>"}')
         });
         it("function", () => {
             function someFunction(a: number, b) {
-                return a;
+                return a + b;
             }
 
             prettyPrinter = PrettyPrinter.make();
@@ -370,8 +339,6 @@ describe("PrettyPrinter():", () => {
     });
 
     describe("Handles pseudoCall", () => {
-        prettyPrinter = PrettyPrinter.make(80);
-
         it("Undefined args", () => {
             const obj = {
                 [PrettyPrinter.symbolForPseudoCall]: "tar.prop"
@@ -390,9 +357,10 @@ describe("PrettyPrinter():", () => {
         it("With args", () => {
             const obj = {
                 [PrettyPrinter.symbolForPseudoCall]: "fn",
-                args: [1, true, "a"]
+                args: [1, true, "a", [123, 456, 789], {a: 33, b: 44}]
             };
-            assertThat(prettyPrinter.render(obj)).is('fn(1, true, "a")');
+            assertThat(prettyPrinter.render(obj))
+                .is(`fn(1, true, "a", [123, 456, 789], {a: 33, b: 44})`);
         });
     });
 });

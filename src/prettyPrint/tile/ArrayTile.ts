@@ -1,6 +1,6 @@
 import {Appender} from "../Appender";
 import {Tile} from "./Tile";
-import {printTiles} from "./printTiles";
+import {printSequenceOfTiles} from "./printSequenceOfTiles";
 
 export class ArrayTile implements Tile {
     stringLength: number;
@@ -14,6 +14,6 @@ export class ArrayTile implements Tile {
     }
 
     render(appender: Appender) {
-        printTiles(this.elements, "[", "]", this.stringLength, appender, this.complexity);
+        printSequenceOfTiles(this.elements, "[", "]", this.stringLength, appender, this.complexity);
     }
 }

@@ -1,5 +1,6 @@
 import {Tile} from "./tile/Tile";
 import {FieldTile} from "./tile/ObjectTile";
+import {defaultLineWidth, defaultMaxComplexity} from "./PrettyPrinter";
 
 export class Appender {
     offset = "";
@@ -8,7 +9,7 @@ export class Appender {
     public remaininglineWidth = this.lineWidth;
     public currentLineComplexity = 0;
 
-    constructor(private lineWidth = 60, public maxComplexity = 30) {
+    constructor(private lineWidth = defaultLineWidth, public maxComplexity = defaultMaxComplexity) {
     }
 
     add(s: string, complexity = 0) {
@@ -59,6 +60,12 @@ export class Appender {
 
     tooComplex(extraComplexity: number): boolean {
         return this.currentLineComplexity + extraComplexity > this.maxComplexity; // todo test this
+    }
+
+    static composeTile(tile: Tile | FieldTile) {
+        const appender = new Appender();
+        tile.render(appender);
+        return appender.compose();
     }
 
     static composeLength(tile: Tile | FieldTile) {
