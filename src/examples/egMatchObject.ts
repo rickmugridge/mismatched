@@ -19,7 +19,7 @@ describe("match.obj:", () => {
                     address: {
                         number: match.number.lessEqual(3),
                         street: "Oak St",
-                        other: match.ofType.array
+                        other: match.ofType.array()
                     }
                 });
         });
@@ -38,7 +38,7 @@ describe("match.obj:", () => {
                 .is(match.obj.has({
                     address: {
                         street: "Oak St",
-                        other: match.ofType.array
+                        other: match.ofType.array()
                     }
                 }));
         });

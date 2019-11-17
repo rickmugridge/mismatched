@@ -20,7 +20,7 @@ describe("Object-matching Examples", () => {
             assertThat(actual)
                 .is({
                     name: "hamcrest",
-                    address: {number: 3, street: "Oak St", other: match.any}
+                    address: {number: 3, street: "Oak St", other: match.any()}
                 });
         });
 
@@ -31,7 +31,7 @@ describe("Object-matching Examples", () => {
                     address: {
                         number: match.greater(0),
                         street: "Oak St",
-                        other: match.ofType.array
+                        other: match.ofType.array()
                     }
                 });
         });

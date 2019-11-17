@@ -10,9 +10,10 @@ describe("PredicateMatcher:", () => {
 
     it("Mismatches", () => {
         assertThat("ab")
-            .failsWith(pred, {[MatchResult.was]: "ab", [MatchResult.expected]: "pred()"});
+            .failsWith(pred, {[MatchResult.was]: "ab", [MatchResult.expected]: {function: "pred()"}});
         assertThat("ab")
-            .failsWith(v => v > 0, {[MatchResult.was]: "ab", [MatchResult.expected]: "a Function"});
+            .failsWith(v => v > 0,
+                {[MatchResult.was]: "ab", [MatchResult.expected]: {arrow: "v => v > 0"}});
         assertThat("ab")
             .failsWith(match.predicate(v => v > 0, {positive: ""}),
                 {[MatchResult.was]: "ab", [MatchResult.expected]: {positive: ""}});

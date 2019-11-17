@@ -71,7 +71,7 @@ export class PrettyPrinter {
             return new SimpleTile(cleanString(value));
         }
         if (ofType.isFunction(value)) {
-            return this.tileObject(context, this.functionDetails(value));
+            return this.tileObject(context, PrettyPrinter.functionDetails(value));
         }
         if (ofType.isArray(value)) {
             try {
@@ -119,7 +119,7 @@ export class PrettyPrinter {
         }
     }
 
-    private functionDetails(fn: Function) {
+    static functionDetails(fn: Function) {
         try { // who knows when some weird JS will make this fail
             if (fn.toString) {
                 let details = fn.toString();
@@ -136,7 +136,7 @@ export class PrettyPrinter {
                 if (fullFunction) {
                     return {function: details}
                 }
-                return {arrow: details + " =>"};
+                return {arrow: details};
             }
         } catch (e) {
         }

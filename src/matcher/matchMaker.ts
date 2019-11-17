@@ -31,8 +31,7 @@ export function matchMaker(v: DiffMatcher<any> | any): DiffMatcher<any> {
         return IsEqualsMatcher.make(v);
     }
     if (ofType.isFunction(v)) {
-        let predicateDescription = v.name === "" ? "a Function" : v.name + "()";
-        return PredicateMatcher.make(v, predicateDescription)
+        return PredicateMatcher.make(v, PrettyPrinter.functionDetails(v))
     }
     if (ofType.isError(v)) {
         return ErrorMatcher.make(IsEqualsMatcher.make(v.message));

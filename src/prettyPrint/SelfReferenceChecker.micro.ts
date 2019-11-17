@@ -1,7 +1,6 @@
 import {SelfReferenceChecker} from "./SelfReferenceChecker";
 import {assertException, assertThat} from "../assertThat";
 import {match} from "../match";
-import {PrettyPrinter} from "./PrettyPrinter";
 
 describe("SelfReferenceChecker", () => {
     it("finds no self reference", () => {
@@ -13,7 +12,7 @@ describe("SelfReferenceChecker", () => {
         const checker = new SelfReferenceChecker();
         const obj: any = {};
         obj.f = obj;
-        assertThat(checker.recurse("this", obj, () => obj)).is(match.any);
+        assertThat(checker.recurse("this", obj, () => obj)).is(match.any());
         assertException(() =>
             checker.recurse("this", obj, () =>
                 checker.recurse("this.f", obj.f, () => 4)))
@@ -25,7 +24,7 @@ describe("SelfReferenceChecker", () => {
         const obj: any = {};
         obj.f = {g: obj};
         assertThat(checker.recurse("this", obj, () =>
-            checker.recurse("this.f", obj.f, () => 4))).is(match.any);
+            checker.recurse("this.f", obj.f, () => 4))).is(match.any());
         assertException(() =>
             checker.recurse("this", obj, () =>
                 checker.recurse("this.f", obj.f, () =>
@@ -37,7 +36,7 @@ describe("SelfReferenceChecker", () => {
         const checker = new SelfReferenceChecker();
         const obj: Array<any> = [];
         obj.push(obj);
-        assertThat(checker.recurse("this", obj, () => obj)).is(match.any);
+        assertThat(checker.recurse("this", obj, () => obj)).is(match.any());
         assertException(() =>
             checker.recurse("this", obj, () =>
                 checker.recurse("this[0]", obj[0], () => 4)))
@@ -49,7 +48,7 @@ describe("SelfReferenceChecker", () => {
         const obj: Array<any> = [];
         obj.push([obj]);
         assertThat(checker.recurse("this", obj, () =>
-            checker.recurse("this[0]", obj[0], () => 4))).is(match.any);
+            checker.recurse("this[0]", obj[0], () => 4))).is(match.any());
         assertException(() =>
             checker.recurse("this", obj, () =>
                 checker.recurse("this[0]", obj[0], () =>
