@@ -19,6 +19,7 @@ class Assertion<T> {
     }
 
     is(expected: DiffMatcher<T> | any) {
+        this.checkForFunction();
         const result = this.match(expected);
         if (!result.passed()) {
             result.bad(this.actual);
@@ -26,14 +27,17 @@ class Assertion<T> {
     }
 
     itIs(expected: object) {
+        this.checkForFunction();
         return this.is(match.itIs(expected));
     }
 
     isNot(expected: DiffMatcher<T> | any) {
+        this.checkForFunction();
         return this.is(match.not(matchMaker(expected)));
     }
 
     isAnyOf(expected: Array<DiffMatcher<T> | any>) {
+        this.checkForFunction();
         const result = new AnyOfMatcher(expected.map(e => matchMaker(e))).matches(this.actual);
         if (!result.passed()) {
             result.bad(this.actual);
@@ -41,6 +45,7 @@ class Assertion<T> {
     }
 
     isAllOf(expected: Array<DiffMatcher<T> | any>) {
+        this.checkForFunction();
         const result = new AllOfMatcher(expected.map(e => matchMaker(e))).matches(this.actual);
         if (!result.passed()) {
             result.bad(this.actual);
@@ -84,11 +89,8 @@ expected: '${printer.render(message)}'`);
     }
 
     catches(expected: any = match.any()): Promise<unknown> {
-        if (!ofType.isFunction(this.actual)) {
-            throw new Error("Need to use the form: assertThat(()=> expression).catches('error')");
-        }
         const matcher = matchMaker(expected);
-        const result = this.actual();
+        const result = this.actual;
         assertThat(result).is(match.instanceOf(Promise));
         return result.then(
             () => true,
@@ -118,6 +120,12 @@ expected: '${printer.render(message)}'`);
     private match(expected: DiffMatcher<T> | any) {
         const matcher = matchMaker(expected);
         return matcher.matches(this.actual);
+    }
+
+    private checkForFunction() {
+        if (ofType.isFunction(this.actual && !this.actual[PrettyPrinter.symbolForMockName])) {
+            throw new Error("Can't assertThat() on a function, as functions are not matched");
+        }
     }
 }
 

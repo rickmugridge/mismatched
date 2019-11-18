@@ -7,8 +7,9 @@ import {matchMaker} from "./matchMaker";
 import {StringMatcher} from "./StringMatcher";
 import {PredicateMatcher} from "./PredicateMatcher";
 import {PrettyPrinter} from "..";
+import {AnyMatcher} from "./AnyMatcher";
 
-describe("makeMatcher():", () => {
+describe("matchMaker():", () => {
     const isEqualsMatcher = match.instanceOf(IsEqualsMatcher);
 
     it("undefined", () => {
@@ -41,7 +42,7 @@ describe("makeMatcher():", () => {
     });
 
     it("lambda", () => {
-        assertThat(matchMaker((a, b) => 3)).is(match.instanceOf(PredicateMatcher));
+        assertThat(matchMaker((a, b) => 3)).is(match.instanceOf((AnyMatcher)));
     });
 
     describe("object", () => {

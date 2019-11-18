@@ -8,14 +8,12 @@ describe("obj:", () => {
         describe('matches', () => {
             it('with explicit field matchers', () => {
                 const actual = {f: 2, g: 3};
-                let fieldMatcher1 = DiffFieldMatcher.make("f", 2);
-                let fieldMatcher2 = DiffFieldMatcher.make("g", 3);
-                assertThat(actual).is(match.obj.match({},[fieldMatcher1, fieldMatcher2]));
+                assertThat(actual).is(match.obj.match({f: 2, g: 3}));
             });
 
             it('explicit matcher object', () => {
                 const actual = {f: 2, g: 3};
-                assertThat(actual).is(match.obj.match({},{f: 2, g: 3}));
+                assertThat(actual).is(match.obj.match({f: 2, g: 3}));
             });
 
             it('literal object', () => {
@@ -31,7 +29,7 @@ describe("obj:", () => {
 
             it('with no explicit field matchers but same object', () => {
                 const actual = {f: 2, g: 3};
-                assertThat(actual).is(match.obj.match(actual,[]));
+                assertThat(actual).is(match.obj.match(actual));
             });
 
         });
@@ -120,7 +118,7 @@ describe("obj:", () => {
                 const actual = {f: 2, g: 3, h: 4};
                 let fieldMatcher1 = DiffFieldMatcher.make("f", 2);
                 let fieldMatcher2 = DiffFieldMatcher.make("g", 3);
-                assertThat(actual).is(match.obj.has([fieldMatcher1, fieldMatcher2]));
+                assertThat(actual).is(match.obj.has({f: 2, g: 3}));
             });
 
             it('literal object', () => {

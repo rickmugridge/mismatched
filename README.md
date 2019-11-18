@@ -142,8 +142,7 @@ This checks that a Promise result has been rejected. For example:
 
 ```
         it("assertThat().catches()", () => {
-            const fn = () => Promise.reject(4);
-            return assertThat(fn).catches(4);
+            return assertThat(Promise.reject(4)).catches(4);
         });
 ```
 

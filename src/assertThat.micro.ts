@@ -41,6 +41,7 @@ describe("assertThat():", () => {
     describe("isAnyOf():", () => {
         it("Matches", () => {
             assertThat(new Date()).isAnyOf([match.isEquals(3), match.instanceOf(Date)]);
+            assertThat(4).isAnyOf([match.isEquals(3), match.instanceOf(Date)]);
         });
 
         it("Mismatches", () => {
@@ -104,12 +105,11 @@ describe("assertThat():", () => {
 
     describe("catches():", () => {
         it("Matches", () => {
-            const fn = () => Promise.reject(4);
-            return assertThat(fn).catches(4);
+            return assertThat(Promise.reject(4)).catches(4);
         });
 
         it("Mismatches", () => {
-            return assertThat(() => Promise.resolve(4))
+            return assertThat(Promise.resolve(4))
                 .catches(4)
                 .catch(e => assertThat(e).is("Problem in catches()"));
         });
@@ -120,7 +120,7 @@ describe("assertThat():", () => {
         });
 
         it("Return from actual function is not a Promise", () => {
-            const assertionFn = () => assertThat(() => 4).catches("error");
+            const assertionFn = () => assertThat(4).catches("error");
             return assertThat(assertionFn).throws(match.instanceOf(Error));
         });
 
@@ -134,9 +134,9 @@ describe("assertThat():", () => {
     });
 
     it("catchesError()", () => {
-        assertThat(() => Promise.reject(new Error("error")))
+        assertThat(Promise.reject(new Error("error")))
             .catchesError("error");
-        assertThat(() => Promise.reject(new Error("error")))
+        assertThat(Promise.reject(new Error("error")))
             .catchesError(match.string.startsWith("err"));
     });
 });

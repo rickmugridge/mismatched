@@ -55,8 +55,8 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
         return concatObjects(this.expected.map(e => e.describe()));
     }
 
-    static make<T extends object>(obj: object, expected: Array<DiffMatcher<T>> | object): any {
-        return new ObjectMatcher<T>(obj, DiffFieldMatcher.makeAll<T>(expected));
+    static make<T extends object>(obj: object): any {
+         return new ObjectMatcher<T>(obj, DiffFieldMatcher.makeAll<T>(obj));
     }
 }
 
@@ -93,7 +93,7 @@ export class ObjectSomeMatcher<T> implements DiffMatcher<T> {
         return {"obj.some": concatObjects(this.expected.map(e => e.describe()))};
     }
 
-    static make<T extends object>(expected: Array<DiffMatcher<T>> | object): any {
+    static make<T extends object>(expected: object): any {
         return new ObjectSomeMatcher<T>(DiffFieldMatcher.makeAll<T>(expected));
     }
 }
@@ -122,12 +122,9 @@ export class DiffFieldMatcher<T> implements DiffMatcher<T> {
         return new DiffFieldMatcher<T>(fieldName, matchMaker(expected));
     }
 
-    static makeAll<T>(obj: DiffFieldMatcher<T> | object): Array<DiffFieldMatcher<T>> {
-        if (ofType.isArray(obj)) {
-            return obj as Array<DiffFieldMatcher<T>>;
-        }
-        return Object.keys(obj).map(key => DiffFieldMatcher.make(key, obj[key]))
-
+    static makeAll<T>(obj: object): Array<DiffFieldMatcher<T>> {
+         return Object.keys(obj)
+            .map(key => new DiffFieldMatcher(key, matchMaker(obj[key])));
     }
 }
 

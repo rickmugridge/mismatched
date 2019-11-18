@@ -8,48 +8,49 @@ import {OptionalMatcher} from "./matcher/OptionalMatcher";
 import {NotMatcher} from "./matcher/NotMatcher";
 import {AnyMatcher} from "./matcher/AnyMatcher";
 import {PredicateMatcher} from "./matcher/PredicateMatcher";
-import {stringMatcher} from "./matcher/StringMatcher";
+import {StringMatcher, stringMatcher} from "./matcher/StringMatcher";
 import {ofType} from "./ofType";
 import {numberMatcher} from "./matcher/NumberMatcher";
 import {instanceOfMatcher} from "./matcher/instanceOfMatcher";
 import {ItIsMatcher} from "./matcher/ItIsMatcher";
 import {MappedMatcher} from "./matcher/MappedMatcher";
+import {DiffMatcher} from "./matcher/DiffMatcher";
 
 export const match = {
-    isEquals: IsEqualsMatcher.make,
-    itIs: ItIsMatcher.make,
+    isEquals: (expected: any) => IsEqualsMatcher.make(expected),
+    itIs: (expected: any) => ItIsMatcher.make(expected),
     array: {
-        match: ArrayMatcher.make,
-        contains: ArrayContainsMatcher.make,
-        every: ArrayEveryMatcher.make,
-        length: ArrayLengthMatcher.make
+        match: (expected: Array<DiffMatcher<any> | any>) => ArrayMatcher.make(expected),
+        contains: (expected: DiffMatcher<any> | any) => ArrayContainsMatcher.make(expected),
+        every: (expected: DiffMatcher<any> | any) => ArrayEveryMatcher.make(expected),
+        length: (expected: number) => ArrayLengthMatcher.make(expected)
     },
     obj: {
-        match: ObjectMatcher.make,
-        has: ObjectSomeMatcher.make
+        match: (obj: object) => ObjectMatcher.make(obj),
+        has: (expected: Array<DiffMatcher<any>> | object) => ObjectSomeMatcher.make(expected),
     },
     string: {
-        match: stringMatcher.match,
-        startsWith: stringMatcher.startsWith,
-        endsWith: stringMatcher.endsWith,
-        includes: stringMatcher.includes
+        match: (expected: string) => StringMatcher.make(expected),
+        startsWith: (expected: string) => stringMatcher.startsWith(expected),
+        endsWith: (expected: string) => stringMatcher.endsWith(expected),
+        includes: (expected: string) => stringMatcher.includes(expected)
     },
     number: {
-        nan: numberMatcher.nan,
-        less: numberMatcher.less,
-        lessEqual: numberMatcher.lessEqual,
-        greater: numberMatcher.greater,
-        greaterEqual: numberMatcher.greaterEqual
+        nan: () => numberMatcher.nan(),
+        less: (expected: number) => numberMatcher.less(expected),
+        lessEqual: (expected: number) => numberMatcher.lessEqual(expected),
+        greater: (expected: number) => numberMatcher.greater(expected),
+        greaterEqual: (expected: number) => numberMatcher.greaterEqual(expected)
     },
     regEx: {
-        match: RegExpMatcher.make
+        match: (expected: RegExp) => RegExpMatcher.make(expected)
     },
-    any: AnyMatcher.make,
-    anyOf: AnyOfMatcher.make,
-    allOf: AllOfMatcher.make,
-    optional: OptionalMatcher.make,
-    not: NotMatcher.make,
-    instanceOf: instanceOfMatcher.instanceOf,
+    any: () => AnyMatcher.make(),
+    anyOf: (matchers: Array<DiffMatcher<any> | any>) => AnyOfMatcher.make(matchers),
+    allOf: (matchers: Array<DiffMatcher<any> | any>) => AllOfMatcher.make(matchers),
+    optional: (matcher: DiffMatcher<any> | any) => OptionalMatcher.make(matcher),
+    not: (matcher: DiffMatcher<any> | any) => NotMatcher.make(matcher),
+    instanceOf: (expected: Function) => instanceOfMatcher.instanceOf(expected),
     ofType: {
         array: () => PredicateMatcher.make(ofType.isArray, "ofType.array"),
         function: () => PredicateMatcher.make(ofType.isFunction, "ofType.function"),
@@ -59,6 +60,6 @@ export const match = {
         regExp: () => PredicateMatcher.make(ofType.isRegExp, "ofType.regExp"),
         symbol: () => PredicateMatcher.make(ofType.isSymbol, "ofType.symbol")
     },
-    predicate: PredicateMatcher.make,
-    mapped: MappedMatcher.make
+    predicate: (predicate: (v: any) => boolean) => PredicateMatcher.make(predicate),
+    mapped: (map: (t: any) => any, matcher: DiffMatcher<any> | any, description: any) => MappedMatcher.make(map, matcher, description)
 };
