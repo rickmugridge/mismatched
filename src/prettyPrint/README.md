@@ -24,5 +24,4 @@ It has two aims:
 
  - Should it handle BigInt and other standard library classes (eg, Map, Set, WeakMap, WeakSet, Promise)?
  - How about Iterators?
- - Document MappedMatcher
  - Document ErrorMatcher (and how weird Error is)

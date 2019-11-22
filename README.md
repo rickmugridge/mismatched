@@ -45,7 +45,8 @@ We can see above that:
    - Eg, because we don't care about some part of it (eg, a field which is randomly generated)
    - Eg, because we don't need to be too specific (some number, some array)
   
-when matching fails, and the changes are minor, it provides feedback as a "diff tree". Eg:
+when matching fails, and the changes are minor, it provides feedback as a "diff tree" 
+(looks to be related to a Haskell tree-diff). Eg:
 
 ![failed](MatchFail.png)
 
@@ -117,6 +118,11 @@ This checks that an exception with the right `message` has been thrown, based on
 ```
 
 The second assertion above shows the use of `mismatched` matching on some part of the message string.
+
+Unfortunately, we need this to do matching on the `Error() message`. 
+An `Error` is a strange object that doesn't follow the usual conventions. 
+So we can't pass values other than strings, such as matchers, to the `Error` constructor. 
+Such values are not then available.
 
 ### `assertThat().throws()`
 
@@ -220,10 +226,27 @@ Instead, it is displayed as plain JS, so that it's easy to copy parts of it if a
 The display aims to layout the JS object/value to make it convenient to read.
 It tries to strike a balance between all being on one line and being spread out over many lines.
 Either extreme can make it difficult to read.
+
 See [PrettyPrinter](./src/prettyPrint/README.md)
+
+Some objects, such as a Moment, have a large number of fields. 
+These clutter up the display, when all we need to know is the UTC date string.
+
+We can use customer renderers with PrettyPrinter to handle such cases.
+
+Custom renderers are registered as follows:
+
+  - Create a file `mismatchedCustomRenderers.ts` in the `src` level of your project
+  - Include code that immediately executes when it's loaded (if that file exists, it's loaded by PrettyPrinter).
+    - Eg of code:
+      - `PrettyPrinter.addCustomPrettyPrinter(match.instanceOf(MyClass), (myObject) => "MyObject()`)
+    - The first argument is a matcher. In the example, we match on the class. We can match on anything.
+    - The second argument is a function that takes the object to be rendered and returns a string.
 
 ## Things to do
 
   - wire in the string diffing
   - add array diffing
   - Allow for matching an expected object (in `is()`)) that includes self-references (ie, cycles).
+  - Document MappedMatcher
+  - Introduce a config file to specify other files to be loaded to register custom renderers?

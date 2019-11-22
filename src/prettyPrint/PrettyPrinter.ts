@@ -8,19 +8,20 @@ import {SimpleTile} from "./tile/SimpleTile";
 import {ArrayTile} from "./tile/ArrayTile";
 import {PseudoCallTile} from "./tile/PseudoCallTile";
 import {FieldTile, ObjectTile} from "./tile/ObjectTile";
+import {loadCustomRenderers} from "../loadCustomRenders";
+import {DiffMatcher} from "../matcher/DiffMatcher";
 
 export const defaultLineWidth = 80;
 export const defaultMaxComplexity = 30;
 
 export class PrettyPrinter {
     selfReference = new SelfReferenceChecker();
-
     static symbolForPseudoCall = Symbol("pseudoCall");
     static symbolForMockName: any | undefined;
-    private static customPrettyPrinters = new Map<string, (t: any) => string>();
+    private static customPrettyPrinters = new Map<DiffMatcher<any>, (t: any) => string>();
 
-    static addCustomPrettyPrinter(theClass: Function, toString: (t: any) => string) {
-        this.customPrettyPrinters.set(theClass.name, toString);
+    static addCustomPrettyPrinter(matcher: DiffMatcher<any>, toString: (t: any) => string) {
+        this.customPrettyPrinters.set(matcher, toString);
     }
 
     static make(lineWidth = defaultLineWidth,
@@ -104,9 +105,10 @@ export class PrettyPrinter {
                 // Error doesn't have a proper property 'message'
                 return this.tileObject(context, {errorMessage: value.message});
             }
-            const customToString = PrettyPrinter.customPrettyPrinters.get(value.constructor.name);
-            if (customToString) {
-                return new SimpleTile(customToString(value));
+            const matcher = Array.from(PrettyPrinter.customPrettyPrinters.keys())
+                .find(matcher => matcher.matches(value).passed());
+            if (matcher) {
+                return new SimpleTile(PrettyPrinter.customPrettyPrinters.get(matcher)!(value));
             }
             const fields = this.selfReference.recurse(context, value, () =>
                 Object.keys(value).map(key => {
@@ -148,3 +150,4 @@ function cleanString(value: string) {
     return '"' + value.replace(/"/, "\"") + '"';
 }
 
+loadCustomRenderers(); // This is a Promise, so it could be delayed past the use of PP. Seems to be OK in experiments.

@@ -5,7 +5,6 @@ import {ObjectMatcher} from "./ObjectMatchers";
 import {RegExpMatcher} from "./RegExpMatcher";
 import {matchMaker} from "./matchMaker";
 import {StringMatcher} from "./StringMatcher";
-import {PredicateMatcher} from "./PredicateMatcher";
 import {PrettyPrinter} from "..";
 import {AnyMatcher} from "./AnyMatcher";
 

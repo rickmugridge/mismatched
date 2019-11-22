@@ -1,6 +1,7 @@
 import {assertThat} from "../assertThat";
 import {PrettyPrinter} from "./PrettyPrinter";
 import {Colour} from "../Colour";
+import {match} from "../match";
 
 describe("PrettyPrinter():", () => {
     let prettyPrinter: PrettyPrinter;
@@ -280,7 +281,7 @@ describe("PrettyPrinter():", () => {
         it("arrow", () => {
             prettyPrinter = PrettyPrinter.make();
             assertThat(prettyPrinter.render((a, b) => a + b))
-                .is('{arrow: "(a, b) =>"}')
+                .is('{arrow: "(a, b)"}')
         });
         it("function", () => {
             function someFunction(a: number, b) {
@@ -299,7 +300,8 @@ describe("PrettyPrinter():", () => {
             }
         }
 
-        PrettyPrinter.addCustomPrettyPrinter(Hide, (hide: Hide) => 'Hide(' + hide.f + ')');
+        PrettyPrinter.addCustomPrettyPrinter(match.instanceOf(Hide),
+            (hide: Hide) => 'Hide(' + hide.f + ')');
         assertThat(prettyPrinter.render({d: new Hide(12, 1566509915958, 1566509915958), e: 3}))
             .is("{d: Hide(12), e: 3}");
     });

@@ -6,6 +6,7 @@ import {ErrorMatcher} from "./ErrorMatcher";
 describe("ErrorMatcher()", () => {
     it("matches", () => {
         assertThat(new Error("abc")).is(ErrorMatcher.make("abc"));
+        assertThat(new Error("abc")).is(new Error("abc"));
     });
 
     it("mismatches", () => {
