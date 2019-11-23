@@ -8,7 +8,6 @@ import {SimpleTile} from "./tile/SimpleTile";
 import {ArrayTile} from "./tile/ArrayTile";
 import {PseudoCallTile} from "./tile/PseudoCallTile";
 import {FieldTile, ObjectTile} from "./tile/ObjectTile";
-import {loadCustomRenderers} from "../loadCustomRenders";
 import {DiffMatcher} from "../matcher/DiffMatcher";
 
 export const defaultLineWidth = 80;
@@ -149,5 +148,3 @@ export class PrettyPrinter {
 function cleanString(value: string) {
     return '"' + value.replace(/"/, "\"") + '"';
 }
-
-loadCustomRenderers(); // This is a Promise, so it could be delayed past the use of PP. Seems to be OK in experiments.

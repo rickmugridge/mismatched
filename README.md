@@ -217,10 +217,10 @@ These counts are provided by all matchers. The `matchRate` will also be used whe
 
 ## Displaying the results of mismatches
 
-We aim to provide a useful output when a match fails. 
+We aim to provide useful output when a match fails. 
 The results are provided as a JS object, which shows what matched and what didn't in a diff tree.
 
-The results are displayed by a pretty printer, which does not display it in JSON format.
+The results are displayed by a pretty printer. It does not display it in JSON format.
 Instead, it is displayed as plain JS, so that it's easy to copy parts of it if a test is not right.
 
 The display aims to layout the JS object/value to make it convenient to read.
@@ -232,16 +232,25 @@ See [PrettyPrinter](./src/prettyPrint/README.md)
 Some objects, such as a Moment, have a large number of fields. 
 These clutter up the display, when all we need to know is the UTC date string.
 
-We can use customer renderers with PrettyPrinter to handle such cases.
+We can use customer renderers with `PrettyPrinter` to handle such cases. One or more can be registered.
 
-Custom renderers are registered as follows:
+A custom renderer is registered as follows, for example:
+   - `PrettyPrinter.addCustomPrettyPrinter(match.instanceOf(MyClass), (myObject) => "MyObject()`)
+   - The first argument is a matcher. In this example, we match on the class. We can use any matcher.
+   - The second argument is a function that takes the object to be rendered and returns a string.
+   
+Unfortunately, nodejs seems to provide no mechanism which allows such renderers to be registered implicitly.
+It's necessary to explicitly register them at the point of use. 
+Define a function that registers them, and call this where needed. Eg:
 
-  - Create a file `mismatchedCustomRenderers.ts` in the `src` level of your project
-  - Include code that immediately executes when it's loaded (if that file exists, it's loaded by PrettyPrinter).
-    - Eg of code:
-      - `PrettyPrinter.addCustomPrettyPrinter(match.instanceOf(MyClass), (myObject) => "MyObject()`)
-    - The first argument is a matcher. In the example, we match on the class. We can match on anything.
-    - The second argument is a function that takes the object to be rendered and returns a string.
+```
+export function registerPrettyPrinterCustomRenderers() {
+    PrettyPrinter.addCustomPrettyPrinter(match.instanceOf(DateTime),
+        (date: DateTime) => 'DateTime(' + date.toUtcString() + ')');
+    PrettyPrinter.addCustomPrettyPrinter(match.instanceOf(DateOnly),
+        (date: DateOnly) => 'DateOnly(' + date.toUtcString() + ')');
+}
+```
 
 ## Things to do
 
@@ -249,4 +258,3 @@ Custom renderers are registered as follows:
   - add array diffing
   - Allow for matching an expected object (in `is()`)) that includes self-references (ie, cycles).
   - Document MappedMatcher
-  - Introduce a config file to specify other files to be loaded to register custom renderers?
