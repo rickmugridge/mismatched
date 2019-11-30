@@ -15,7 +15,7 @@ export class MatchResult {
 
     bad(actual: any) {
         PrettyPrinter.make().logToConsole({actual, diff: this.diff});
-        throw new Error("Problem");
+        throw new Error("Mismatched");
     }
 
     static wasExpected(was: any, expected: any, compares, matches) {

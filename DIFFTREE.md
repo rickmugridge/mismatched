@@ -10,7 +10,7 @@ it shows them at the JS token level.
 For example, consider the following test with `mismatched`:
 
 ```
-        it("Nested with two differences", () => {
+        it("Nested with various differences", () => {
             assertThat({
                 supplier_id: 54,
                 match_id: 1,
@@ -36,12 +36,17 @@ For example, consider the following test with `mismatched`:
                     active_snp_count: match.number.lessEqual(100),
                     identifiers: [
                         "DNA-XAX-152", "DNA-XAX-154"
-                    ],
-                    sample_date: "2018-08-28T18:54:00Z"
+                    ]
                 }
             });
         });
 ```
+
+With a careful scan of the `actual` and `expected` values, we can see a few differences:
+
+  - `selection_state` differs
+  - `active_snp_count` is too big
+  - `sample_date` is not expected
 
 The`assertThat()` shows both the actual value and the tree-diff when there is a mismatch:
 
@@ -50,10 +55,8 @@ The`assertThat()` shows both the actual value and the tree-diff when there is a 
 Notice that:
 
  - Each difference is shown as an object with a `was` and `expected` field, where those fields are coloured to draw the eye.
- - Matchers provide sufficient detail clarify what they expected
+ - Matchers provide sufficient detail about what they expected
+ - When there is a field in the `actual` that is not `expected`, this is shown as `unexpected` (eg, `sample_date`)
 
-There are two differences shown in the `diff`:
-
- - the `selection_state` was not "closed", as expected.
- - the `active_snp_count` was 103, which is not the number expected ( <= 100).
+The three differences are shown clearly in the `diff`.
 
