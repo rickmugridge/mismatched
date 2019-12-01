@@ -2,6 +2,8 @@ import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
 import {ErrorMatcher} from "./ErrorMatcher";
+import {Mismatch} from "./Mismatch";
+import {DiffMatcher} from "./DiffMatcher";
 
 describe("ErrorMatcher()", () => {
     it("matches", () => {
@@ -19,5 +21,14 @@ describe("ErrorMatcher()", () => {
 
          assertThat(33).failsWith(ErrorMatcher.make("abc"),
             {[MatchResult.was]: 33, [MatchResult.expected]: {instanceOf: "Error"}});
+    });
+
+    it("mismatches: errors", () => {
+        const mismatched: Array<Mismatch> = [];
+        const matcher = ErrorMatcher.make("abc");
+        (matcher as DiffMatcher<any>).mismatches("actual", mismatched, new Error("A"));
+        assertThat(mismatched).is([
+            {actual: "A", expected: "abc"}
+        ]);
     });
 });

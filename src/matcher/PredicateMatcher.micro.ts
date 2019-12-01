@@ -1,6 +1,8 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
+import {Mismatch} from "./Mismatch";
+import {DiffMatcher} from "./DiffMatcher";
 
 describe("PredicateMatcher:", () => {
     it("Matches", () => {
@@ -15,6 +17,15 @@ describe("PredicateMatcher:", () => {
         assertThat("ab")
             .failsWith(match.predicate(v => v > 0),
                 {[MatchResult.was]: "ab", [MatchResult.expected]: {arrow: "v => v > 0"}});
+    });
+
+    it("Mismatches: errors", () => {
+        const mismatched: Array<Mismatch> = [];
+        const matcher = match.predicate(pred);
+        (matcher as DiffMatcher<any>).mismatches("actual", mismatched, "ab");
+        assertThat(mismatched).is([
+            {actual: "ab", expected: {"function": "pred()"}}
+        ]);
     });
 });
 

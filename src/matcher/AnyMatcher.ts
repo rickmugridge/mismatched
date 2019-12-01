@@ -1,14 +1,14 @@
 import {DiffMatcher} from "./DiffMatcher";
-import {matchMaker} from "./matchMaker";
 import {MatchResult} from "../MatchResult";
+import {Mismatch} from "./Mismatch";
 
 export class AnyMatcher<T> extends DiffMatcher<T> {
-    matches(actual: T): MatchResult {
+    mismatches(context: string, mismatched: Array<Mismatch>, actual: T): MatchResult {
         return MatchResult.wasExpected(actual, this.describe(), 1, 1);
     }
 
     describe(): any {
-        return {any: ""}
+        return "any";
     }
 
     static make<T>(): any {

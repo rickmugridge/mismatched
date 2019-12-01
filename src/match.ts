@@ -1,6 +1,6 @@
 import {IsEqualsMatcher} from "./matcher/IsEqualsMatcher";
-import {ArrayContainsMatcher, ArrayEveryMatcher, ArrayLengthMatcher, ArrayMatcher} from "./matcher/ArrayMatchers";
-import {ObjectMatcher, ObjectSomeMatcher} from "./matcher/ObjectMatchers";
+import {ArrayMatcher} from "./matcher/ArrayMatcher";
+import {ObjectMatcher} from "./matcher/ObjectMatcher";
 import {RegExpMatcher} from "./matcher/RegExpMatcher";
 import {AnyOfMatcher} from "./matcher/AnyOfMatcher";
 import {AllOfMatcher} from "./matcher/AllOfMatcher";
@@ -15,6 +15,10 @@ import {instanceOfMatcher} from "./matcher/instanceOfMatcher";
 import {ItIsMatcher} from "./matcher/ItIsMatcher";
 import {MappedMatcher} from "./matcher/MappedMatcher";
 import {DiffMatcher} from "./matcher/DiffMatcher";
+import {ObjectSomeMatcher} from "./matcher/ObjectSomeMatcher";
+import {ArrayContainsMatcher} from "./matcher/ArrayContainsMatcher";
+import {ArrayEveryMatcher} from "./matcher/ArrayEveryMatcher";
+import {ArrayLengthMatcher} from "./matcher/ArrayLengthMatcher";
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),

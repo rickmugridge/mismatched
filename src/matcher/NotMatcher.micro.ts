@@ -1,6 +1,8 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
+import {Mismatch} from "./Mismatch";
+import {DiffMatcher} from "./DiffMatcher";
 
 describe("NotMatcher()", () => {
     it("matches", () => {
@@ -15,5 +17,14 @@ describe("NotMatcher()", () => {
             {[MatchResult.was]: 2, [MatchResult.expected]: {not: 2}});
         assertThat({f: 2}).failsWith(match.not({f: 2}),
             {[MatchResult.was]: {f: 2}, [MatchResult.expected]: {not: {f: 2}}});
+    });
+
+    it("mismatches: errors", () => {
+        const mismatched: Array<Mismatch> = [];
+        const matcher = match.not(2);
+        (matcher as DiffMatcher<any>).mismatches("actual", mismatched, 2);
+        assertThat(mismatched).is([
+            {actual: 2, expected: {not: 2}}
+        ]);
     });
 });

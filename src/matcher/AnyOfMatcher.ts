@@ -1,18 +1,19 @@
 import {DiffMatcher} from "./DiffMatcher";
 import {matchMaker} from "./matchMaker";
 import {MatchResult} from "../MatchResult";
+import {Mismatch} from "./Mismatch";
 
 export class AnyOfMatcher<T> extends DiffMatcher<T> {
-    constructor(private matchers: Array<DiffMatcher<T>>) {
+    private constructor(private matchers: Array<DiffMatcher<T>>) {
         super();
     }
 
-    matches(actual: T): MatchResult {
+    mismatches(context: string, mismatched: Array<Mismatch>, actual: T): MatchResult {
         let compares = 0;
         let matches = 0;
         let bestMatchRate = 0.0;
         for (let m of this.matchers) {
-            let matchResult = m.matches(actual);
+            let matchResult = m.matches(actual); // Don't register any mismatches
             if (matchResult.passed()) {
                 return MatchResult.good(matchResult.compares);
             }
@@ -22,6 +23,7 @@ export class AnyOfMatcher<T> extends DiffMatcher<T> {
                 matches = matchResult.matches;
             }
         }
+        mismatched.push(Mismatch.make(context, actual, this.describe()));
         return MatchResult.wasExpected(actual, this.describe(), compares, matches);
     }
 

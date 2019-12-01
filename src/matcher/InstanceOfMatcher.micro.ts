@@ -1,6 +1,8 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
+import {Mismatch} from "./Mismatch";
+import {DiffMatcher} from "./DiffMatcher";
 
 describe("InstanceOfMatcher:", () => {
     it("Matches", () => {
@@ -18,5 +20,14 @@ describe("InstanceOfMatcher:", () => {
         assertThat(undefined)
             .failsWith(match.instanceOf(Date),
                 {[MatchResult.expected]: {instanceOf: "Date"}});
+    });
+
+    it("Mismatches:errors", () => {
+        const mismatched: Array<Mismatch> = [];
+        const matcher = match.instanceOf(Date);
+        (matcher as DiffMatcher<any>).mismatches("actual", mismatched, "ab");
+        assertThat(mismatched).is([
+            {actual: "ab", expected: {instanceOf: "Date"}}
+        ]);
     });
 });

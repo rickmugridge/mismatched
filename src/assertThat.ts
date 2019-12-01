@@ -38,7 +38,7 @@ class Assertion<T> {
 
     isAnyOf(expected: Array<DiffMatcher<T> | any>) {
         this.checkForFunction();
-        const result = new AnyOfMatcher(expected.map(e => matchMaker(e))).matches(this.actual);
+        const result = AnyOfMatcher.make(expected).matches(this.actual);
         if (!result.passed()) {
             result.bad(this.actual);
         }
@@ -46,7 +46,7 @@ class Assertion<T> {
 
     isAllOf(expected: Array<DiffMatcher<T> | any>) {
         this.checkForFunction();
-        const result = new AllOfMatcher(expected.map(e => matchMaker(e))).matches(this.actual);
+        const result = AllOfMatcher.make(expected).matches(this.actual);
         if (!result.passed()) {
             result.bad(this.actual);
         }

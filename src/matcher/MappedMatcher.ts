@@ -1,16 +1,17 @@
 import {DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "./matchMaker";
+import {Mismatch} from "./Mismatch";
 
 export class MappedMatcher<T> extends DiffMatcher<T> {
-    constructor(private map: (t: any) => T,
+    private constructor(private map: (t: any) => T,
                 private matcher: DiffMatcher<T> | any,
                 private description: any) {
         super();
     }
 
-    matches(actual: T): MatchResult {
-        const matchResult = this.matcher.matches(this.map(actual));
+    mismatches(context: string, mismatched: Array<Mismatch>, actual: T): MatchResult {
+        const matchResult = this.matcher.mismatches(context, mismatched, this.map(actual));
         if (matchResult.passed()) {
             return MatchResult.good(1);
         }

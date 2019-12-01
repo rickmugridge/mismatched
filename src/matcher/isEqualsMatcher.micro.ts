@@ -1,6 +1,8 @@
 import {match} from "../match";
 import {assertThat} from "../assertThat";
 import {MatchResult} from "../MatchResult";
+import {Mismatch} from "./Mismatch";
+import {DiffMatcher} from "./DiffMatcher";
 
 describe("IsEqualsMatcher:", () => {
     describe("is:", () => {
@@ -63,6 +65,15 @@ describe("IsEqualsMatcher:", () => {
                 assertThat(null).failsWith(3,
                     {[MatchResult.was]: null, [MatchResult.expected]: 3});
             });
+
+           it('number: errors', () => {
+               const mismatched: Array<Mismatch> = [];
+               const matcher = match.isEquals(3.5);
+               (matcher as DiffMatcher<any>).mismatches("actual", mismatched, 3.4);
+               assertThat(mismatched).is([
+                   {actual: 3.4, expected: 3.5}
+               ]);
+           });
 
             it('boolean', () => {
                 assertThat(true).failsWith(false,

@@ -2,18 +2,19 @@ import {DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "./matchMaker";
 import {instanceOfMatcher} from "./instanceOfMatcher";
+import {Mismatch} from "./Mismatch";
 
 export class ErrorMatcher<T> extends DiffMatcher<T> {
-    constructor(private matcher: DiffMatcher<string> | any) {
+    private constructor(private matcher: DiffMatcher<string> | any) {
         super();
     }
 
-    matches(actual: T): MatchResult {
-        const typeMatchResult = instanceOfMatcher.instanceOf(Error).matches(actual);
+    mismatches(context: string, mismatched: Array<Mismatch>, actual: T): MatchResult {
+        const typeMatchResult = instanceOfMatcher.instanceOf(Error).mismatches(context, mismatched, actual);
         if (!typeMatchResult.passed()) {
             return typeMatchResult;
         }
-        const matchResult = this.matcher.matches((actual as any).message);
+        const matchResult = this.matcher.mismatches(context, mismatched, (actual as any).message);
         if (matchResult.passed()) {
             return MatchResult.good(1);
         }
