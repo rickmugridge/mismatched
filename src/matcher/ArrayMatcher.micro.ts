@@ -18,7 +18,7 @@ describe("array.match:", () => {
     it('does not match: length difference', () => {
         const actual = ["a", "b"];
         assertThat(actual).failsWith(match.array.match([2, 2, 2]),
-            {[MatchResult.was]: ["a", "b"], [MatchResult.expected]: [2, 2, 2]});
+            {[MatchResult.was]: ["a", "b"], [MatchResult.expected]: {lengthExpected: 3}});
     });
 
     it('does not match: length difference: errors', () => {
@@ -54,7 +54,7 @@ describe("array.match:", () => {
         const actual = [1, 2, [3, [5]]];
         assertThat(actual).failsWith([2, 2, [3, [4, 6]]],
             [{[MatchResult.was]: 1, [MatchResult.expected]: 2}, 2,
-                [3, {[MatchResult.was]: [5], [MatchResult.expected]: [4, 6]}]]);
+                [3, {[MatchResult.was]: [5], [MatchResult.expected]: {lengthExpected: 2}}]]);
         assertThat(actual).failsWith([1, 2, [3, [6]]],
             [1, 2, [3, [{[MatchResult.was]: 5, [MatchResult.expected]: 6}]]]);
     });
@@ -75,6 +75,6 @@ describe("array.match:", () => {
         assertThat(actual).failsWith(expected,
             [1, 2, [3, {[MatchResult.was]: [5], [MatchResult.expected]: "a"}]]);
         assertThat(expected).failsWith(actual,
-            [1, 2, [3, {[MatchResult.was]: "a", [MatchResult.expected]: [5]}]]);
+            [1, 2, [3, {[MatchResult.was]: "a", [MatchResult.expected]: "array expected"}]]);
     });
 });

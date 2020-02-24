@@ -11,11 +11,13 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
     }
 
     mismatches(context: string, mismatched: Array<Mismatch>, actual: Array<T>): MatchResult {
-        if (!isArray(actual) || actual.length !== this.expected.length) {
-            mismatched.push(Mismatch.make(context, actual, isArray(actual) ?
-                {length: this.expected.length}
-                : "array expected"));
-            return MatchResult.wasExpected(actual, this.describe(), 1, 0);
+        if (!isArray(actual)) {
+            mismatched.push(Mismatch.make(context, actual, "array expected"));
+            return MatchResult.wasExpected(actual, "array expected", 1, 0);
+        }
+        if (actual.length !== this.expected.length) {
+            mismatched.push(Mismatch.make(context, actual, {length: this.expected.length}));
+            return MatchResult.wasExpected(actual, {lengthExpected:this.expected.length}, 1, 0);
         }
         const results: Array<any> = [];
         let errors = 0;

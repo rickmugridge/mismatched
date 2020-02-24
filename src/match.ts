@@ -56,6 +56,7 @@ export const match = {
     not: (matcher: DiffMatcher<any> | any) => NotMatcher.make(matcher),
     instanceOf: (expected: Function) => instanceOfMatcher.instanceOf(expected),
     ofType: {
+        object: () => PredicateMatcher.make(ofType.isObject, "ofType.object"),
         array: () => PredicateMatcher.make(ofType.isArray, "ofType.array"),
         function: () => PredicateMatcher.make(ofType.isFunction, "ofType.function"),
         string: () => PredicateMatcher.make(ofType.isString, "ofType.string"),
