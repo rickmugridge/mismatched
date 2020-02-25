@@ -54,7 +54,11 @@ export const match = {
         regExp: () => PredicateMatcher.make(ofType.isRegExp, "ofType.regExp"),
         symbol: () => PredicateMatcher.make(ofType.isSymbol, "ofType.symbol")
     },
-    predicate: PredicateMatcher.make
+    predicate: (predicate: (v: any) => boolean,
+                description: any = {predicateFailed:PrettyPrinter.functionDetails(predicate)}) =>
+        PredicateMatcher.make(predicate, description),
+    mapped: (map: (t: any) => any, matcher: DiffMatcher<any> | any, description: any) =>
+        MappedMatcher.make(map, matcher, description)
 };
 ```
 

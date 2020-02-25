@@ -13,10 +13,21 @@ describe("PredicateMatcher:", () => {
     it("Mismatches", () => {
         assertThat("ab")
             .failsWith(match.predicate(pred),
-                {[MatchResult.was]: "ab", [MatchResult.expected]: {function: "pred()"}});
+                {
+                    [MatchResult.was]: "ab",
+                    [MatchResult.expected]: {predicateFailed: {"function": "pred()"}}});
         assertThat("ab")
             .failsWith(match.predicate(v => v > 0),
-                {[MatchResult.was]: "ab", [MatchResult.expected]: {arrow: "v => v > 0"}});
+                {
+                    [MatchResult.was]: "ab",
+                    [MatchResult.expected]: {predicateFailed: {arrow: "v => v > 0"}}
+                });
+        assertThat("ab")
+            .failsWith(match.predicate(v => v > 0, "greater then zero"),
+                {
+                    [MatchResult.was]: "ab",
+                    [MatchResult.expected]: "greater then zero"}
+                    );
     });
 
     it("Mismatches: errors", () => {
@@ -24,7 +35,7 @@ describe("PredicateMatcher:", () => {
         const matcher = match.predicate(pred);
         (matcher as DiffMatcher<any>).mismatches("actual", mismatched, "ab");
         assertThat(mismatched).is([
-            {actual: "ab", expected: {"function": "pred()"}}
+            {actual: "ab", expected: {predicateFailed: {"function": "pred()"}}}
         ]);
     });
 });

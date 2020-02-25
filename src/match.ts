@@ -19,6 +19,7 @@ import {ObjectSomeMatcher} from "./matcher/ObjectSomeMatcher";
 import {ArrayContainsMatcher} from "./matcher/ArrayContainsMatcher";
 import {ArrayEveryMatcher} from "./matcher/ArrayEveryMatcher";
 import {ArrayLengthMatcher} from "./matcher/ArrayLengthMatcher";
+import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -65,6 +66,9 @@ export const match = {
         regExp: () => PredicateMatcher.make(ofType.isRegExp, "ofType.regExp"),
         symbol: () => PredicateMatcher.make(ofType.isSymbol, "ofType.symbol")
     },
-    predicate: (predicate: (v: any) => boolean) => PredicateMatcher.make(predicate),
-    mapped: (map: (t: any) => any, matcher: DiffMatcher<any> | any, description: any) => MappedMatcher.make(map, matcher, description)
+    predicate: (predicate: (v: any) => boolean,
+                description: any = {predicateFailed:PrettyPrinter.functionDetails(predicate)}) =>
+        PredicateMatcher.make(predicate, description),
+    mapped: (map: (t: any) => any, matcher: DiffMatcher<any> | any, description: any) =>
+        MappedMatcher.make(map, matcher, description)
 };
