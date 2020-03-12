@@ -23,31 +23,31 @@ function isString(v: any): boolean {
     return typeof v === 'string' || v instanceof String;
 }
 
-function isNumber(value): boolean {
-    return typeof value === 'number'; // && isFinite(value);
+function isNumber(v: any): boolean {
+    return typeof v === 'number'; // && isFinite(value);
 }
 
-function isNaN(value): boolean {
-    return value != value; // Avoid weird JS coercing that make isNaN() and Number.isNaN() unreliable
+function isNaN(v: any): boolean {
+    return v != v; // Avoid weird JS coercing that make isNaN() and Number.isNaN() unreliable
 }
 
-function isBoolean(v): boolean {
+function isBoolean(v: any): boolean {
     return typeof v === 'boolean';
 }
 
-function isRegExp(v): boolean {
+function isRegExp(v: any): boolean {
     return v instanceof RegExp;
 }
 
-function isSymbol(value): boolean {
-    return typeof value === 'symbol';
+function isSymbol(v: any): boolean {
+    return typeof v === 'symbol';
 }
 
 function isMatcher(v: any): boolean {
     return isObject(v) && !isUndefined(v.matches) && isFunction(v.matches);
 }
 
-function isError(v): boolean {
+function isError(v: any): boolean {
     return v instanceof Error;
 }
 
