@@ -42,8 +42,8 @@ export class PrettyPrinter {
         return PrettyPrinter.make().logToConsole(value);
     }
 
-    private constructor(private lineWidth,
-                        private maxComplexity) {
+    private constructor(private lineWidth: number,
+                        private maxComplexity: number) {
     }
 
     render(value: any): string {
@@ -88,13 +88,13 @@ export class PrettyPrinter {
         return new SimpleTile(value);
     }
 
-    private tileObject(context: string, value: object) {
+    private tileObject(context: string, value: object): Tile {
         try {
-            const callName = value[PrettyPrinter.symbolForPseudoCall];
+            const callName = (value as any)[PrettyPrinter.symbolForPseudoCall];
             let valueArgs = (value as any).args;
             if (callName && (ofType.isArray(valueArgs) || ofType.isUndefined(valueArgs))) {
                 const args = valueArgs ? valueArgs.map(
-                    (v, i) => this.tile(context + "[" + i + "]", v)) : undefined;
+                    (v: any, i: number) => this.tile(context + "[" + i + "]", v)) : undefined;
                 return new PseudoCallTile(callName, args);
             }
             if (value instanceof Date) {
@@ -112,7 +112,7 @@ export class PrettyPrinter {
             const fields = this.selfReference.recurse(context, value, () =>
                 Object.keys(value).map(key => {
                     const renderedKey = PropertyName.render(key);
-                    return new FieldTile(renderedKey, this.tile(context + renderedKey, value[key]))
+                    return new FieldTile(renderedKey, this.tile(context + renderedKey, (value as any)[key]))
                 }));
             return new ObjectTile(fields);
         } catch (e) {

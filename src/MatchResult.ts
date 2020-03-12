@@ -13,12 +13,12 @@ export class MatchResult {
         return this.matchRate >= 1.0;
     }
 
-    bad(actual: any) {
+    bad(actual: any, message = "Mismatched") {
         PrettyPrinter.make().logToConsole({actual, diff: this.diff});
-        throw new Error("Mismatched");
+        throw new Error(message);
     }
 
-    static wasExpected(was: any, expected: any, compares, matches) {
+    static wasExpected(was: any, expected: any, compares: any, matches: any) {
         return new MatchResult({
                 [MatchResult.was]: handleSymbol(was),
                 [MatchResult.expected]: handleSymbol(expected)

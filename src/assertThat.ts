@@ -15,14 +15,14 @@ export function assertThat<T>(actual: any) {
 const printer = PrettyPrinter.make();
 
 class Assertion<T> {
-    constructor(private actual: any) {
+    constructor(private actual: any, private message = "Mismatched") {
     }
 
     is(expected: DiffMatcher<T> | any) {
         this.checkForFunction();
         const result = this.match(expected);
         if (!result.passed()) {
-            result.bad(this.actual);
+            result.bad(this.actual, this.message);
         }
     }
 
@@ -40,7 +40,7 @@ class Assertion<T> {
         this.checkForFunction();
         const result = AnyOfMatcher.make(expected).matches(this.actual);
         if (!result.passed()) {
-            result.bad(this.actual);
+            result.bad(this.actual, this.message);
         }
     }
 
@@ -48,7 +48,7 @@ class Assertion<T> {
         this.checkForFunction();
         const result = AllOfMatcher.make(expected).matches(this.actual);
         if (!result.passed()) {
-            result.bad(this.actual);
+            result.bad(this.actual, this.message);
         }
     }
 

@@ -4,5 +4,5 @@ export interface Tile {
     stringLength: number;
     complexity: number;
 
-    render(appender: Appender);
+    render(appender: Appender): void;
 }
