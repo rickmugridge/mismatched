@@ -1,15 +1,15 @@
 import {DiffMatcher} from "./DiffMatcher";
-import {Mismatch} from "./Mismatch";
+import {Mismatched} from "./Mismatched";
 import {MatchResult} from "../MatchResult";
 import {isArray} from "util";
-import {matchMaker} from "./matchMaker";
+import {matchMaker} from "../matchMaker/matchMaker";
 
 export class ArrayContainsMatcher<T> extends DiffMatcher<Array<T>> {
     private constructor(private expected: DiffMatcher<T>) {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatch>, actual: Array<T>): MatchResult {
+    mismatches(context: string, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
         if (isArray(actual)) {
             let compares = 0;
             let matches = 0;
@@ -23,10 +23,10 @@ export class ArrayContainsMatcher<T> extends DiffMatcher<Array<T>> {
                 matches += result.matches;
                 i += 1;
             }
-            mismatched.push(Mismatch.make(context, actual, this.describe()));
+            mismatched.push(Mismatched.make(context, actual, this.describe()));
             return MatchResult.wasExpected(actual, this.describe(), compares, matches);
         }
-        mismatched.push(Mismatch.make(context, actual, "array expected"));
+        mismatched.push(Mismatched.make(context, actual, "array expected"));
         return MatchResult.wasExpected(actual, this.describe(), 1, 0);
     }
 

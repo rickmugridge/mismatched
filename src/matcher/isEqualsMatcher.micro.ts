@@ -1,11 +1,12 @@
 import {match} from "../match";
 import {assertThat} from "../assertThat";
 import {MatchResult} from "../MatchResult";
-import {Mismatch} from "./Mismatch";
+import {Mismatched} from "./Mismatched";
 import {DiffMatcher} from "./DiffMatcher";
+import {validateThat} from "../validateThat";
 
 describe("IsEqualsMatcher:", () => {
-    describe("is:", () => {
+    describe("assertThat():", () => {
         describe('matches exact same value:', () => {
             it('number', () => {
                 const actual = 3.4;
@@ -66,14 +67,14 @@ describe("IsEqualsMatcher:", () => {
                     {[MatchResult.was]: null, [MatchResult.expected]: 3});
             });
 
-           it('number: errors', () => {
-               const mismatched: Array<Mismatch> = [];
-               const matcher = match.isEquals(3.5);
-               (matcher as DiffMatcher<any>).mismatches("actual", mismatched, 3.4);
-               assertThat(mismatched).is([
-                   {actual: 3.4, expected: 3.5}
-               ]);
-           });
+            it('number: errors', () => {
+                const mismatched: Array<Mismatched> = [];
+                const matcher = match.isEquals(3.5);
+                (matcher as DiffMatcher<any>).mismatches("actual", mismatched, 3.4);
+                assertThat(mismatched).is([
+                    {actual: 3.4, expected: 3.5}
+                ]);
+            });
 
             it('boolean', () => {
                 assertThat(true).failsWith(false,
@@ -103,6 +104,23 @@ describe("IsEqualsMatcher:", () => {
         });
     });
 
+    describe("validateThat():", () => {
+        const expectedValue = {a: 3};
+        const expected = match.isEquals(expectedValue);
+
+        it("succeeds", () => {
+            const validation = validateThat(expectedValue).satisfies(expected);
+            assertThat(validation.passed()).is(true);
+        });
+
+        it("fails", () => {
+            const validation = validateThat(false).satisfies(expected);
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.mismatched).is([
+                {actual: false, expected: {a: 3}}
+            ]);
+        });
+    });
 });
 
 

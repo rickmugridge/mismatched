@@ -1,15 +1,15 @@
 import {DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
-import {matchMaker} from "./matchMaker";
+import {matchMaker} from "../matchMaker/matchMaker";
 import {instanceOfMatcher} from "./instanceOfMatcher";
-import {Mismatch} from "./Mismatch";
+import {Mismatched} from "./Mismatched";
 
 export class ErrorMatcher<T> extends DiffMatcher<T> {
     private constructor(private matcher: DiffMatcher<string> | any) {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatch>, actual: T): MatchResult {
+    mismatches(context: string, mismatched: Array<Mismatched>, actual: T): MatchResult {
         const typeMatchResult = instanceOfMatcher.instanceOf(Error).mismatches(context, mismatched, actual);
         if (!typeMatchResult.passed()) {
             return typeMatchResult;

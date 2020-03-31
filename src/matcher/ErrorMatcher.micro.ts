@@ -2,7 +2,7 @@ import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
 import {ErrorMatcher} from "./ErrorMatcher";
-import {Mismatch} from "./Mismatch";
+import {Mismatched} from "./Mismatched";
 import {DiffMatcher} from "./DiffMatcher";
 
 describe("ErrorMatcher()", () => {
@@ -24,7 +24,7 @@ describe("ErrorMatcher()", () => {
     });
 
     it("mismatches: errors", () => {
-        const mismatched: Array<Mismatch> = [];
+        const mismatched: Array<Mismatched> = [];
         const matcher = ErrorMatcher.make("abc");
         (matcher as DiffMatcher<any>).mismatches("actual", mismatched, new Error("A"));
         assertThat(mismatched).is([

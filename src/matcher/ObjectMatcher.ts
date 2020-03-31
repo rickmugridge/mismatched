@@ -2,7 +2,7 @@ import {DiffMatcher} from "./DiffMatcher";
 import {ofType} from "../ofType";
 import {isUndefined} from "util";
 import {MatchResult} from "../MatchResult";
-import {Mismatch} from "./Mismatch";
+import {Mismatched} from "./Mismatched";
 import {DiffFieldMatcher} from "./DiffFieldMatcher";
 
 export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
@@ -10,9 +10,9 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatch>, actual: T): MatchResult {
+    mismatches(context: string, mismatched: Array<Mismatched>, actual: T): MatchResult {
         if (!ofType.isObject(actual)) {
-            mismatched.push(Mismatch.make(context, actual, "object expected"));
+            mismatched.push(Mismatched.make(context, actual, "object expected"));
             return MatchResult.wasExpected(actual, this.describe(), 1, 0);
         }
         if (this.expectedObject === actual) {
@@ -45,7 +45,7 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
             }
         });
         if (wasUnexpected) {
-            mismatched.push(Mismatch.make(context, actual, "unexpected", unexpected));
+            mismatched.push(Mismatched.make(context, actual, "unexpected", unexpected));
             results[MatchResult.unexpected] = unexpected;
         }
         if (errors === 0) {

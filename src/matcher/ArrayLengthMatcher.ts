@@ -1,5 +1,5 @@
 import {DiffMatcher} from "./DiffMatcher";
-import {Mismatch} from "./Mismatch";
+import {Mismatched} from "./Mismatched";
 import {MatchResult} from "../MatchResult";
 
 export class ArrayLengthMatcher<T> extends DiffMatcher<Array<T>> {
@@ -7,11 +7,11 @@ export class ArrayLengthMatcher<T> extends DiffMatcher<Array<T>> {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatch>, actual: Array<T>): MatchResult {
+    mismatches(context: string, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
         if (actual.length === this.expected) {
             return MatchResult.good(1);
         }
-        mismatched.push(Mismatch.make(context, actual, this.describe()));
+        mismatched.push(Mismatched.make(context, actual, this.describe()));
         return MatchResult.wasExpected(actual.length, this.describe(), 1, 0);
     }
 

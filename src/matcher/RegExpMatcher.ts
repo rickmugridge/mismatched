@@ -1,21 +1,21 @@
 import {DiffMatcher} from "./DiffMatcher";
 import {ofType} from "../ofType";
 import {MatchResult} from "../MatchResult";
-import {Mismatch} from "./Mismatch";
+import {Mismatched} from "./Mismatched";
 
 export class RegExpMatcher extends DiffMatcher<any> {
     private constructor(private expected: RegExp) {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatch>, actual: any): MatchResult {
+    mismatches(context: string, mismatched: Array<Mismatched>, actual: any): MatchResult {
         if (ofType.isRegExp(actual) && actual.toString() === this.expected.toString()) {
             return MatchResult.good(1);
         }
         if (ofType.isString(actual) && actual.match(this.expected)) {
             return MatchResult.good(1);
         }
-        mismatched.push(Mismatch.make(context, actual, this.describe()));
+        mismatched.push(Mismatched.make(context, actual, this.describe()));
         return MatchResult.wasExpected(actual, this.describe(), 1, 0);
     }
 

@@ -1,7 +1,7 @@
 import {DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
-import {matchMaker} from "./matchMaker";
-import {Mismatch} from "./Mismatch";
+import {matchMaker} from "../matchMaker/matchMaker";
+import {Mismatched} from "./Mismatched";
 
 export class MappedMatcher<T> extends DiffMatcher<T> {
     private constructor(private map: (t: any) => T,
@@ -10,7 +10,7 @@ export class MappedMatcher<T> extends DiffMatcher<T> {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatch>, actual: T): MatchResult {
+    mismatches(context: string, mismatched: Array<Mismatched>, actual: T): MatchResult {
         const matchResult = this.matcher.mismatches(context, mismatched, this.map(actual));
         if (matchResult.passed()) {
             return MatchResult.good(1);

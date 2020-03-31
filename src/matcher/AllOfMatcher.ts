@@ -1,14 +1,14 @@
 import {DiffMatcher} from "./DiffMatcher";
-import {matchMaker} from "./matchMaker";
+import {matchMaker} from "../matchMaker/matchMaker";
 import {MatchResult} from "../MatchResult";
-import {Mismatch} from "./Mismatch";
+import {Mismatched} from "./Mismatched";
 
 export class AllOfMatcher<T> extends DiffMatcher<T> {
     private constructor(private matchers: Array<DiffMatcher<T>>) {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatch>, actual: T): MatchResult {
+    mismatches(context: string, mismatched: Array<Mismatched>, actual: T): MatchResult {
         let corrects = 0;
         let compares = 0;
         let matches = 0;

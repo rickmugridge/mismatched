@@ -2,21 +2,21 @@ import {DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 import {ofType} from "../ofType";
 import {PredicateMatcher} from "./PredicateMatcher";
-import {Mismatch} from "./Mismatch";
+import {Mismatched} from "./Mismatched";
 
 export class StringMatcher extends DiffMatcher<string> {
     private constructor(private expected: string) {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatch>, actual: any): MatchResult {
+    mismatches(context: string, mismatched: Array<Mismatched>, actual: any): MatchResult {
         if (ofType.isString(actual)) {
             if (actual == this.expected) {
                 return MatchResult.good(1);
             }
             // todo a diff using StringDiff
         }
-        mismatched.push(Mismatch.make(context, actual, this.describe()));
+        mismatched.push(Mismatched.make(context, actual, this.describe()));
         return MatchResult.wasExpected(actual, this.describe(), 1, 0);
     }
 

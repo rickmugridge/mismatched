@@ -1,33 +1,53 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
-import {Mismatch} from "./Mismatch";
+import {Mismatched} from "./Mismatched";
 import {DiffMatcher} from "./DiffMatcher";
+import {validateThat} from "../validateThat";
 
 describe("InstanceOfMatcher:", () => {
-    it("Matches", () => {
-        assertThat(new Date()).is(match.instanceOf(Date));
-        assertThat({a: 2}).is(match.instanceOf(Object));
+    describe("assertThat():", () => {
+        it("Matches", () => {
+            assertThat(new Date()).is(match.instanceOf(Date));
+            assertThat({a: 2}).is(match.instanceOf(Object));
+        });
+
+        it("Mismatches", () => {
+            assertThat("ab")
+                .failsWith(match.instanceOf(Date),
+                    {[MatchResult.was]: "ab", [MatchResult.expected]: {instanceOf: "Date"}});
+            assertThat(null)
+                .failsWith(match.instanceOf(Date),
+                    {[MatchResult.was]: null, [MatchResult.expected]: {instanceOf: "Date"}});
+            assertThat(undefined)
+                .failsWith(match.instanceOf(Date),
+                    {[MatchResult.expected]: {instanceOf: "Date"}});
+        });
+
+        it("Mismatches:errors", () => {
+            const mismatched: Array<Mismatched> = [];
+            const matcher = match.instanceOf(Date);
+            (matcher as DiffMatcher<any>).mismatches("actual", mismatched, "ab");
+            assertThat(mismatched).is([
+                {actual: "ab", expected: {instanceOf: "Date"}}
+            ]);
+        });
     });
 
-    it("Mismatches", () => {
-        assertThat("ab")
-            .failsWith(match.instanceOf(Date),
-                {[MatchResult.was]: "ab", [MatchResult.expected]: {instanceOf: "Date"}});
-        assertThat(null)
-            .failsWith(match.instanceOf(Date),
-                {[MatchResult.was]: null, [MatchResult.expected]: {instanceOf: "Date"}});
-        assertThat(undefined)
-            .failsWith(match.instanceOf(Date),
-                {[MatchResult.expected]: {instanceOf: "Date"}});
-    });
+    describe("validateThat():", () => {
+        const expected = match.instanceOf(Object);
 
-    it("Mismatches:errors", () => {
-        const mismatched: Array<Mismatch> = [];
-        const matcher = match.instanceOf(Date);
-        (matcher as DiffMatcher<any>).mismatches("actual", mismatched, "ab");
-        assertThat(mismatched).is([
-            {actual: "ab", expected: {instanceOf: "Date"}}
-        ]);
+        it("succeeds", () => {
+            const validation = validateThat({a: 3}).satisfies(expected);
+            assertThat(validation.passed()).is(true);
+        });
+
+        it("fails", () => {
+            const validation = validateThat(false).satisfies(expected);
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.mismatched).is([
+                {actual: false, expected: {instanceOf: "Object"}}
+            ]);
+        });
     });
 });

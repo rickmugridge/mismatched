@@ -1,36 +1,64 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
-import {Mismatch} from "./Mismatch";
+import {Mismatched} from "./Mismatched";
 import {DiffMatcher} from "./DiffMatcher";
+import {validateThat} from "../validateThat";
 
 describe("array.every:", () => {
-    it('number', () => {
-        const actual = [2, 2, 2];
-        assertThat(actual).is(match.array.every(2));
+    describe("assertThat():", () => {
+        it('number', () => {
+            const actual = [2, 2, 2];
+            assertThat(actual).is(match.array.every(2));
+        });
+
+        it('string', () => {
+            const actual = ["b", "b"];
+            assertThat(actual).is(match.array.every("b"));
+        });
+
+        it('does not match', () => {
+            const actual = ["a", "b"];
+            assertThat(actual).failsWith(match.array.every("b"),
+                {[MatchResult.was]: ["a", "b"], [MatchResult.expected]: {"array.every": "b"}});
+        });
+
+        it('does not match: errors', () => {
+            const actual = ["a", "b"];
+            assertThat(actual).failsWith(match.array.every("b"),
+                {[MatchResult.was]: ["a", "b"], [MatchResult.expected]: {"array.every": "b"}});
+
+            const mismatched: Array<Mismatched> = [];
+            const matcher = match.array.every("b");
+            (matcher as DiffMatcher<any>).mismatches("actual", mismatched, ["a", "b"]);
+            assertThat(mismatched).is([
+                {"actual[0]": "a", expected: "b"}
+            ]);
+        });
     });
 
-    it('string', () => {
-        const actual = ["b", "b"];
-        assertThat(actual).is(match.array.every("b"));
-    });
+    describe("validateThat():", () => {
+        const expected = match.array.every(match.ofType.number());
 
-    it('does not match', () => {
-        const actual = ["a", "b"];
-        assertThat(actual).failsWith(match.array.every("b"),
-            {[MatchResult.was]: ["a", "b"], [MatchResult.expected]: {"array.every": "b"}});
-    });
+        it("succeeds", () => {
+            const validation = validateThat([2, 2, 2]).satisfies(expected);
+            assertThat(validation.passed()).is(true);
+        });
 
-    it('does not match: errors', () => {
-        const actual = ["a", "b"];
-        assertThat(actual).failsWith(match.array.every("b"),
-            {[MatchResult.was]: ["a", "b"], [MatchResult.expected]: {"array.every": "b"}});
+        it("fails", () => {
+            const validation = validateThat([2, 2, "3"]).satisfies(expected);
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.mismatched).is([
+                {"actual[2]": "3", expected: "ofType.number"}
+            ])
+        });
 
-        const mismatched: Array<Mismatch> = [];
-        const matcher = match.array.every("b");
-        (matcher as DiffMatcher<any>).mismatches("actual", mismatched, ["a", "b"]);
-        assertThat(mismatched).is([
-            {"actual[0]": "a", expected: "b"}
-        ]);
+        it("fails as not an array", () => {
+            const validation = validateThat(3).satisfies(expected);
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.mismatched).is([
+                {actual: 3, expected: "array expected"}
+            ])
+        });
     });
 });

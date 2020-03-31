@@ -1,12 +1,14 @@
 import {assertThat} from "../assertThat";
-import {IsEqualsMatcher} from "./IsEqualsMatcher";
+import {IsEqualsMatcher} from "../matcher/IsEqualsMatcher";
 import {match} from "../match";
-import {ObjectMatcher} from "./ObjectMatcher";
-import {RegExpMatcher} from "./RegExpMatcher";
+import {ObjectMatcher} from "../matcher/ObjectMatcher";
+import {RegExpMatcher} from "../matcher/RegExpMatcher";
 import {matchMaker} from "./matchMaker";
-import {StringMatcher} from "./StringMatcher";
-import {PrettyPrinter} from "..";
-import {AnyMatcher} from "./AnyMatcher";
+import {StringMatcher} from "../matcher/StringMatcher";
+import {PrettyPrinter} from "../index";
+import {AnyMatcher} from "../matcher/AnyMatcher";
+import {PredicateMatcher} from "../matcher/PredicateMatcher";
+import {CustomiseMismatcher} from "./CustomiseMismatcher";
 
 describe("matchMaker():", () => {
     const isEqualsMatcher = match.instanceOf(IsEqualsMatcher);
@@ -42,6 +44,22 @@ describe("matchMaker():", () => {
 
     it("lambda", () => {
         assertThat(matchMaker((a, b) => 3)).is(match.instanceOf((AnyMatcher)));
+    });
+
+    it("registered matcher", () => {
+        class Hide {
+            constructor(public f: number, public g: number, public h: number) {
+            }
+
+            equals(other: Hide) {
+                return this.f === other.f;
+            }
+        }
+
+        const matcher = (expected: Hide) => PredicateMatcher.make(value => expected.equals(value),
+            {"Hide.equals": expected});
+        CustomiseMismatcher.addCustomMatcher(match.instanceOf(Hide), matcher);
+        assertThat(matchMaker(new Hide(1,2,3))).is(match.instanceOf(PredicateMatcher));
     });
 
     describe("object", () => {

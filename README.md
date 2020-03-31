@@ -2,11 +2,12 @@
 
 A Typescript-based assertion and matcher framework, inspired by Hamcrest (https://en.wikipedia.org/wiki/Hamcrest).
 
-This can be used with `mismatched` assertions or as matcher for arguments in mocked calls in `thespian`.
+This can be used with `mismatched` assertions, as matcher for arguments in mocked calls in `thespian`,
+and for data validation.
 
-## Examples
+## Example Assertions
 
-Here's a few simple examples (all these examples are in the `examples` directory here:
+Here's a few simple examples of assertions (all these examples are in the `examples` directory here:
 
 ```
 describe("Object-matching Examples", () => {
@@ -54,15 +55,15 @@ when matching fails, and the changes are minor, it provides feedback as a [diff 
 
 When the `address.number` was 3 but was expected to be 4.
 
-## AssertThat
+### AssertThat
 
 The `mismatched` assertion mechanism is defined here: [assertThat()](./ASSERTTHAT.md).
 
-## Matchers
+### Matchers
 
 There are many built-in matchers. See [Matchers](./MATCHERS.md). This includes a section on writing custom matchers.
 
-## Displaying the results of mismatches
+### Displaying the results of mismatches
 
 We aim to provide useful output when a match fails. 
 [PrettyPrinter](PRETTYPRINTER.md) does this.
@@ -77,6 +78,40 @@ Either extreme can make it difficult to read.
 
 It allows for custom renderers.
 
+## Example Validations
+
+Here's a few simple examples of validations (all these examples are in the `examples` directory here):
+
+```
+        it('Full object validation', () => {
+            assertThat(actual)
+                .is({
+                    name: match.ofType.string(),
+                    address: {
+                        number: match.number.greater(0),
+                        street: match.ofType.string(),
+                        other: match.array.every(match.ofType.number())
+                    }
+                });
+        });
+
+```
+
+This makes use of the same matchers as above: [Matchers](./MATCHERS.md).
+
+### validateThat
+
+The `mismatched` validation mechanism is provided with `validateThat`. 
+
+It uses the following call: `validateThat(actual).satisfied(matcher)`, where:
+
+ - `actual` is an arbitrary value to be validated
+ - `matcher` is a Javascript value or a `mismatched` matcher.
+ 
+The `matcher` for validations will tend to use matchers that:
+  - distinguish between mandatory and optional fields. Eg, a field is a mandatory positive integer
+  - check the types of fields. Eg, a valid UTC Date string
+  - check the elements in an array
 
 ## Things to do
 

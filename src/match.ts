@@ -14,12 +14,12 @@ import {numberMatcher} from "./matcher/NumberMatcher";
 import {instanceOfMatcher} from "./matcher/instanceOfMatcher";
 import {ItIsMatcher} from "./matcher/ItIsMatcher";
 import {MappedMatcher} from "./matcher/MappedMatcher";
-import {DiffMatcher} from "./matcher/DiffMatcher";
 import {ObjectSomeMatcher} from "./matcher/ObjectSomeMatcher";
 import {ArrayContainsMatcher} from "./matcher/ArrayContainsMatcher";
 import {ArrayEveryMatcher} from "./matcher/ArrayEveryMatcher";
 import {ArrayLengthMatcher} from "./matcher/ArrayLengthMatcher";
 import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
+import {DiffMatcher} from "./matcher/DiffMatcher";
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),

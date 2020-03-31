@@ -1,5 +1,5 @@
 import {DiffMatcher} from "./DiffMatcher";
-import {Mismatch} from "./Mismatch";
+import {Mismatched} from "./Mismatched";
 import {MatchResult} from "../MatchResult";
 import {ofType} from "../ofType";
 import {concatObjects} from "./ObjectMatcher";
@@ -10,9 +10,9 @@ export class ObjectSomeMatcher<T> extends DiffMatcher<T> {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatch>, actual: T): MatchResult {
+    mismatches(context: string, mismatched: Array<Mismatched>, actual: T): MatchResult {
         if (!ofType.isObject(actual)) {
-            mismatched.push(Mismatch.make(context, actual, "object expected"));
+            mismatched.push(Mismatched.make(context, actual, "object expected"));
             return MatchResult.wasExpected(actual, this.describe(), 1, 0);
         }
         const results = {};

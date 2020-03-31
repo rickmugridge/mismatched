@@ -1,14 +1,14 @@
 import {DiffMatcher} from "./DiffMatcher";
-import {Mismatch} from "./Mismatch";
+import {Mismatched} from "./Mismatched";
 import {MatchResult} from "../MatchResult";
-import {matchMaker} from "./matchMaker";
+import {matchMaker} from "../matchMaker/matchMaker";
 
 export class DiffFieldMatcher<T> extends DiffMatcher<T> {
     private constructor(public fieldName: string, private expected: DiffMatcher<T>) {
         super();
     }
 
-    mismatches(context: string, errors: Array<Mismatch>, actual: T): MatchResult {
+    mismatches(context: string, errors: Array<Mismatched>, actual: T): MatchResult {
         return this.expected.mismatches(context + "." + this.fieldName, errors, actual[this.fieldName]);
         // // If too many errors, report the expected and actual completely separated
         // const matchResult = this.expected.matches(actual[this.fieldName]);

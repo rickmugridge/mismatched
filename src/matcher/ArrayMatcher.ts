@@ -1,22 +1,21 @@
-import {matchMaker} from "./matchMaker";
+import {matchMaker} from "../matchMaker/matchMaker";
 import {MatchResult} from "../MatchResult";
 import {isArray} from "util";
 import {DiffMatcher} from "./DiffMatcher";
-import {IsEqualsMatcher} from "./IsEqualsMatcher";
-import {Mismatch} from "./Mismatch";
+import {Mismatched} from "./Mismatched";
 
 export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
     private constructor(private expected: Array<DiffMatcher<T>>) {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatch>, actual: Array<T>): MatchResult {
+    mismatches(context: string, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
         if (!isArray(actual)) {
-            mismatched.push(Mismatch.make(context, actual, "array expected"));
+            mismatched.push(Mismatched.make(context, actual, "array expected"));
             return MatchResult.wasExpected(actual, "array expected", 1, 0);
         }
         if (actual.length !== this.expected.length) {
-            mismatched.push(Mismatch.make(context, actual, {length: this.expected.length}));
+            mismatched.push(Mismatched.make(context, actual, {length: this.expected.length}));
             return MatchResult.wasExpected(actual, {lengthExpected:this.expected.length}, 1, 0);
         }
         const results: Array<any> = [];
@@ -48,8 +47,4 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
     static make<T>(expected: Array<DiffMatcher<T> | any>): any {
         return new ArrayMatcher<T>(expected.map(e => matchMaker(e)));
     }
-}
-
-export function arrayLiteralMatchers<T>(values: Array<T>): Array<DiffMatcher<T>> {
-    return values.map(v => IsEqualsMatcher.make(v))
 }

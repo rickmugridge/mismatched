@@ -304,6 +304,8 @@ describe("PrettyPrinter():", () => {
             (hide: Hide) => 'Hide(' + hide.f + ')');
         assertThat(prettyPrinter.render({d: new Hide(12, 1566509915958, 1566509915958), e: 3}))
             .is("{d: Hide(12), e: 3}");
+        assertThat(prettyPrinter.render({outer: {outer: {d: new Hide(12, 1566509915958, 1566509915958), e: 3}}}))
+            .is("{outer: {outer: {d: Hide(12), e: 3}}}");
     });
 
     it("Ignores symbol-based properties", () => {

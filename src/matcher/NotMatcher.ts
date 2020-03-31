@@ -1,17 +1,17 @@
 import {DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
-import {matchMaker} from "./matchMaker";
-import {Mismatch} from "./Mismatch";
+import {matchMaker} from "../matchMaker/matchMaker";
+import {Mismatched} from "./Mismatched";
 
 export class NotMatcher<T> extends DiffMatcher<T> {
     private constructor(private matcher: DiffMatcher<T> | any) {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatch>, actual: T): MatchResult {
+    mismatches(context: string, mismatched: Array<Mismatched>, actual: T): MatchResult {
         const matchResult = this.matcher.matches(actual);
         if (matchResult.passed()) {
-            mismatched.push(Mismatch.make(context, actual, this.describe()));
+            mismatched.push(Mismatched.make(context, actual, this.describe()));
             return MatchResult.wasExpected(actual, this.describe(), 1, 0);
         }
         return MatchResult.good(1);

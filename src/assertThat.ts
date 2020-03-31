@@ -1,12 +1,14 @@
 import {DiffMatcher} from "./matcher/DiffMatcher";
 import {AnyOfMatcher} from "./matcher/AnyOfMatcher";
 import {AllOfMatcher} from "./matcher/AllOfMatcher";
-import {matchMaker} from "./matcher/matchMaker";
+import {matchMaker} from "./matchMaker/matchMaker";
 import {fail} from "assert";
 import {match} from "./match";
 import {ofType} from "./ofType";
 import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 import {ErrorMatcher} from "./matcher/ErrorMatcher";
+import {MatchResult} from "./MatchResult";
+import {Mismatched} from "./matcher/Mismatched";
 
 export function assertThat<T>(actual: any) {
     return new Assertion(actual);
@@ -63,6 +65,12 @@ expected: '${printer.render(message)}'`);
         }
     }
 
+    // This is used internally for testing error messages:
+    failsWithRendering(expected: any, rendered: string) {
+        const result = this.match(expected);
+        assertThat(printer.render(result.diff)).is(rendered);
+    }
+
     throws(expected: any = match.any()) {
         if (!ofType.isFunction(this.actual)) {
             throw new Error("Need to use the form: assertThat(()=> expression).throws('error')");
@@ -109,7 +117,7 @@ expected: '${printer.render(message)}'`);
         });
     }
 
-    catchesError(message: string) {
+    catchesError(message: string): Promise<unknown> {
         return this.catches(ErrorMatcher.make(message));
     }
 
@@ -117,15 +125,19 @@ expected: '${printer.render(message)}'`);
         console.log(message, PrettyPrinter.make().render(matcher.describe()));
     }
 
-    private match(expected: DiffMatcher<T> | any) {
+    private match(expected: DiffMatcher<T> | any): MatchResult {
         const matcher = matchMaker(expected);
         return matcher.matches(this.actual);
     }
 
     private checkForFunction() {
-        if (ofType.isFunction(this.actual && !this.actual[PrettyPrinter.symbolForMockName])) {
-            throw new Error("Can't assertThat() on a function, as functions are not matched");
-        }
+        ensureNoFunction(this.actual);
+    }
+}
+
+export function ensureNoFunction(actual: any) {
+    if (ofType.isFunction(actual && !actual[PrettyPrinter.symbolForMockName])) {
+        throw new Error("Can't assertThat() on a function, as functions are not matched");
     }
 }
 
