@@ -32,6 +32,9 @@ export class AnyOfMatcher<T> extends DiffMatcher<T> {
     }
 
     static make<T>(matchers: Array<DiffMatcher<T> | any>): any {
+        if (matchers.length === 1) {
+            return matchMaker(matchers[0]);
+        }
         return new AnyOfMatcher(matchers.map(m => matchMaker(m)));
     }
 }

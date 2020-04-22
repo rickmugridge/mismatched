@@ -2,8 +2,10 @@
 
 A Typescript-based assertion and matcher framework, inspired by Hamcrest (https://en.wikipedia.org/wiki/Hamcrest).
 
-This can be used with `mismatched` assertions, as matcher for arguments in mocked calls in `thespian`,
-and for data validation.
+This can be used with:
+   - for `mismatched` assertions with `assertThat()`
+   - as matcher for arguments in mocked calls in `thespian`
+   - for data validation with `validateThat()`
 
 ## Example Assertions
 
@@ -80,33 +82,40 @@ It allows for custom renderers.
 
 ## Example Validations
 
-Here's a few simple examples of validations (all these examples are in the `examples` directory here):
+Here's two simple examples of validations (see the micro tests for individual matchers for other examples):
 
 ```
-        it('Full object validation', () => {
-            assertThat(actual)
-                .is({
-                    name: match.ofType.string(),
-                    address: {
-                        number: match.number.greater(0),
-                        street: match.ofType.string(),
-                        other: match.array.every(match.ofType.number())
-                    }
-                });
+    describe("validateThat():", () => {
+        const expected = {f: match.ofType.number(), g: match.ofType.boolean()};
+
+        it("succeeds", () => {
+            const validationResult = validateThat({f: 2, g: true}).satisfies(expected);
+            assertThat(validationResult.passed()).is(true);
         });
 
+        it("fails", () => {
+            const validationResult = validateThat({f: "2", g: 3}).satisfies(expected);
+            assertThat(validationResult.passed()).is(false);
+            assertThat(validationResult.errors).is([
+                `{"actual.f": "2", expected: "ofType.number"}`,
+                `{"actual.g": 3, expected: "ofType.boolean"}`
+            ]);
+        });
+    });
 ```
 
 This makes use of the same matchers as above: [Matchers](./MATCHERS.md).
 
 ### validateThat
 
-The `mismatched` validation mechanism is provided with `validateThat`. 
+The `mismatched` validation mechanism is `validateThat()`. 
 
 It uses the following call: `validateThat(actual).satisfied(matcher)`, where:
 
  - `actual` is an arbitrary value to be validated
  - `matcher` is a Javascript value or a `mismatched` matcher.
+ 
+ This returns a `ValidationResult`, which contains the errors as an `Array<string>`.
  
 The `matcher` for validations will tend to use matchers that:
   - distinguish between mandatory and optional fields. Eg, a field is a mandatory positive integer

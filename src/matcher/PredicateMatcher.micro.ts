@@ -55,8 +55,8 @@ describe("PredicateMatcher:", () => {
         it("fails", () => {
             const validation = validateThat(-1).satisfies(matcher);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: -1, expected: {predicateFailed: {arrow: "v => v > 0"}}}
+            assertThat(validation.errors).is([
+                `{actual: -1, expected: {predicateFailed: {arrow: "v => v > 0"}}}`
             ]);
         });
     });

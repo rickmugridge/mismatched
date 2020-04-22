@@ -42,8 +42,8 @@ describe("NotMatcher()", () => {
         it("fails", () => {
             const validation = validateThat(3).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: 3, expected: {not: "ofType.number"}}
+            assertThat(validation.errors).is([
+                `{actual: 3, expected: {not: "ofType.number"}}`
             ]);
         });
     });

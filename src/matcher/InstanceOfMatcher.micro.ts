@@ -45,8 +45,8 @@ describe("InstanceOfMatcher:", () => {
         it("fails", () => {
             const validation = validateThat(false).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: false, expected: {instanceOf: "Object"}}
+            assertThat(validation.errors).is([
+                `{actual: false, expected: {instanceOf: "Object"}}`
             ]);
         });
     });

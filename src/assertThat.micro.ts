@@ -47,19 +47,19 @@ describe("assertThat():", () => {
         it("Mismatches", () => {
             assertThat("ab")
                 .failsWith(match.anyOf([match.instanceOf(Date)]),
-                    {[MatchResult.was]: "ab", [MatchResult.expected]: {anyOf: [{instanceOf: "Date"}]}});
+                    {[MatchResult.was]: "ab", [MatchResult.expected]: {instanceOf: "Date"}});
         });
     });
 
-    describe("isAnyOf():", () => {
+    describe("isAllOf():", () => {
         it("Matches", () => {
-            assertThat(new Date()).isAnyOf([match.isEquals(3), match.instanceOf(Date)]);
+            assertThat(3).isAllOf([match.isEquals(3), match.number.greater(2)]);
         });
 
         it("Mismatches", () => {
             assertThat("ab")
-                .failsWith(match.anyOf([match.instanceOf(Date)]),
-                    {[MatchResult.was]: "ab", [MatchResult.expected]: {anyOf: [{instanceOf: "Date"}]}});
+                .failsWith(match.allOf([match.isEquals(3), match.number.greater(2)]),
+                    {[MatchResult.was]: "ab", [MatchResult.expected]: {allOf: [3, {"number.greater": 2}]}});
         });
     });
 

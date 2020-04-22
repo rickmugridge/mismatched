@@ -44,8 +44,8 @@ describe("StringMatcher:", () => {
         it("fails", () => {
             const validation = validateThat("b").satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: "b", expected: {"string.startsWith": "a"}}
+            assertThat(validation.errors).is([
+                `{actual: "b", expected: {"string.startsWith": "a"}}`
             ]);
         });
     });

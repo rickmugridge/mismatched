@@ -39,8 +39,8 @@ describe("RegExpMatcher:", () => {
         it("fails", () => {
             const validation = validateThat("Ab").satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: "Ab", expected: "/a./"}
+            assertThat(validation.errors).is([
+                `{actual: "Ab", expected: "/a./"}`
             ]);
         });
     });

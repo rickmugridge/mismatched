@@ -64,8 +64,8 @@ describe("OfTypeMatcher:", () => {
         it("fails", () => {
             const validation = validateThat(false).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: false, expected: "ofType.number"}
+            assertThat(validation.errors).is([
+                `{actual: false, expected: "ofType.number"}`
             ]);
         });
     });

@@ -93,16 +93,16 @@ describe("array.match:", () => {
         it("fails as incorrect array", () => {
             const validation = validateThat([1, 2, [3, ["s"]]]).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {"actual[2][1][0]": "s", expected: "ofType.number"}
+            assertThat(validation.errors).is([
+                `{"actual[2][1][0]": "s", expected: "ofType.number"}`
             ]);
         });
 
         it("fails as not an array", () => {
             const validation = validateThat(false).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: false, expected: "array expected"}
+            assertThat(validation.errors).is([
+                `{actual: false, expected: "array expected"}`
             ])
         });
     });

@@ -48,16 +48,16 @@ describe("array.every:", () => {
         it("fails", () => {
             const validation = validateThat([2, 2, "3"]).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {"actual[2]": "3", expected: "ofType.number"}
+            assertThat(validation.errors).is([
+                `{"actual[2]": "3", expected: "ofType.number"}`
             ])
         });
 
         it("fails as not an array", () => {
             const validation = validateThat(3).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: 3, expected: "array expected"}
+            assertThat(validation.errors).is([
+                `{actual: 3, expected: "array expected"}`
             ])
         });
     });

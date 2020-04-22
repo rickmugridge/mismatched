@@ -180,16 +180,16 @@ describe("obj.match:", () => {
         const expected = {f: match.ofType.number(), g: match.ofType.boolean()};
 
         it("succeeds", () => {
-            const validation = validateThat({f: 2, g: true}).satisfies(expected);
-            assertThat(validation.passed()).is(true);
+            const validationResult = validateThat({f: 2, g: true}).satisfies(expected);
+            assertThat(validationResult.passed()).is(true);
         });
 
         it("fails", () => {
-            const validation = validateThat({f: "2", g: 3}).satisfies(expected);
-            assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {"actual.f": "2", expected: "ofType.number"},
-                {"actual.g": 3, expected: "ofType.boolean"}
+            const validationResult = validateThat({f: "2", g: 3}).satisfies(expected);
+            assertThat(validationResult.passed()).is(false);
+            assertThat(validationResult.errors).is([
+                `{"actual.f": "2", expected: "ofType.number"}`,
+                `{"actual.g": 3, expected: "ofType.boolean"}`
             ]);
         });
     });

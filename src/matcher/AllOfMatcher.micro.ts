@@ -28,6 +28,16 @@ describe("AllOfMatcher:", () => {
                 {actual: 4, expected: 3}
             ])
         });
+
+        it("Optimise with 1", () => {
+            const whatever = match.ofType.array();
+            assertThat(match.allOf([whatever])).is(match.itIs(whatever))
+        });
+
+        it("Optimise with 1 left after removing match.any()s", () => {
+            const whatever = match.ofType.array();
+            assertThat(match.allOf([match.any(), whatever, match.any()])).is(match.itIs(whatever))
+        });
     });
 
     describe("validateThat():", () => {
@@ -41,8 +51,8 @@ describe("AllOfMatcher:", () => {
             const expected = match.allOf([match.instanceOf(Date), match.ofType.number()]);
             const validation = validateThat(3).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: 3, expected: {instanceOf: "Date"}}
+            assertThat(validation.errors).is([
+                `{actual: 3, expected: {instanceOf: "Date"}}`
             ])
         });
     });

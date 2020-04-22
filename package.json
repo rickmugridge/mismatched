@@ -1,7 +1,7 @@
 {
   "name": "mismatched",
-  "version": "1.8.1",
-  "description": "A composable matching/assertion framework in Typescript that displays mismatches as diff trees",
+  "version": "2.1.1",
+  "description": "A composable matching/assertion/validation framework in Typescript that displays mismatches as diff trees",
   "author": {
     "name": "Rick Mugridge",
     "email": "rick.mugridge@hypr.co.nz"

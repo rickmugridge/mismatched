@@ -40,8 +40,8 @@ describe("match.itIs():", () => {
         it("fails", () => {
             const validation = validateThat(false).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: false, expected: {itIsTheSameObjectAs: {a: 3}}}
+            assertThat(validation.errors).is([
+                `{actual: false, expected: {itIsTheSameObjectAs: {a: 3}}}`
             ]);
         });
     });

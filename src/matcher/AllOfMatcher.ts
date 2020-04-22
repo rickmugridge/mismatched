@@ -2,6 +2,8 @@ import {DiffMatcher} from "./DiffMatcher";
 import {matchMaker} from "../matchMaker/matchMaker";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
+import {AnyMatcher} from "./AnyMatcher";
+import {PrettyPrinter} from "..";
 
 export class AllOfMatcher<T> extends DiffMatcher<T> {
     private constructor(private matchers: Array<DiffMatcher<T>>) {
@@ -31,7 +33,15 @@ export class AllOfMatcher<T> extends DiffMatcher<T> {
     }
 
     static make<T>(matchers: Array<DiffMatcher<T> | any>): any {
-        return new AllOfMatcher(matchers.map(m => matchMaker(m)));
+        const subMatchers = matchers.map(m => matchMaker(m)).filter(m => !(m instanceof AnyMatcher));
+        switch (subMatchers.length) {
+            case 0:
+                return new AnyMatcher();
+            case 1 :
+                return subMatchers[0];
+            default:
+                return new AllOfMatcher(subMatchers);
+        }
     }
 }
 

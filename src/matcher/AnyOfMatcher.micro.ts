@@ -15,16 +15,21 @@ describe("AnyOfMatcher:", () => {
         it("Mismatches", () => {
             assertThat("ab")
                 .failsWith(match.anyOf([match.instanceOf(Date)]),
-                    {[MatchResult.was]: "ab", [MatchResult.expected]: {anyOf: [{instanceOf: "Date"}]}});
+                    {[MatchResult.was]: "ab", [MatchResult.expected]: {instanceOf: "Date"}});
         });
 
         it("Mismatches: errors", () => {
             const mismatched: Array<Mismatched> = [];
-            const matcher = match.anyOf([match.instanceOf(Date)]);
+            const matcher = match.anyOf([match.instanceOf(Date), match.instanceOf(Error)]);
             (matcher as DiffMatcher<any>).mismatches("actual", mismatched, "ab");
             assertThat(mismatched).is([
-                {actual: "ab", expected: {anyOf: [{instanceOf: "Date"}]}}
+                {actual: "ab", expected: {anyOf: [{instanceOf: "Date"}, {instanceOf: "Error"}]}}
             ]);
+        });
+
+        it("Optimise away with a single matcher inside", () => {
+            const whatever = match.ofType.array();
+            assertThat(match.anyOf([whatever])).is(match.itIs(whatever))
         });
     });
 
@@ -41,8 +46,8 @@ describe("AnyOfMatcher:", () => {
         it("fails", () => {
             const validation = validateThat(false).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: false, expected: {anyOf: [{instanceOf: "Date"}, "ofType.number"]}}
+            assertThat(validation.errors).is([
+                `{actual: false, expected: {anyOf: [{instanceOf: "Date"}, "ofType.number"]}}`
             ]);
         });
     });

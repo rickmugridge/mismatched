@@ -44,16 +44,16 @@ describe("array.contains:", () => {
         it("fails in an element of the array", () => {
             const validation = validateThat(["1", "2", "3"]).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: ["1", "2", "3"], expected: {"array.contains": "ofType.number"}}
+            assertThat(validation.errors).is([
+                `{actual: ["1", "2", "3"], expected: {"array.contains": "ofType.number"}}`
             ])
         });
 
         it("fails as not an array", () => {
             const validation = validateThat(4).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: 4, expected: "array expected"}
+            assertThat(validation.errors).is([
+                `{actual: 4, expected: "array expected"}`
             ])
         });
     });

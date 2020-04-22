@@ -39,8 +39,8 @@ describe("array.length:", () => {
         it("fails", () => {
             const validation = validateThat(["b", "b", "b"]).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: ["b", "b", "b"], expected: {"array.length": 2}}
+            assertThat(validation.errors).is([
+                `{actual: ["b", "b", "b"], expected: {"array.length": 2}}`
             ])
         });
     });

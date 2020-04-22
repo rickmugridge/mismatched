@@ -43,8 +43,8 @@ describe("OptionalMatcher:", () => {
         it("fails with wrong type", () => {
             const validation = validateThat({f: "wrong"}).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {"actual.f": "wrong", expected: {optional: "ofType.number"}}
+            assertThat(validation.errors).is([
+                `{"actual.f": "wrong", expected: {optional: "ofType.number"}}`
             ]);
         });
     });

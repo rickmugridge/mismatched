@@ -6,7 +6,6 @@ import {DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("MappedMatcher()", () => {
-
     describe("assertThat():", () => {
         const matcher = match.mapped(a => a.m, 2, {extract: "m"});
         it("matches", () => {
@@ -40,8 +39,8 @@ describe("MappedMatcher()", () => {
         it("fails", () => {
             const validation = validateThat({m: false}).satisfies(matcher);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {actual: false, expected: "ofType.number"}
+            assertThat(validation.errors).is([
+                `{actual: false, expected: "ofType.number"}`
             ]);
         });
     });

@@ -67,9 +67,9 @@ describe("obj.some:", () => {
         it("fails", () => {
             const validation = validateThat({f: "2", g: 3, h: 45}).satisfies(expected);
             assertThat(validation.passed()).is(false);
-            assertThat(validation.mismatched).is([
-                {"actual.f": "2", expected: "ofType.number"},
-                {"actual.g": 3, expected: "ofType.boolean"}
+            assertThat(validation.errors).is([
+                `{"actual.f": "2", expected: "ofType.number"}`,
+                `{"actual.g": 3, expected: "ofType.boolean"}`
             ]);
         });
     });
