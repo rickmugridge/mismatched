@@ -3,7 +3,6 @@ import {matchMaker} from "../matchMaker/matchMaker";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
 import {AnyMatcher} from "./AnyMatcher";
-import {PrettyPrinter} from "..";
 
 export class AllOfMatcher<T> extends DiffMatcher<T> {
     private constructor(private matchers: Array<DiffMatcher<T>>) {
