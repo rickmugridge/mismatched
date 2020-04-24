@@ -17,7 +17,8 @@ class Validator<T> {
         const matcher = matchMaker(expected);
         const mismatched: Array<Mismatched> = [];
         matcher.mismatches("actual", mismatched, this.actual);
-        return new ValidationResult(mismatched.map(m => PrettyPrinter.make(200).render(m)));
+        return new ValidationResult(mismatched.map(m =>
+            PrettyPrinter.make(500,5000).render(m)));
     }
 }
 
