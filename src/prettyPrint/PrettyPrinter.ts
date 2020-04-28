@@ -145,6 +145,15 @@ export class PrettyPrinter {
     }
 }
 
-function cleanString(value: string) {
-    return '"' + value.replace(/"/, "\"") + '"';
+export function cleanString(value: string): string {
+    if (!value.includes(`"`)) {
+        return `"` + value + `"`;
+    }
+    if (!value.includes(`'`)) {
+        return `'` + value + `'`;
+    }
+    if (!value.includes('`')) {
+        return '`' + value + '`';
+    }
+    return JSON.stringify(value);
 }

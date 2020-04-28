@@ -38,10 +38,32 @@ describe("PredicateMatcher:", () => {
 
         it("Mismatches: errors", () => {
             const mismatched: Array<Mismatched> = [];
-            const matcher = match.predicate(pred);
+            const matcher = match.predicate(pred, 'failed');
             (matcher as DiffMatcher<any>).mismatches("actual", mismatched, "ab");
             assertThat(mismatched).is([
-                {actual: "ab", expected: {predicateFailed: {"function": "pred()"}}}
+                {actual: "ab", expected: "failed"}
+            ]);
+        });
+
+        it("Mismatches: exception", () => {
+            const mismatched: Array<Mismatched> = [];
+            const matcher = match.predicate(() => {
+                throw new Error('bad');
+            });
+            (matcher as DiffMatcher<any>).mismatches("actual", mismatched, "ab");
+            assertThat(mismatched).is([
+                {actual: {exception: "bad", actual: "ab"}, expected: {predicateFailed: {arrow: "()"}}}
+            ]);
+        });
+
+        it("Mismatches: exception with a non-Error", () => {
+            const mismatched: Array<Mismatched> = [];
+            const matcher = match.predicate(() => {
+                throw {error: 'error'};
+            });
+            (matcher as DiffMatcher<any>).mismatches("actual", mismatched, "ab");
+            assertThat(mismatched).is([
+                {actual: { actual: "ab", exception: {error: "error"}}, expected: {predicateFailed: {arrow: "()"}}}
             ]);
         });
     });

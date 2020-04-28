@@ -17,7 +17,14 @@ export function assertThat<T>(actual: any) {
 const printer = PrettyPrinter.make();
 
 class Assertion<T> {
-    constructor(private actual: any, private message = "Mismatched") {
+    private message = "Mismatched";
+
+    constructor(private actual: any) {
+    }
+
+    withMessage(failMessage: string): this {
+        this.message = failMessage;
+        return this;
     }
 
     is(expected: DiffMatcher<T> | any) {

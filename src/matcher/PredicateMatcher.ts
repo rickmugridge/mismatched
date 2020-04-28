@@ -10,8 +10,14 @@ export class PredicateMatcher extends DiffMatcher<any> {
     }
 
     mismatches(context: string, mismatched: Array<Mismatched>, actual: any): MatchResult {
-        if (this.expected(actual)) {
-            return MatchResult.good(1);
+        try {
+            if (this.expected(actual)) {
+                return MatchResult.good(1);
+            }
+        } catch (e) {
+            const actualAndException = {actual, exception: e.message || e};
+            mismatched.push(Mismatched.make(context, actualAndException, this.describe()));
+            return MatchResult.wasExpected(actualAndException, this.describe(), 1, 0);
         }
         mismatched.push(Mismatched.make(context, actual, this.describe()));
         return MatchResult.wasExpected(actual, this.describe(), 1, 0);

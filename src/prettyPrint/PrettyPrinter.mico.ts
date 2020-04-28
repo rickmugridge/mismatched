@@ -1,5 +1,5 @@
 import {assertThat} from "../assertThat";
-import {PrettyPrinter} from "./PrettyPrinter";
+import {cleanString, PrettyPrinter} from "./PrettyPrinter";
 import {Colour} from "../Colour";
 import {match} from "../match";
 
@@ -365,6 +365,36 @@ describe("PrettyPrinter():", () => {
             };
             assertThat(prettyPrinter.render(obj))
                 .is(`fn(1, true, "a", [123, 456, 789], {a: 33, b: 44})`);
+        });
+    });
+
+    describe("cleanString():", () => {
+        it("No quotes", () => {
+            assertThat(cleanString(`a`)).is(`"a"`);
+        });
+
+        it("Double-quotes", () => {
+            assertThat(cleanString(`"a"`)).is(`'"a"'`);
+        });
+
+        it("Single-quotes", () => {
+            assertThat(cleanString(`"a"`)).is(`'"a"'`);
+        });
+
+        it("Back-quotes", () => {
+            assertThat(cleanString('`a`')).is('"`a`"');
+        });
+
+        it("Escaped double-quotes", () => {
+            assertThat(cleanString(`\"a"`)).is(`'"a"'`);
+        });
+
+        it("Single- and double-quotes", () => {
+            assertThat(cleanString(`'"a"'`)).is("`'\"a\"'`");
+        });
+
+        it("Single-, back- and double-quotes", () => {
+            assertThat(cleanString("\"`'a'`\"")).is("\"\\\"`'a'`\\\"\"");
         });
     });
 });

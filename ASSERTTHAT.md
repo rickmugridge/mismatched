@@ -134,3 +134,8 @@ An alternative approach is shown in the following example:
 
 This used the "double-armed" `then()` so we can deal with both possible outcomes together. 
 (It gets a little messy if you use a `then()` and `catch()` independently.)
+
+### `assertThat().withMessage('failing message).is()`
+
+The `withMessage()` method defines the failing message for an assertion.
+It is after `assertThat()` and is before `is()`, `throwsError()`, etc.
