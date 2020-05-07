@@ -121,7 +121,6 @@ The test framework will fail it after a delay as long as the `assertThat()` resu
 However, this can be inconvenient with a promise chain, given the nesting required. 
 An alternative approach is shown in the following example:
 
-
 ```
         it("Alternative", () => {
             return Promise
