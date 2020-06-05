@@ -34,7 +34,7 @@ describe("Object-matching Examples", () => {
                 .is({
                     name: match.anyOf(["hamcrest", "tsDiffMatcher"]),
                     address: {
-                        number: match.greater(0),
+                        number: match.number.greater(0),
                         street: "Oak St",
                         other: match.ofType.array()
                     }
