@@ -110,7 +110,7 @@ This makes use of the same matchers as above: [Matchers](./MATCHERS.md).
 
 The `mismatched` validation mechanism is `validateThat()`. 
 
-It uses the following call: `validateThat(actual).satisfied(matcher)`, where:
+It uses the following call: `validateThat(actual).satisfies(matcher)`, where:
 
  - `actual` is an arbitrary value to be validated
  - `matcher` is a Javascript value or a `mismatched` matcher.

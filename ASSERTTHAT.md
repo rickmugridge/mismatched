@@ -59,35 +59,15 @@ Here are the other short-hand flavours related to `is()`, along with their long-
 }
 ```
 
-### `assertThat().throwsError()`
-
-This checks that an exception with the right `message` has been thrown, based on the provided lambda. For example:
-
-```
-        assertThat(() => {
-            throw new Error("error");
-        }).throwsError("error");
-        assertThat(() => {
-            throw new Error("error");
-        }).throwsError(match.string.startsWith("err"));
-```
-
-The second assertion above shows the use of `mismatched` matching on some part of the message string.
-
-Unfortunately, we need this to do matching on the `Error() message`. 
-An `Error` is a strange object that doesn't follow the usual conventions. 
-So we can't pass values other than strings, such as matchers, to the `Error` constructor. 
-Such values are not then available.
-
 ### `assertThat().throws()`
 
 This checks more generally that a suitable exception has been thrown, based on the provided lambda. For example:
 
-```
-       it("assertThat().throws()", () => {
+        it("Matches", () => {
             assertThat(() => {
                 throw new Error("error");
-            }).throws(match.instanceOf(MySpecialisedError));
+            }).throws(new Error("error"));
+        });
 ```
 
 The `throws()` optionally take an arbitrary value or matcher; a `match.any()` is used by default.
@@ -96,6 +76,9 @@ The assertion fails if:
   - a function is not provided to `assertThat()`; or 
   - if no exception is thrown; or
   - the exception is thrown but the result doesn't match
+
+(Note that an `Error` is a strange object that doesn't follow the usual conventions.
+It is not a proper Object, even though it looks like it.)
 
 ### `assertThat().catches()`
 
@@ -106,6 +89,16 @@ This checks that a Promise result has been rejected. For example:
             return assertThat(Promise.reject(4)).catches(4);
         });
 ```
+
+In `async` land, when checking for errors from an async function, place the `await` at the start. Eg:
+
+```
+        it("Matches Error in an async function with await", async () => {
+            return await assertThat(Promise.reject(new Error('err'))).catches(new Error('err'));
+        });
+```
+
+(Putting the `await` further within the statement will not work due to the way that `async` handle rejects/exceptions.)
 
 The `catches()` optionally take an arbitrary value or matcher; a `match.any()` is used by default.
 The assertion fails if:
@@ -134,7 +127,7 @@ An alternative approach is shown in the following example:
 This used the "double-armed" `then()` so we can deal with both possible outcomes together. 
 (It gets a little messy if you use a `then()` and `catch()` independently.)
 
-### `assertThat().withMessage('failing message).is()`
+### `assertThat().withMessage('failing message).is()` (internal testing only)
 
 The `withMessage()` method defines the failing message for an assertion.
 It is after `assertThat()` and is before `is()`, `throwsError()`, etc.

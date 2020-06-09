@@ -64,10 +64,16 @@ describe("assertThat():", () => {
     });
 
     describe("throws()", () => {
-        it("Matches", () => {
+        it("Matches by Error class", () => {
             assertThat(() => {
                 throw new Error("error");
             }).throws(match.instanceOf(Error));
+        });
+
+        it("Matches", () => {
+            assertThat(() => {
+                throw new Error("error");
+            }).throws(new Error("error"));
         });
 
         it("Matches with no expectation", () => {
@@ -94,18 +100,17 @@ describe("assertThat():", () => {
         });
     });
 
-    it("throwsError()", () => {
-        assertThat(() => {
-            throw new Error("error");
-        }).throwsError("error");
-        assertThat(() => {
-            throw new Error("error");
-        }).throwsError(match.string.startsWith("err"));
-    });
-
     describe("catches():", () => {
         it("Matches", () => {
             return assertThat(Promise.reject(4)).catches(4);
+        });
+
+        it("Matches Error", () => {
+            return assertThat(Promise.reject(new Error('err'))).catches(new Error('err'));
+        });
+
+        it("Matches Error in an async function with await", async () => {
+            return await assertThat(Promise.reject(new Error('err'))).catches(new Error('err'));
         });
 
         it("Mismatches", () => {
