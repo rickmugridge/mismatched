@@ -63,6 +63,7 @@ Here are the other short-hand flavours related to `is()`, along with their long-
 
 This checks more generally that a suitable exception has been thrown, based on the provided lambda. For example:
 
+```
         it("Matches", () => {
             assertThat(() => {
                 throw new Error("error");
