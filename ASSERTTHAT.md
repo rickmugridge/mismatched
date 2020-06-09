@@ -104,9 +104,8 @@ In `async` land, when checking for errors from an async function, place the `awa
 The `catches()` optionally take an arbitrary value or matcher; a `match.any()` is used by default.
 The assertion fails if:
 
-  - a function is not provided to `assertThat()`; or
-  - the function does not return a Promise; ot
-  - if the Promise is not rejected; or
+  - a Promise is not provided to assertThat(); or
+  - the Promise is not rejected; or
   - The Promise is rejected but the result doesn't match
   
 If the Promise remains unresolved, the assertion hangs. 
@@ -126,9 +125,11 @@ An alternative approach is shown in the following example:
  ```
 
 This used the "double-armed" `then()` so we can deal with both possible outcomes together. 
-(It gets a little messy if you use a `then()` and `catch()` independently.)
+(The logic gets a little tricky if you use a `then()` and `catch()` independently.)
 
-### `assertThat().withMessage('failing message).is()` (internal testing only)
+### `assertThat().withMessage('failing message).is()`
+
+Used to tailor the message provided on a failure.
 
 The `withMessage()` method defines the failing message for an assertion.
 It is after `assertThat()` and is before `is()`, `throwsError()`, etc.
