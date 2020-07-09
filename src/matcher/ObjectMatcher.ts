@@ -25,6 +25,8 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
         this.expected.forEach(e => {
             const result = e.mismatches(context, mismatched, actual);
             if (result.passed()) {
+                // todo Don't add passes to the results if this.expected.length > 6
+                // todo Instead, put in '...'
                 results[e.fieldName] = actual[e.fieldName];
             } else {
                 results[e.fieldName] = result.diff;

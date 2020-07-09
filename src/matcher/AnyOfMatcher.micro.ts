@@ -20,7 +20,11 @@ describe("AnyOfMatcher:", () => {
         });
 
         it("Mismatches with multiple anyOf", () => {
-            assertThat("ab").failsWith(match.anyOf([match.instanceOf(Date), match.instanceOf(Date)]), match.any())
+            assertThat("ab").failsWith(
+                match.anyOf([match.instanceOf(Date), match.instanceOf(Date)]), match.any())
+            assertThat({f: "ab", g: 3})
+                .failsWith(match.anyOf([match.instanceOf(Date), {f: "a", g: 3}]),
+                    {[MatchResult.was]: {f: "ab", g: 3}, [MatchResult.expected]: {f: "a", g: 3}})
         });
 
         it("Mismatches: errors", () => {
@@ -53,6 +57,17 @@ describe("AnyOfMatcher:", () => {
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
                 `{actual: false, expected: {anyOf: [{instanceOf: "Date"}, "ofType.number"]}}`
+            ]);
+        });
+
+        it("fails and just mentions the single match that was cloese", () => {
+            const expected = match.anyOf([
+                match.instanceOf(Date),
+                {f:3, g:4}]);
+            const validation = validateThat({f:3}).satisfies(expected);
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                `{actual: {f: 3}, expected: {f: 3, g: 4}}`
             ]);
         });
     });

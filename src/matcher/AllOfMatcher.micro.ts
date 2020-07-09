@@ -4,7 +4,6 @@ import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
 import {AllOfMatcher} from "./AllOfMatcher";
 import {validateThat} from "../validateThat";
-import {PrettyPrinter} from "..";
 
 describe("AllOfMatcher:", () => {
     describe("assertThat():", () => {
@@ -16,7 +15,7 @@ describe("AllOfMatcher:", () => {
         it("Mismatches", () => {
             assertThat(3)
                 .failsWith(match.allOf([match.instanceOf(Date), 3]),
-                    {[MatchResult.was]: 3, [MatchResult.expected]: {allOf: [{instanceOf: "Date"}, 3]}});
+                    {[MatchResult.was]: 3, [MatchResult.expected]: {instanceOf: "Date"}});
         });
 
         it("Mismatches: errors", () => {
