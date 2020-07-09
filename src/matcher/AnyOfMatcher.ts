@@ -9,7 +9,7 @@ export class AnyOfMatcher<T> extends DiffMatcher<T> {
     }
 
     mismatches(context: string, mismatched: Array<Mismatched>, actual: T): MatchResult {
-        let compares = 0;
+        let compares = 1;
         let matches = 0;
         let bestMatchRate = 0.0;
         for (let m of this.matchers) {
@@ -17,12 +17,13 @@ export class AnyOfMatcher<T> extends DiffMatcher<T> {
             if (matchResult.passed()) {
                 return MatchResult.good(matchResult.compares);
             }
-            if (matchResult.matchRate > bestMatchRate) {
-                bestMatchRate = matchResult.matchRate;
-                compares = matchResult.compares;
-                matches = matchResult.matches;
-            }
+            // if (matchResult.matchRate > bestMatchRate) {
+            //     bestMatchRate = matchResult.matchRate;
+            // }
+            compares += matchResult.compares;
+            matches += matchResult.matches;
         }
+        // if (bestMatchRate > 0) {} // todo Use m.describe() on the best match.
         mismatched.push(Mismatched.make(context, actual, this.describe()));
         return MatchResult.wasExpected(actual, this.describe(), compares, matches);
     }

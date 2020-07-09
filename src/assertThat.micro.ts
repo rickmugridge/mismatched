@@ -41,7 +41,7 @@ describe("assertThat():", () => {
     describe("isAnyOf():", () => {
         it("Matches", () => {
             assertThat(new Date()).isAnyOf([match.isEquals(3), match.instanceOf(Date)]);
-            assertThat(4).isAnyOf([match.isEquals(3), match.instanceOf(Date)]);
+            assertThat(4).isAnyOf([match.isEquals(4), match.instanceOf(Date)]);
         });
 
         it("Mismatches", () => {
