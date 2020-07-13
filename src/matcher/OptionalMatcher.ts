@@ -13,11 +13,7 @@ export class OptionalMatcher<T> extends DiffMatcher<T> {
         if (isUndefined(actual)) {
             return MatchResult.good(1);
         }
-        let matchResult = this.matcher.mismatches(context, mismatched, actual);
-        if (matchResult.passed()) {
-            return MatchResult.good(matchResult.compares);
-        }
-        return MatchResult.wasExpected(actual, this.matcher.describe(), matchResult.compares, matchResult.matches);
+        return this.matcher.mismatches(context, mismatched, actual);
     }
 
     describe(): any {

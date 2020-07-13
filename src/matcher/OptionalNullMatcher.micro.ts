@@ -42,7 +42,7 @@ describe("OptionalNullMatcher:", () => {
         });
 
         it("succeeds when null", () => {
-            const validation = validateThat({f:null}).satisfies(expected);
+            const validation = validateThat({f: null}).satisfies(expected);
             assertThat(validation.passed()).is(true);
         });
 
@@ -53,5 +53,15 @@ describe("OptionalNullMatcher:", () => {
                 `{"actual.f": "wrong", expected: "ofType.number"}`
             ]);
         });
+
+        it("Fails with lower-level diff", () => {
+            const validation = validateThat({name: {title: 4}}).satisfies({
+                name: match.optionalNull(match.obj.match({title: 's'}))
+            });
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                '{"actual.name.title": 4, expected: "s"}'
+            ]);
+         });
     });
 });
