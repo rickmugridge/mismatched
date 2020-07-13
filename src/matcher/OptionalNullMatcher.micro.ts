@@ -5,21 +5,22 @@ import {Mismatched} from "./Mismatched";
 import {DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
-describe("OptionalMatcher:", () => {
+describe("OptionalNullMatcher:", () => {
     describe("assertThat():", () => {
         it("Matches", () => {
-            assertThat(3).is(match.optional(3));
-            assertThat(undefined).is(match.optional(3));
+            assertThat(3).is(match.optionalNull(3));
+            assertThat(undefined).is(match.optionalNull(3));
+            assertThat(null).is(match.optionalNull(3));
         });
 
         it("Mismatches", () => {
-            assertThat(4).failsWith(match.optional(3),
+            assertThat(4).failsWith(match.optionalNull(3),
                 {[MatchResult.was]: 4, [MatchResult.expected]: 3});
         });
 
         it("Mismatches: errors", () => {
             const mismatched: Array<Mismatched> = [];
-            const matcher = match.optional(3);
+            const matcher = match.optionalNull(3);
             (matcher as DiffMatcher<any>).mismatches("actual", mismatched, 4);
             assertThat(mismatched).is([
                 {actual: 4, expected: 3}
@@ -28,7 +29,7 @@ describe("OptionalMatcher:", () => {
     });
 
     describe("validateThat():", () => {
-        const expected = {f: match.optional(match.ofType.number())};
+        const expected = {f: match.optionalNull(match.ofType.number())};
 
         it("succeeds", () => {
             const validation = validateThat({f: 3}).satisfies(expected);
@@ -37,6 +38,11 @@ describe("OptionalMatcher:", () => {
 
         it("succeeds when missing", () => {
             const validation = validateThat({}).satisfies(expected);
+            assertThat(validation.passed()).is(true);
+        });
+
+        it("succeeds when null", () => {
+            const validation = validateThat({f:null}).satisfies(expected);
             assertThat(validation.passed()).is(true);
         });
 

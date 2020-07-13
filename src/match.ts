@@ -20,6 +20,7 @@ import {ArrayEveryMatcher} from "./matcher/ArrayEveryMatcher";
 import {ArrayLengthMatcher} from "./matcher/ArrayLengthMatcher";
 import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 import {DiffMatcher} from "./matcher/DiffMatcher";
+import {OptionalNullMatcher} from "./matcher/OptionalNullMatcher";
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -54,6 +55,7 @@ export const match = {
     anyOf: (matchers: Array<DiffMatcher<any> | any>) => AnyOfMatcher.make(matchers),
     allOf: (matchers: Array<DiffMatcher<any> | any>) => AllOfMatcher.make(matchers),
     optional: (matcher: DiffMatcher<any> | any) => OptionalMatcher.make(matcher),
+    optionalNull: (matcher: DiffMatcher<any> | any) => OptionalNullMatcher.make(matcher),
     not: (matcher: DiffMatcher<any> | any) => NotMatcher.make(matcher),
     instanceOf: (expected: Function) => instanceOfMatcher.instanceOf(expected),
     ofType: {

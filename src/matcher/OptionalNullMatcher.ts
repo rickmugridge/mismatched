@@ -1,16 +1,16 @@
 import {DiffMatcher} from "./DiffMatcher";
-import {isUndefined} from "util";
+import {isNull, isUndefined} from "util";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "..";
 import {Mismatched} from "./Mismatched";
 
-export class OptionalMatcher<T> extends DiffMatcher<T> {
+export class OptionalNullMatcher<T> extends DiffMatcher<T> {
     private constructor(private matcher: DiffMatcher<T>) {
         super();
     }
 
     mismatches(context: string, mismatched: Array<Mismatched>, actual: T): MatchResult {
-        if (isUndefined(actual)) {
+        if (isUndefined(actual) || isNull(actual)) {
             return MatchResult.good(1);
         }
         let matchResult = this.matcher.mismatches(context, mismatched, actual);
@@ -21,10 +21,10 @@ export class OptionalMatcher<T> extends DiffMatcher<T> {
     }
 
     describe(): any {
-        return {optional: this.matcher.describe()};
+        return {optionalNull: this.matcher.describe()};
     }
 
     static make<T>(matcher: DiffMatcher<T> | any): any {
-        return new OptionalMatcher(matchMaker(matcher));
+        return new OptionalNullMatcher(matchMaker(matcher));
     }
 }

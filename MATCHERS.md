@@ -42,6 +42,7 @@ export const match = {
     anyOf: AnyOfMatcher.make,
     allOf: AllOfMatcher.make,
     optional: OptionalMatcher.make,
+    optionalNull: OptionalNullMatcher.make,
     not: NotMatcher.make,
     instanceOf:instanceOfMatcher.instanceOf,
     ofType: {
@@ -121,23 +122,23 @@ This is used by default when matching a primitive type (other than a string or N
         });
 ```
 
-### It Matcher: Same object
+### ItIs Matcher: Same object
 
-This passes if the same object is provided (ie, tested by `===`).
+This passes if the very same object or value is provided (ie, tested by `===`).
 
 For examples:
 
 ```
     it('object itself', () => {
         const actual = {a: "b"};
-        assertThat(actual).is(match.it(actual));
-        assertThat(actual).isNot(match.it({a: "b"}));
+        assertThat(actual).is(match.itIs(actual));
+        assertThat(actual).isNot(match.itIs({a: "b"}));
     });
 
     it('array itself', () => {
         const actual = [1, 2, 3];
-        assertThat(actual).is(match.it(actual));
-        assertThat(actual).isNot(match.it([1, 2, 3]));
+        assertThat(actual).is(match.itIs(actual));
+        assertThat(actual).isNot(match.itIs([1, 2, 3]));
     });
 ```
 ### Array Matchers
@@ -272,6 +273,8 @@ For example:
 
 ### String Matcher
 
+Various matchers on strings.
+
 For examples:
 
 ```
@@ -299,6 +302,8 @@ describe("string:", () => {
 ```
 
 ### Number Matchers
+
+Various matchers on numbers.
 
 For examples:
 
@@ -331,6 +336,8 @@ describe("NumberMatcher:", () => {
 
 ### RegExp Matcher
 
+A matcher on regular expressions.
+
 For example:
 
 ```
@@ -341,6 +348,8 @@ For example:
 ```
 
 ### Any Matcher
+
+Matches anything at all.
 
 For example:
 
@@ -354,6 +363,8 @@ For example:
 
 ### AnyOf Matcher
 
+Matches any one of the given matchers.
+
 For example:
 
 ```
@@ -364,6 +375,8 @@ For example:
 ```
 
 ### AllOf Matcher
+
+Matches all of the given matchers.
 
 For example:
 
@@ -376,6 +389,8 @@ For example:
 
 ### Optional Matcher
 
+Matches a value that is optional (undefined) but if it's there it must satisfy the matcher supplied
+
 For example:
 
 ```
@@ -385,7 +400,22 @@ For example:
     });
 ```
 
+### OptionalNull Matcher
+
+Matches a value that is optional (undefined or null) but if it's there it must satisfy the matcher supplied
+
+For example:
+
+```
+    it("Matches", () => {
+        assertThat(3).is(match.optionalNull(3));
+        assertThat(null).is(match.optionalNull(3));
+    });
+```
+
 ### Not Matcher
+
+The given matcher is expected to fail.
 
 For example:
 
@@ -400,6 +430,8 @@ For example:
 
 ### InstanceOf Matcher
 
+Checks that the value is an instance of the given class.
+
 For example:
 
 ```
@@ -410,6 +442,8 @@ For example:
 ```
 
 ### OfType Matcher
+
+Checks that the value is one of the "primitive" types.
 
 For examples:
 

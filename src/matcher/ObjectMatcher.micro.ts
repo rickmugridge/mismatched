@@ -184,12 +184,35 @@ describe("obj.match:", () => {
             assertThat(validationResult.passed()).is(true);
         });
 
+        it("fails on one field", () => {
+            const validationResult = validateThat({f: "2", g: true}).satisfies(expected);
+            assertThat(validationResult.passed()).is(false);
+            assertThat(validationResult.errors).is([
+                `{"actual.f": "2", expected: "ofType.number"}`
+            ]);
+        });
+
         it("fails", () => {
             const validationResult = validateThat({f: "2", g: 3}).satisfies(expected);
             assertThat(validationResult.passed()).is(false);
             assertThat(validationResult.errors).is([
                 `{"actual.f": "2", expected: "ofType.number"}`,
                 `{"actual.g": 3, expected: "ofType.boolean"}`
+            ]);
+        });
+
+        it("fails on one field with optionalNull()", () => {
+            const expected = {
+                f: {
+                    h: match.optionalNull({j: match.ofType.number()}),
+                    i: 4
+                },
+                g: match.ofType.boolean()
+            };
+            const validationResult = validateThat({f: {h: {j: "2"}, i: 4}, g: true}).satisfies(expected);
+            assertThat(validationResult.passed()).is(false);
+            assertThat(validationResult.errors).is([
+                `{"actual.f.h.j": "2", expected: "ofType.number"}`
             ]);
         });
     });
