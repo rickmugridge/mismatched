@@ -3,10 +3,15 @@ import {MatchResult} from "../MatchResult";
 import {ofType} from "../ofType";
 import {PredicateMatcher} from "./PredicateMatcher";
 import {Mismatched} from "./Mismatched";
+import {isString} from "util";
 
 export class StringMatcher extends DiffMatcher<string> {
     private constructor(private expected: string) {
         super();
+    }
+
+    static make(expected: string): any {
+        return new StringMatcher(expected);
     }
 
     mismatches(context: string, mismatched: Array<Mismatched>, actual: any): MatchResult {
@@ -23,19 +28,18 @@ export class StringMatcher extends DiffMatcher<string> {
     describe(): any {
         return this.expected;
     }
-
-    static make(expected: string): any {
-        return new StringMatcher(expected);
-    }
 }
 
 export const stringMatcher = {
     match: (expected: string) => StringMatcher.make(expected),
-    startsWith: (expected: string) => PredicateMatcher.make(value => value.startsWith(expected),
+    startsWith: (expected: string) => PredicateMatcher.make(value =>
+        isString(value) && value.startsWith(expected),
         {"string.startsWith": expected}),
-    endsWith: (expected: string) => PredicateMatcher.make(value => value.endsWith(expected),
+    endsWith: (expected: string) => PredicateMatcher.make(value =>
+        isString(value) && value.endsWith(expected),
         {"string.endsWith": expected}),
-    includes: (expected: string) => PredicateMatcher.make(value => value.includes(expected),
+    includes: (expected: string) => PredicateMatcher.make(value =>
+        isString(value) && value.includes(expected),
         {"string.includes": expected}),
 
 };
