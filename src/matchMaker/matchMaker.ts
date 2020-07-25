@@ -10,6 +10,7 @@ import {ErrorMatcher} from "../matcher/ErrorMatcher";
 import {PrettyPrinter} from "../prettyPrint/PrettyPrinter";
 import {AnyMatcher} from "../matcher/AnyMatcher";
 import {CustomiseMismatcher} from "./CustomiseMismatcher";
+import {SetMatcher} from "../matcher/SetMatcher";
 
 export function matchMaker(expected: DiffMatcher<any> | any): DiffMatcher<any> {
     if (ofType.isMatcher(expected)) {
@@ -36,6 +37,12 @@ export function matchMaker(expected: DiffMatcher<any> | any): DiffMatcher<any> {
     }
     if (ofType.isError(expected)) {
         return ErrorMatcher.make(IsEqualsMatcher.make(expected.message));
+    }
+    if (ofType.isSet(expected)) {
+        return SetMatcher.make(expected);
+    }
+    if (ofType.isMap(expected)) {
+        return SetMatcher.make(expected);
     }
     if (ofType.isObject(expected)) {
         const matcher = CustomiseMismatcher.customMatcherWhenToUses

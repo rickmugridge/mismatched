@@ -10,41 +10,45 @@ This const provides a good summary of the matchers:
 
 ```
 export const match = {
-    isEquals: IsEqualsMatcher.make,
-    it: ItMatcher.make,
+    isEquals: (expected: any) => IsEqualsMatcher.make(expected),
+    itIs: (expected: any) => ItIsMatcher.make(expected),
     array: {
-        match: ArrayMatcher.make,
-        contains: ArrayContainsMatcher.make,
-        every: ArrayEveryMatcher.make,
-        length: ArrayLengthMatcher.make
+        match: (expected: Array<DiffMatcher<any> | any>) => ArrayMatcher.make(expected),
+        contains: (expected: DiffMatcher<any> | any) => ArrayContainsMatcher.make(expected),
+        every: (expected: DiffMatcher<any> | any) => ArrayEveryMatcher.make(expected),
+        length: (expected: number) => ArrayLengthMatcher.make(expected)
+    },
+    set: {
+        match: (expected: Set<DiffMatcher<any> | any>) => SetMatcher.make(expected),
+        subset: (expected: Set<DiffMatcher<any> | any>) => SetMatcher.make(expected, true),
     },
     obj: {
-        match: ObjectMatcher.make,
-        has: ObjectSomeMatcher.make
+        match: (obj: object) => ObjectMatcher.make(obj),
+        has: (expected: Array<DiffMatcher<any>> | object) => ObjectSomeMatcher.make(expected),
     },
     string: {
-        match: stringMatcher.match,
-        startsWith: stringMatcher.startsWith,
-        endsWith: stringMatcher.endsWith,
-        includes: stringMatcher.includes
+        match: (expected: string) => StringMatcher.make(expected),
+        startsWith: (expected: string) => stringMatcher.startsWith(expected),
+        endsWith: (expected: string) => stringMatcher.endsWith(expected),
+        includes: (expected: string) => stringMatcher.includes(expected)
     },
     number: {
-        nan: numberMatcher.nan,
-        less: numberMatcher.less,
-        lessEqual: numberMatcher.lessEqual,
-        greater: numberMatcher.greater,
-        greaterEqual: numberMatcher.greaterEqual
+        nan: () => numberMatcher.nan(),
+        less: (expected: number) => numberMatcher.less(expected),
+        lessEqual: (expected: number) => numberMatcher.lessEqual(expected),
+        greater: (expected: number) => numberMatcher.greater(expected),
+        greaterEqual: (expected: number) => numberMatcher.greaterEqual(expected)
     },
     regEx: {
-        match: RegExpMatcher.make
+        match: (expected: RegExp) => RegExpMatcher.make(expected)
     },
-    any: AnyMatcher.make,
-    anyOf: AnyOfMatcher.make,
-    allOf: AllOfMatcher.make,
-    optional: OptionalMatcher.make,
-    optionalNull: OptionalNullMatcher.make,
-    not: NotMatcher.make,
-    instanceOf:instanceOfMatcher.instanceOf,
+    any: () => AnyMatcher.make(),
+    anyOf: (matchers: Array<DiffMatcher<any> | any>) => AnyOfMatcher.make(matchers),
+    allOf: (matchers: Array<DiffMatcher<any> | any>) => AllOfMatcher.make(matchers),
+    optional: (matcher: DiffMatcher<any> | any) => OptionalMatcher.make(matcher),
+    optionalNull: (matcher: DiffMatcher<any> | any) => OptionalNullMatcher.make(matcher),
+    not: (matcher: DiffMatcher<any> | any) => NotMatcher.make(matcher),
+    instanceOf: (expected: Function) => instanceOfMatcher.instanceOf(expected),
     ofType: {
         object: () => PredicateMatcher.make(ofType.isObject, "ofType.object"),
         array: () => PredicateMatcher.make(ofType.isArray, "ofType.array"),
@@ -146,7 +150,7 @@ For examples:
 The `array` matchers allow for "exact" and partial matching on an array. 
 Embedded matchers may used within the array elements.
 
-#### `array.match` 
+#### `match.array.match` 
 
 This used by default whenever we try to match a literal array, as shown in the examples below.
 This matcher expects that each of the elements of the actual array can be matched by a corresponding matcher/literal.
@@ -167,7 +171,7 @@ For example:
     });
 ```
 
-#### `array.contains` 
+#### `match.array.contains` 
 
 This matcher expects that the actual array contains the expected element. It may contain other elements.
 
@@ -179,7 +183,7 @@ For example:
     });
 ```
 
-#### `array.every` 
+#### `match.array.every` 
 
 This matcher expects that all elements of the actual array matches against the matcher.
 
@@ -196,15 +200,52 @@ For example:
     });
 ```
 
-#### `array.length` 
+#### `match.array.length` 
 
 This matcher expects that the length of the actual array to be the expected value.
 
 For example:
 
 ```
-    it("array.length", () => {
-        assertThat([-1, 2]).is(match.array.length(2));
+     it("array.length", () => {
+         assertThat([-1, 2]).is(match.array.length(2));
+     });
+```
+
+### Set Matchers
+
+The matches whole Sets and subsets.
+
+For example:
+
+```
+    it('matches', () => {
+        const actual = new Set([1, 2, 3]);
+        assertThat(actual).is(match.set.match(new Set([1, 2, 3])));
+    });
+
+    it('subset', () => {
+        const actual = new Set([1, 2, 3]);
+        assertThat(actual).is(match.set.subset(new Set([1, 2, 3])));
+        assertThat(actual).is(match.set.subset(new Set([1, 2])));
+    });
+```
+
+Care is needed when using general matchers, however. 
+The following fails because the `match.any()` matches whatever it finds first:
+
+```
+   it('matches wrong', () => {
+        const actual = new Set([1, 2, 3]);
+        assertThat(actual).is(match.set.match(new Set([match.any(), 1, 2])));
+    });
+```
+
+So put the most general matcher last:
+```
+    it('matches right', () => {
+        const actual = new Set([1, 2, 3]);
+        assertThat(actual).is(match.set.match(new Set([1, 2, match.any()])));
     });
 ```
 
@@ -213,7 +254,7 @@ For example:
 The `obj` matchers allow for "exact" and partial matching on an object. 
 Embedded matchers may used within the fields of the object.
 
-#### `obj.match` 
+#### `match.obj.match` 
 
 This used by default whenever we try to match a literal object, as shown in the first example below.
 This matcher expects that each of the fields of the actual object can be matched by a corresponding matcher/literal.
@@ -243,7 +284,7 @@ For example:
     });
 ```
 
-#### `obj.has` 
+#### `match.obj.has` 
 
 This matcher expects that some of the elements of the actual array can be matched by a corresponding matcher/literal.
 

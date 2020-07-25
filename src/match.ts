@@ -21,6 +21,7 @@ import {ArrayLengthMatcher} from "./matcher/ArrayLengthMatcher";
 import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 import {DiffMatcher} from "./matcher/DiffMatcher";
 import {OptionalNullMatcher} from "./matcher/OptionalNullMatcher";
+import {SetMatcher} from "./matcher/SetMatcher";
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -30,6 +31,10 @@ export const match = {
         contains: (expected: DiffMatcher<any> | any) => ArrayContainsMatcher.make(expected),
         every: (expected: DiffMatcher<any> | any) => ArrayEveryMatcher.make(expected),
         length: (expected: number) => ArrayLengthMatcher.make(expected)
+    },
+    set: {
+        match: (expected: Set<DiffMatcher<any> | any>) => SetMatcher.make(expected),
+        subset: (expected: Set<DiffMatcher<any> | any>) => SetMatcher.make(expected, true),
     },
     obj: {
         match: (obj: object) => ObjectMatcher.make(obj),

@@ -14,9 +14,16 @@ function isArray(v: any): boolean {
     return Array.isArray(v);
 }
 
-
 function isFunction(v: any): boolean {
     return typeof v === "function";
+}
+
+function isSet(v: any): boolean {
+    return v instanceof Set;
+}
+
+function isMap(v: any): boolean {
+    return v instanceof Map;
 }
 
 function isString(v: any): boolean {
@@ -53,6 +60,8 @@ function isError(v: any): boolean {
 
 export const ofType = {
     isArray,
+    isSet,
+    isMap,
     isBoolean,
     isError,
     isFunction,

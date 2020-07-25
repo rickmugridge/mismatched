@@ -14,10 +14,14 @@ export const defaultLineWidth = 80;
 export const defaultMaxComplexity = 30;
 
 export class PrettyPrinter {
-    selfReference = new SelfReferenceChecker();
     static symbolForPseudoCall = Symbol("pseudoCall");
     static symbolForMockName: any | undefined;
     private static customPrettyPrinters = new Map<DiffMatcher<any>, (t: any) => string>();
+    selfReference = new SelfReferenceChecker();
+
+    private constructor(private lineWidth: number,
+                        private maxComplexity: number) {
+    }
 
     static addCustomPrettyPrinter(matcher: DiffMatcher<any>, toString: (t: any) => string) {
         this.customPrettyPrinters.set(matcher, toString);
@@ -42,8 +46,28 @@ export class PrettyPrinter {
         return PrettyPrinter.make().logToConsole(value);
     }
 
-    private constructor(private lineWidth: number,
-                        private maxComplexity: number) {
+    static functionDetails(fn: Function) {
+        try { // who knows when some weird JS will make this fail
+            if (fn.toString) {
+                let details = fn.toString();
+                let fullFunction = false;
+                if (details.startsWith("function ")) {
+                    fullFunction = true;
+                    details = details.substring("function ".length);
+                }
+                let bracket = details.indexOf(")");
+                if (bracket < 0) {
+                    bracket = 30;
+                }
+                details = details.substring(0, bracket + 1);
+                if (fullFunction) {
+                    return {function: details}
+                }
+                return {arrow: details};
+            }
+        } catch (e) {
+        }
+        return {function: "no details"};
     }
 
     render(value: any): string {
@@ -98,7 +122,13 @@ export class PrettyPrinter {
                 return new PseudoCallTile(callName, args);
             }
             if (value instanceof Date) {
-                return new SimpleTile('Date(' + JSON.stringify(value) + ')');
+                return new SimpleTile('new Date(' + JSON.stringify(value) + ')');
+            }
+            if (value instanceof Set) {
+                return new PseudoCallTile('new Set', Array.from(value).map(v => this.tile(context, v)), true);
+            }
+            if (value instanceof Map) {
+                return new PseudoCallTile('new Map', Array.from(value.entries()).map(v => this.tile(context, v)), true);
             }
             if (value instanceof Error) {
                 // Error doesn't have a proper property 'message'
@@ -118,30 +148,6 @@ export class PrettyPrinter {
         } catch (e) {
             return new SimpleTile(e.message); // todo Change this to an auto-coloured Tile
         }
-    }
-
-    static functionDetails(fn: Function) {
-        try { // who knows when some weird JS will make this fail
-            if (fn.toString) {
-                let details = fn.toString();
-                let fullFunction = false;
-                if (details.startsWith("function ")) {
-                    fullFunction = true;
-                    details = details.substring("function ".length);
-                }
-                let bracket = details.indexOf(")");
-                if (bracket < 0) {
-                    bracket = 30;
-                }
-                details = details.substring(0, bracket + 1);
-                if (fullFunction) {
-                    return {function: details}
-                }
-                return {arrow: details};
-            }
-        } catch (e) {
-        }
-        return {function: "no details"};
     }
 }
 

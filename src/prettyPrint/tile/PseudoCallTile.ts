@@ -6,7 +6,7 @@ export class PseudoCallTile implements Tile {
     stringLength: number;
     complexity: number;
 
-    constructor(private callName: string, private args: Array<Tile> | undefined) {
+    constructor(private callName: string, private args: Array<Tile> | undefined, private withSquareBrackets=false) {
         let argsStringLength = args ? args.reduceRight((accumulator, current) =>
             accumulator + current.stringLength + 2, callName.length) : 0;
         this.stringLength = Math.max(3, argsStringLength);
@@ -21,9 +21,9 @@ export class PseudoCallTile implements Tile {
         }
         appender.add(this.callName);
         if (this.args) {
-            appender.add("(");
+            appender.add(this.withSquareBrackets ? "([" :"(");
             printTiles(this.args, appender);
-            appender.add(")");
+            appender.add(this.withSquareBrackets ? "])" :")");
         }
     }
 }

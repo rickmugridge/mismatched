@@ -274,7 +274,19 @@ describe("PrettyPrinter():", () => {
     it("Date", () => {
         prettyPrinter = PrettyPrinter.make();
         assertThat(prettyPrinter.render({d: new Date(1566509915958), e: 3}))
-            .is("{d: Date(\"2019-08-22T21:38:35.958Z\"), e: 3}")
+            .is("{d: new Date(\"2019-08-22T21:38:35.958Z\"), e: 3}")
+    });
+
+    it("Set", () => {
+        prettyPrinter = PrettyPrinter.make();
+        assertThat(prettyPrinter.render(new Set([1, 2, 3])))
+            .is("new Set(1, 2, 3)")
+    });
+
+    it("Map", () => {
+        prettyPrinter = PrettyPrinter.make();
+        assertThat(prettyPrinter.render(new Map([[1, 10], [2, 20], [3, 30]])))
+            .is("new Map([1, 10], [2, 20], [3, 30])")
     });
 
     describe("function", () => {
