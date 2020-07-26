@@ -8,24 +8,24 @@ describe("set:", () => {
         describe("assertThat():", () => {
             it('matches', () => {
                 const actual = new Set([1, 2, 3]);
-                assertThat(actual).is(match.set.match(new Set([1, 2, 3])));
+                assertThat(actual).is(match.aSet.match(new Set([1, 2, 3])));
             });
 
             it('matches right', () => {
                 const actual = new Set([1, 2, 3]);
-                assertThat(actual).is(match.set.match(new Set([1, 2, match.any()])));
+                assertThat(actual).is(match.aSet.match(new Set([1, 2, match.any()])));
             });
 
             it('does not match: length difference', () => {
                 const actual = new Set([1, 2, 3]);
-                assertThat(actual).failsWith(match.set.match(new Set([1, 2])),
+                assertThat(actual).failsWith(match.aSet.match(new Set([1, 2])),
                     {[MatchResult.was]: actual, [MatchResult.expected]: {lengthExpected: 2}});
             });
 
             it('does not match: values mismatch', () => {
                 const actual = new Set([1, 2, 3]);
                 const expected = new Set([1, 2, 4]);
-                assertThat(actual).failsWith(match.set.match(expected),
+                assertThat(actual).failsWith(match.aSet.match(expected),
                     {[MatchResult.was]: actual, [MatchResult.expected]: expected});
             });
 
@@ -86,20 +86,20 @@ describe("set:", () => {
         describe("assertThat():", () => {
             it('subset', () => {
                 const actual = new Set([1, 2, 3]);
-                assertThat(actual).is(match.set.subset(new Set([1, 2, 3])));
-                assertThat(actual).is(match.set.subset(new Set([1, 2])));
+                assertThat(actual).is(match.aSet.subset(new Set([1, 2, 3])));
+                assertThat(actual).is(match.aSet.subset(new Set([1, 2])));
             });
 
             it('does not match: values differ', () => {
                 const actual = new Set([1, 2, 3]);
-                assertThat(actual).failsWith(match.set.subset(new Set([1, 4])),
+                assertThat(actual).failsWith(match.aSet.subset(new Set([1, 4])),
                     {[MatchResult.was]: actual, [MatchResult.expected]: {subset: new Set([1, 4])}});
             });
 
             it('does not match: too many values expected', () => {
                 const actual = new Set([1, 2, 3]);
                 const expected = new Set([1, 2, 3, 4]);
-                assertThat(actual).failsWith(match.set.subset(expected),
+                assertThat(actual).failsWith(match.aSet.subset(expected),
                     {[MatchResult.was]: actual, [MatchResult.expected]: {subset: expected}});
             });
         });
@@ -110,14 +110,14 @@ describe("set:", () => {
 
             it("succeeds", () => {
                 const actual = new Set([1, new Set([4])]);
-                const validation = validateThat(actual).satisfies(match.set.subset(expected));
+                const validation = validateThat(actual).satisfies(match.aSet.subset(expected));
                 assertThat(validation.errors).is([]);
                 assertThat(validation.passed()).is(true);
             });
 
             it("fails as incorrect set", () => {
                 const actual = new Set([1, new Set(["s"])]);
-                const validation = validateThat(actual).satisfies(match.set.subset(expected));
+                const validation = validateThat(actual).satisfies(match.aSet.subset(expected));
                 assertThat(validation.passed()).is(false);
                 assertThat(validation.errors).is([
                     '{actual: new Set([1, new Set(["s"])]), expected: {subset: new Set(["ofType.number", new Set(["ofType.number"])])}}'

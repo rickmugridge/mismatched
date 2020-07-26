@@ -32,7 +32,7 @@ export const match = {
         every: (expected: DiffMatcher<any> | any) => ArrayEveryMatcher.make(expected),
         length: (expected: number) => ArrayLengthMatcher.make(expected)
     },
-    set: {
+    aSet: {
         match: (expected: Set<DiffMatcher<any> | any>) => SetMatcher.make(expected),
         subset: (expected: Set<DiffMatcher<any> | any>) => SetMatcher.make(expected, true),
     },

@@ -18,7 +18,7 @@ export const match = {
         every: (expected: DiffMatcher<any> | any) => ArrayEveryMatcher.make(expected),
         length: (expected: number) => ArrayLengthMatcher.make(expected)
     },
-    set: {
+    aSet: {
         match: (expected: Set<DiffMatcher<any> | any>) => SetMatcher.make(expected),
         subset: (expected: Set<DiffMatcher<any> | any>) => SetMatcher.make(expected, true),
     },
@@ -221,13 +221,13 @@ For example:
 ```
     it('matches', () => {
         const actual = new Set([1, 2, 3]);
-        assertThat(actual).is(match.set.match(new Set([1, 2, 3])));
+        assertThat(actual).is(match.aSet.match(new Set([1, 2, 3])));
     });
 
     it('subset', () => {
         const actual = new Set([1, 2, 3]);
-        assertThat(actual).is(match.set.subset(new Set([1, 2, 3])));
-        assertThat(actual).is(match.set.subset(new Set([1, 2])));
+        assertThat(actual).is(match.aSet.subset(new Set([1, 2, 3])));
+        assertThat(actual).is(match.aSet.subset(new Set([1, 2])));
     });
 ```
 
@@ -237,7 +237,7 @@ The following fails because the `match.any()` matches whatever it finds first:
 ```
    it('matches wrong', () => {
         const actual = new Set([1, 2, 3]);
-        assertThat(actual).is(match.set.match(new Set([match.any(), 1, 2])));
+        assertThat(actual).is(match.aSet.match(new Set([match.any(), 1, 2])));
     });
 ```
 
