@@ -33,8 +33,8 @@ export const match = {
         length: (expected: number) => ArrayLengthMatcher.make(expected)
     },
     aSet: {
-        match: (expected: Set<DiffMatcher<any> | any>) => SetMatcher.make(expected),
-        subset: (expected: Set<DiffMatcher<any> | any>) => SetMatcher.make(expected, true),
+        match: (expected: Set<DiffMatcher<any>> | Set<any>| Array<any>| Map<any,any>) => SetMatcher.make(expected),
+        subset: (expected: Set<DiffMatcher<any>> | Set<any>| Array<any>| Map<any,any>) => SetMatcher.make(expected, true),
     },
     obj: {
         match: (obj: object) => ObjectMatcher.make(obj),

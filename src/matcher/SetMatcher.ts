@@ -9,19 +9,23 @@ export class SetMatcher<T> extends DiffMatcher<Set<T>> {
         super();
     }
 
-    static make<T>(expected: Set<DiffMatcher<T> | any>, subset = false): any {
+    static make<T>(expected: Set<DiffMatcher<T>> | Set<T> | Array<T> | Map<any, any>, subset = false): any {
+        if (!expected.values || !ofType.isFunction(expected.values)) {
+            throw new Error("SetMatcher needs a Set, Array or Map")
+        }
         const elementMatchers = Array.from(expected.values()).map(e => matchMaker(e))
         return new SetMatcher<T>(new Set(elementMatchers), subset);
     }
 
-    mismatches(context: string, mismatched: Array<Mismatched>, actual: Set<T>): MatchResult {
-        if (ofType.isSet(actual)) {
+    mismatches(context: string, mismatched: Array<Mismatched>, actual: Set<T> | Array<T> | Map<T, T>): MatchResult {
+        if (ofType.isSet(actual) || ofType.isArray(actual) || ofType.isMap(actual)) {
             const expected = Array.from(this.expected)
-            if (!this.subset && actual.size !== expected.length) {
+            const actualValues = Array.from(actual.values());
+            if (!this.subset && actualValues.length !== expected.length) {
                 mismatched.push(Mismatched.make(context, actual, {length: expected.length}));
                 return MatchResult.wasExpected(actual, {lengthExpected: expected.length}, 1, 0);
             }
-            const copyActualSet = new Set(actual)
+            const copyActualSet = new Set(actualValues)
             let compares = 0;
             let matches = 0;
             for (const e of this.expected) {

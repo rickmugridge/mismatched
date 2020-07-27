@@ -7,13 +7,16 @@ describe("set:", () => {
     describe("set.match:", () => {
         describe("assertThat():", () => {
             it('matches', () => {
-                const actual = new Set([1, 2, 3]);
-                assertThat(actual).is(match.aSet.match(new Set([1, 2, 3])));
+                assertThat(new Set([1, 2, 3])).is(match.aSet.match(new Set([1, 2, 3])));
+                assertThat([1, 2, 3]).is(match.aSet.match([2, 1, 3]));
+                assertThat(new Set([1, 2, 3])).is(match.aSet.match([3, 2, 1]));
+                assertThat([[1, 1], [2, 2], [3, 3]]).is(match.aSet.match([[1, 1], [2, 2], [3, 3]]));
             });
 
             it('matches right', () => {
-                const actual = new Set([1, 2, 3]);
-                assertThat(actual).is(match.aSet.match(new Set([1, 2, match.any()])));
+                assertThat(new Set([1, 2, 3])).is(match.aSet.match(new Set([1, 2, match.any()])));
+                assertThat([1, 2, 3]).is(match.aSet.match([2, 1, match.any()]));
+                assertThat([[1, 1], [2, 2], [3, 3]]).is(match.aSet.match([[1, 1], [2, 2], match.ofType.array()]));
             });
 
             it('does not match: length difference', () => {
