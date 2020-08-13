@@ -22,6 +22,7 @@ import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 import {DiffMatcher} from "./matcher/DiffMatcher";
 import {OptionalNullMatcher} from "./matcher/OptionalNullMatcher";
 import {SetMatcher} from "./matcher/SetMatcher";
+import {BindMatcher} from "./matcher/BindMatcher";
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -33,8 +34,8 @@ export const match = {
         length: (expected: number) => ArrayLengthMatcher.make(expected)
     },
     aSet: {
-        match: (expected: Set<DiffMatcher<any>> | Set<any>| Array<any>| Map<any,any>) => SetMatcher.make(expected),
-        subset: (expected: Set<DiffMatcher<any>> | Set<any>| Array<any>| Map<any,any>) => SetMatcher.make(expected, true),
+        match: (expected: Set<DiffMatcher<any>> | Set<any> | Array<any> | Map<any, any>) => SetMatcher.make(expected),
+        subset: (expected: Set<DiffMatcher<any>> | Set<any> | Array<any> | Map<any, any>) => SetMatcher.make(expected, true),
     },
     obj: {
         match: (obj: object) => ObjectMatcher.make(obj),
@@ -74,8 +75,9 @@ export const match = {
         symbol: () => PredicateMatcher.make(ofType.isSymbol, "ofType.symbol")
     },
     predicate: (predicate: (v: any) => boolean,
-                description: any = {predicateFailed:PrettyPrinter.functionDetails(predicate)}) =>
+                description: any = {predicateFailed: PrettyPrinter.functionDetails(predicate)}) =>
         PredicateMatcher.make(predicate, description),
     mapped: (map: (t: any) => any, matcher: DiffMatcher<any> | any, description: any) =>
-        MappedMatcher.make(map, matcher, description)
+        MappedMatcher.make(map, matcher, description),
+    bind: () => BindMatcher.make()
 };
