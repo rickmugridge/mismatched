@@ -23,6 +23,7 @@ import {DiffMatcher} from "./matcher/DiffMatcher";
 import {OptionalNullMatcher} from "./matcher/OptionalNullMatcher";
 import {SetMatcher} from "./matcher/SetMatcher";
 import {BindMatcher} from "./matcher/BindMatcher";
+import {DescribeMatcher} from "./matcher/DescribeMatcher";
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -79,5 +80,7 @@ export const match = {
         PredicateMatcher.make(predicate, description),
     mapped: (map: (t: any) => any, matcher: DiffMatcher<any> | any, description: any) =>
         MappedMatcher.make(map, matcher, description),
-    bind: () => BindMatcher.make()
+    bind: () => BindMatcher.make(),
+    describe: (description: (a: any) => string, matcher: DiffMatcher<any> | any) =>
+        DescribeMatcher.make(description, matcher)
 };

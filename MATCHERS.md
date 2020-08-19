@@ -64,7 +64,9 @@ export const match = {
         PredicateMatcher.make(predicate, description),
     mapped: (map: (t: any) => any, matcher: DiffMatcher<any> | any, description: any) =>
         MappedMatcher.make(map, matcher, description),
-    bind: () => BindMatcher.make()
+    bind: () => BindMatcher.make(),
+    describe: (description: (a: any) => string, matcher: DiffMatcher<any> | any) =>
+        DescribeMatcher.make(description, matcher)
 };
 ```
 
@@ -603,6 +605,20 @@ Eg, in the following, the top-level ID "'3d109f..." also appears in each of the 
             })
         });
 ```
+
+### describe
+
+This adapts another matcher to override the error message. 
+This is useful when using mismatched for data validation. For example:
+
+```
+        const results = validateThat({f: 4})
+            .satisfies({
+                f: match.describe(actual => `four, not ${actual}`, match.ofType.number())
+            })
+        assertThat(results.errors).is([])
+ ```
+
 
 ## Writing Custom Matchers
 
