@@ -612,11 +612,11 @@ This adapts another matcher to override the error message.
 This is useful when using mismatched for data validation. For example:
 
 ```
-        const results = validateThat({f: 4})
+        const results = validateThat({f: "a"})
             .satisfies({
                 f: match.describe(actual => `four, not ${actual}`, match.ofType.number())
             })
-        assertThat(results.errors).is([])
+        assertThat(results.errors).is(["four, not a"])
  ```
 
 

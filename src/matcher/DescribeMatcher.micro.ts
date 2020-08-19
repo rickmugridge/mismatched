@@ -35,16 +35,16 @@ describe("DescribeMatcher()", () => {
             const validation = validateThat(3).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `"four"`
+                "four"
             ]);
         });
     });
 
     it("describe example", () => {
-        const results = validateThat({f: 4})
+        const results = validateThat({f: "a"})
             .satisfies({
                 f: match.describe(actual => `four, not ${actual}`, match.ofType.number())
             })
-        assertThat(results.errors).is([])
+        assertThat(results.errors).is(["four, not a"])
     });
 });

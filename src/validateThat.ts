@@ -3,6 +3,7 @@ import {matchMaker} from "./matchMaker/matchMaker";
 import {Mismatched} from "./matcher/Mismatched";
 import {ensureNoFunction} from "./assertThat";
 import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
+import {ofType} from "./ofType";
 
 export function validateThat<T>(actual: any) {
     return new Validator(actual)
@@ -17,8 +18,8 @@ class Validator<T> {
         const matcher = matchMaker(expected);
         const mismatched: Array<Mismatched> = [];
         matcher.mismatches("actual", mismatched, this.actual);
-        return new ValidationResult(mismatched.map(m =>
-            PrettyPrinter.make(500,5000).render(m)));
+        return new ValidationResult(mismatched.map(m => (ofType.isString(m) ? m as string :
+            PrettyPrinter.make(500, 5000).render(m))));
     }
 }
 
