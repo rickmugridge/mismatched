@@ -24,6 +24,7 @@ import {OptionalNullMatcher} from "./matcher/OptionalNullMatcher";
 import {SetMatcher} from "./matcher/SetMatcher";
 import {BindMatcher} from "./matcher/BindMatcher";
 import {DescribeMatcher} from "./matcher/DescribeMatcher";
+import {DescribeContextMatcher} from "./matcher/DescribeContextMatcher";
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -81,6 +82,8 @@ export const match = {
     mapped: (map: (t: any) => any, matcher: DiffMatcher<any> | any, description: any) =>
         MappedMatcher.make(map, matcher, description),
     bind: () => BindMatcher.make(),
-    describe: (description: (a: any) => string, matcher: DiffMatcher<any> | any) =>
-        DescribeMatcher.make(description, matcher)
+    describeContext: (describeContext: (outerContext: string, actual: any) => string, matcher: DiffMatcher<any> | any) =>
+        DescribeContextMatcher.make(describeContext, matcher),
+    describe: (matcher: DiffMatcher<any> | any, description: (actual: any, context:string) => string) =>
+        DescribeMatcher.make(matcher, description)
 };

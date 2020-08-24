@@ -2,7 +2,7 @@ import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("array.match:", () => {
@@ -26,7 +26,7 @@ describe("array.match:", () => {
         it('does not match: length difference: errors', () => {
             const mismatched: Array<Mismatched> = [];
             const matcher = match.array.match([2, 2, 2]);
-            (matcher as DiffMatcher<any>).mismatches("actual", mismatched, ["a", "b"]);
+            (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, ["a", "b"]);
             assertThat(mismatched).is([
                 {actual: ["a", "b"], expected: {length: 3}}
             ]);
@@ -41,7 +41,7 @@ describe("array.match:", () => {
         it('does not match: values mismatch: errors', () => {
             const mismatched: Array<Mismatched> = [];
             const matcher = match.array.match(["a", "c"]);
-            (matcher as DiffMatcher<any>).mismatches("actual", mismatched, ["a", "b"]);
+            (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, ["a", "b"]);
             assertThat(mismatched).is([
                 {"actual[1]": "b", expected: "c"}
             ]);
@@ -64,7 +64,7 @@ describe("array.match:", () => {
         it('does not match literally nested: errors', () => {
             const mismatched: Array<Mismatched> = [];
             const matcher = match.array.match([2, 2, [3, [4, 6]]]);
-            (matcher as DiffMatcher<any>).mismatches("actual", mismatched, [1, 2, [3, [5]]]);
+            (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, [1, 2, [3, [5]]]);
             assertThat(mismatched).is([
                 {"actual[0]": 1, expected: 2},
                 {"actual[2][1]": [5], expected: {length: 2}}

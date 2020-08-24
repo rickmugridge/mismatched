@@ -1,7 +1,9 @@
+import {ContextOfValidationError} from "./DiffMatcher";
+
 export class Mismatched {
-    static make(context: string, actual: any, expected: any, unexpected?: any) {
+    static make(context: ContextOfValidationError, actual: any, expected: any, unexpected?: any) {
         const mismatch = new Mismatched();
-        (mismatch as any)[context] = actual;
+        (mismatch as any)[context.context] = actual;
         if (unexpected) {
             (mismatch as any).unexpected = unexpected;
         } else {

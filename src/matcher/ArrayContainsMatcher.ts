@@ -1,4 +1,4 @@
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {Mismatched} from "./Mismatched";
 import {MatchResult} from "../MatchResult";
 import {isArray} from "util";
@@ -9,7 +9,7 @@ export class ArrayContainsMatcher<T> extends DiffMatcher<Array<T>> {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
         if (isArray(actual)) {
             let compares = 0;
             let matches = 0;

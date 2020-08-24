@@ -1,4 +1,4 @@
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "../matchMaker/matchMaker";
 import {Mismatched} from "./Mismatched";
@@ -8,7 +8,7 @@ export class NotMatcher<T> extends DiffMatcher<T> {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
         const matchResult = this.matcher.matches(actual);
         if (matchResult.passed()) {
             mismatched.push(Mismatched.make(context, actual, this.describe()));

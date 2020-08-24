@@ -1,7 +1,7 @@
 import {matchMaker} from "../matchMaker/matchMaker";
 import {MatchResult} from "../MatchResult";
 import {isArray} from "util";
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {Mismatched} from "./Mismatched";
 
 export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
@@ -9,7 +9,7 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
         if (!isArray(actual)) {
             mismatched.push(Mismatched.make(context, actual, "array expected"));
             return MatchResult.wasExpected(actual, "array expected", 1, 0);
@@ -24,7 +24,7 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
         let matches = 0;
         for (let i = 0; i < actual.length; i++) {
             const act = actual[i];
-            const result = this.expected[i].mismatches(context + "[" + i + "]", mismatched, act);
+            const result = this.expected[i].mismatches(context.add("[" + i + "]"), mismatched, act);
             if (result.passed()) {
                 results.push(act);
             } else {

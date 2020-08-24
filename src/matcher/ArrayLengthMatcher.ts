@@ -1,4 +1,4 @@
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {Mismatched} from "./Mismatched";
 import {MatchResult} from "../MatchResult";
 
@@ -7,7 +7,7 @@ export class ArrayLengthMatcher<T> extends DiffMatcher<Array<T>> {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
         if (actual.length === this.expected) {
             return MatchResult.good(1);
         }

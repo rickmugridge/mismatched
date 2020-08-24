@@ -2,7 +2,7 @@ import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("OptionalMatcher:", () => {
@@ -20,7 +20,7 @@ describe("OptionalMatcher:", () => {
         it("Mismatches: errors", () => {
             const mismatched: Array<Mismatched> = [];
             const matcher = match.optional(3);
-            (matcher as DiffMatcher<any>).mismatches("actual", mismatched, 4);
+            (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, 4);
             assertThat(mismatched).is([
                 {actual: 4, expected: 3}
             ]);

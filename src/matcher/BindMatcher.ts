@@ -1,4 +1,4 @@
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {Mismatched} from "./Mismatched";
 import {MatchResult} from "../MatchResult";
 import {isUndefined} from "util";
@@ -6,7 +6,7 @@ import {isUndefined} from "util";
 export class BindMatcher<T> extends DiffMatcher<T> {
     boundValueExpected: T|undefined = undefined
 
-    mismatches(context: string, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
         if (isUndefined(this.boundValueExpected)) {
             this.boundValueExpected = actual;
             return MatchResult.good(1);

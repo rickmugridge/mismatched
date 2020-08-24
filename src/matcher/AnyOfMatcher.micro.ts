@@ -2,7 +2,7 @@ import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("AnyOfMatcher:", () => {
@@ -30,7 +30,7 @@ describe("AnyOfMatcher:", () => {
         it("Mismatches: errors", () => {
             const mismatched: Array<Mismatched> = [];
             const matcher = match.anyOf([match.instanceOf(Date), match.instanceOf(Error)]);
-            (matcher as DiffMatcher<any>).mismatches("actual", mismatched, "ab");
+            (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, "ab");
             assertThat(mismatched).is([
                 {actual: "ab", expected: {anyOf: [{instanceOf: "Date"}, {instanceOf: "Error"}]}}
             ]);

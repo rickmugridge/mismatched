@@ -1,4 +1,4 @@
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 import {ofType} from "../ofType";
 import {PredicateMatcher} from "./PredicateMatcher";
@@ -14,7 +14,7 @@ export class StringMatcher extends DiffMatcher<string> {
         return new StringMatcher(expected);
     }
 
-    mismatches(context: string, mismatched: Array<Mismatched>, actual: any): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: any): MatchResult {
         if (ofType.isString(actual)) {
             if (actual == this.expected) {
                 return MatchResult.good(1);

@@ -2,7 +2,7 @@ import {match} from "../match";
 import {assertThat} from "../assertThat";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("IsEqualsMatcher:", () => {
@@ -70,7 +70,7 @@ describe("IsEqualsMatcher:", () => {
             it('number: errors', () => {
                 const mismatched: Array<Mismatched> = [];
                 const matcher = match.isEquals(3.5);
-                (matcher as DiffMatcher<any>).mismatches("actual", mismatched, 3.4);
+                (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, 3.4);
                 assertThat(mismatched).is([
                     {actual: 3.4, expected: 3.5}
                 ]);

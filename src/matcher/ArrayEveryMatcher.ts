@@ -1,4 +1,4 @@
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {Mismatched} from "./Mismatched";
 import {MatchResult} from "../MatchResult";
 import {isArray} from "util";
@@ -9,14 +9,14 @@ export class ArrayEveryMatcher<T> extends DiffMatcher<Array<T>> {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
         if (isArray(actual)) {
             let corrects = 0;
             let compares = 0;
             let matches = 0;
             let i = 0;
             for (let a of actual) {
-                const result = this.expected.mismatches(context + "[" + i + "]", mismatched, a);
+                const result = this.expected.mismatches(context.add("[" + i + "]"), mismatched, a);
                 if (result.passed()) {
                     corrects += 1;
                 }

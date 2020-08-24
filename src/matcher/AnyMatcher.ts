@@ -1,9 +1,9 @@
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
 
 export class AnyMatcher<T> extends DiffMatcher<T> {
-    mismatches(context: string, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
         return MatchResult.wasExpected(actual, this.describe(), 1, 1);
     }
 

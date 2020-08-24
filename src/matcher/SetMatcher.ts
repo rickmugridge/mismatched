@@ -1,4 +1,4 @@
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {Mismatched} from "./Mismatched";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "..";
@@ -17,7 +17,7 @@ export class SetMatcher<T> extends DiffMatcher<Set<T>> {
         return new SetMatcher<T>(new Set(elementMatchers), subset);
     }
 
-    mismatches(context: string, mismatched: Array<Mismatched>, actual: Set<T> | Array<T> | Map<T, T>): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Set<T> | Array<T> | Map<T, T>): MatchResult {
         if (ofType.isSet(actual) || ofType.isArray(actual) || ofType.isMap(actual)) {
             const expected = Array.from(this.expected)
             const actualValues = Array.from(actual.values());

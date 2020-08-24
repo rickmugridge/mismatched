@@ -1,4 +1,4 @@
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {Mismatched} from "./Mismatched";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "../matchMaker/matchMaker";
@@ -8,8 +8,8 @@ export class DiffFieldMatcher<T> extends DiffMatcher<T> {
         super();
     }
 
-    mismatches(context: string, errors: Array<Mismatched>, actual: T): MatchResult {
-        return this.expected.mismatches(context + "." + this.fieldName, errors, actual[this.fieldName]);
+    mismatches(context: ContextOfValidationError, errors: Array<Mismatched>, actual: T): MatchResult {
+        return this.expected.mismatches(context.add("." + this.fieldName), errors, actual[this.fieldName]);
         // // If too many errors, report the expected and actual completely separated
         // const matchResult = this.expected.matches(actual[this.fieldName]);
         // let mostlymatches = true; // base this on the rating and counts of matches, etc in the matchResult when it fails

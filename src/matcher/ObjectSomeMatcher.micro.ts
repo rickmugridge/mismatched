@@ -3,7 +3,7 @@ import {match} from "../match";
 import {MatchResult} from "../MatchResult";
 import {DiffFieldMatcher} from "./DiffFieldMatcher";
 import {Mismatched} from "./Mismatched";
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("obj.some:", () => {
@@ -34,7 +34,7 @@ describe("obj.some:", () => {
             it('an object: errors', () => {
                 const mismatched: Array<Mismatched> = [];
                 const matcher = match.obj.has({f: 3});
-                (matcher as DiffMatcher<any>).mismatches("actual", mismatched, {f: 2, g: 3});
+                (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, {f: 2, g: 3});
                 assertThat(mismatched).is([
                     {"actual.f": 2, expected: 3}
                 ]);

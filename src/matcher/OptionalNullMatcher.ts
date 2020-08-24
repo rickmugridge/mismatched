@@ -1,4 +1,4 @@
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {isNull, isUndefined} from "util";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "..";
@@ -9,7 +9,7 @@ export class OptionalNullMatcher<T> extends DiffMatcher<T> {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
         if (isUndefined(actual) || isNull(actual)) {
             return MatchResult.good(1);
         }

@@ -1,4 +1,4 @@
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {ofType} from "../ofType";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
@@ -8,7 +8,7 @@ export class RegExpMatcher extends DiffMatcher<any> {
         super();
     }
 
-    mismatches(context: string, mismatched: Array<Mismatched>, actual: any): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: any): MatchResult {
         if (ofType.isRegExp(actual) && actual.toString() === this.expected.toString()) {
             return MatchResult.good(1);
         }

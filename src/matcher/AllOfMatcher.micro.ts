@@ -4,6 +4,7 @@ import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
 import {AllOfMatcher} from "./AllOfMatcher";
 import {validateThat} from "../validateThat";
+import {ContextOfValidationError} from "./DiffMatcher";
 
 describe("AllOfMatcher:", () => {
     describe("assertThat():", () => {
@@ -21,7 +22,7 @@ describe("AllOfMatcher:", () => {
         it("Mismatches: errors", () => {
             const mismatched: Array<Mismatched> = [];
             const matcher = AllOfMatcher.make([match.instanceOf(Date), 3]);
-            matcher.mismatches("actual", mismatched, 4);
+            matcher.mismatches(new ContextOfValidationError(), mismatched, 4);
             assertThat(mismatched).is([
                 {actual: 4, expected: {instanceOf: "Date"}},
                 {actual: 4, expected: 3}

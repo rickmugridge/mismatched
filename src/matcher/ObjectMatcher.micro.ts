@@ -3,7 +3,7 @@ import {match} from "../match";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
 import {ObjectMatcher} from "./ObjectMatcher";
-import {DiffMatcher} from "./DiffMatcher";
+import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 import {PrettyPrinter} from "..";
 import {PredicateMatcher} from "./PredicateMatcher";
@@ -51,7 +51,7 @@ describe("obj.match:", () => {
                 it('different field value: errors', () => {
                     const mismatched: Array<Mismatched> = [];
                     const matcher = ObjectMatcher.make({f: 2});
-                    (matcher as DiffMatcher<any>).mismatches("actual", mismatched, {f: 3});
+                    (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, {f: 3});
                     assertThat(mismatched).is([
                         {"actual.f": 3, expected: 2}
                     ]);
@@ -66,7 +66,7 @@ describe("obj.match:", () => {
                 it('different sub-field value: errors', () => {
                     const mismatched: Array<Mismatched> = [];
                     const matcher = ObjectMatcher.make({f: 2, g: {h: 2}});
-                    (matcher as DiffMatcher<any>).mismatches("actual", mismatched, {f: 2, g: {h: 3}});
+                    (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, {f: 2, g: {h: 3}});
                     assertThat(mismatched).is([
                         {"actual.g.h": 3, expected: 2}
                     ]);
@@ -116,7 +116,7 @@ describe("obj.match:", () => {
                 it('1. missing field: errors', () => {
                     const mismatched: Array<Mismatched> = [];
                     const matcher = ObjectMatcher.make({f: 3, g: 4});
-                    (matcher as DiffMatcher<any>).mismatches("actual", mismatched, {f: 3});
+                    (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, {f: 3});
                     assertThat(mismatched).is([
                         {"actual.g": undefined, expected: 4}
                     ]);
@@ -154,7 +154,7 @@ describe("obj.match:", () => {
                 it('extra field: errors', () => {
                     const mismatched: Array<Mismatched> = [];
                     const matcher = ObjectMatcher.make({f: 2});
-                    (matcher as DiffMatcher<any>).mismatches("actual", mismatched, {f: 2, g: 3});
+                    (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, {f: 2, g: 3});
                     assertThat(mismatched).is([
                         {actual: {f: 2, g: 3}, unexpected: {g: 3}}
                     ]);
