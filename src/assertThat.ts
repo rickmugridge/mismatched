@@ -27,7 +27,7 @@ class Assertion<T> {
         return this;
     }
 
-    is(expected: DiffMatcher<T> | any) {
+    is<T=any>(expected: T) {
         this.checkForFunction();
         const result = this.match(expected);
         if (!result.passed()) {
@@ -35,12 +35,12 @@ class Assertion<T> {
         }
     }
 
-    itIs(expected: object) {
+    itIs<T=any>(expected: T) {
         this.checkForFunction();
         return this.is(match.itIs(expected));
     }
 
-    isNot(expected: DiffMatcher<T> | any) {
+    isNot<T=any>(expected: T) {
         this.checkForFunction();
         return this.is(match.not(matchMaker(expected)));
     }

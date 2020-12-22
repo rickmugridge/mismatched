@@ -3,8 +3,12 @@
 The `mismatched` assertion mechanism is provided with `assertThat()`.
 
 This allows for
-  - `is()` checks an actual value against an expected value or matcher.
+  - `is()` checks an actual value against an expected value or matcher. 
+     * To improve error-checking and auto-completion, this can optionally take a generic argument.
+     * The type argument is the type of the expected value. Eg:
+     * assertThat(result).is<MyType>(expected)
   - `isNot()` checks an actual value does not match an expected value or matcher.
+     * This can optionally take a generic argument, like `is()`.
   - `throwsError()` checks that the call throws an exception that has a suitable string message.
   - `throws()` checks that the call throws an exception that ise matched against.
   - `catches()` checks that the call returns a rejected Promise that is matched against.

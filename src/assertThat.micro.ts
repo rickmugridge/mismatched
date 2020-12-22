@@ -7,7 +7,7 @@ describe("assertThat():", () => {
     describe("is():", () => {
         it('matches', () => {
             const actual = 3.4;
-            assertThat(actual).is(actual);
+            assertThat(actual).is<number>(actual);
         });
 
         it('mismatches', () => {

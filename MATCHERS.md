@@ -112,6 +112,12 @@ This is used by default when matching a primitive type (other than a string or N
                 assertThat(actual).is(actual);
             });
 
+            it('object', () => {
+                const actual = {a: "b"};
+                assertThat(actual).is<{a:string}?(actual); // the generic type is optional here
+                assertThat(actual).isNot({a: "b"});
+            });
+
             it('object itself', () => {
                 const actual = {a: "b"};
                 assertThat(actual).is(match.isEquals(actual));
@@ -133,7 +139,7 @@ This is used by default when matching a primitive type (other than a string or N
 
 ### ItIs Matcher: Same object
 
-This passes if the very same object or value is provided (ie, tested by `===`).
+This passes if the **very** same object or value is provided (ie, tested by `===`).
 
 For examples:
 
@@ -165,7 +171,7 @@ For example:
 ```
     describe("array.match", () => {
         it("literal", () => {
-            assertThat([1, 2]).is([1, 2]);
+            assertThat([1, 2]).is<number[]>([1, 2]); // The generic type here is optional, giving compile-time feedback
             assertThat([1, 2]).is(match.array.match([1, 2])); // long-hand
         });
 

@@ -14,7 +14,7 @@ describe("array.match:", () => {
 
         it('matches literally', () => {
             const actual = [2, 2, 2];
-            assertThat(actual).is([2, 2, 2]);
+            assertThat(actual).is<number[]>([2, 2, 2]);
         });
 
         it('does not match: length difference', () => {
@@ -49,7 +49,7 @@ describe("array.match:", () => {
 
         it('matches literally nested', () => {
             const actual = [2, 2, [3, [4]]];
-            assertThat(actual).is([2, 2, [3, [4]]]);
+            assertThat(actual).is<any[]>([2, 2, [3, [4]]]);
         });
 
         it('does not match literally nested', () => {
