@@ -11,7 +11,7 @@ import {MatchResult} from "./MatchResult";
 import {Mismatched} from "./matcher/Mismatched";
 
 export function assertThat<T>(actual: any) {
-    return new Assertion(actual);
+    return new Assertion<T>(actual);
 }
 
 const printer = PrettyPrinter.make();
@@ -27,7 +27,7 @@ class Assertion<T> {
         return this;
     }
 
-    is<T=any>(expected: T) {
+    is(expected: T) {
         this.checkForFunction();
         const result = this.match(expected);
         if (!result.passed()) {
@@ -35,7 +35,7 @@ class Assertion<T> {
         }
     }
 
-    itIs<T=any>(expected: T) {
+    itIs(expected: T) {
         this.checkForFunction();
         return this.is(match.itIs(expected));
     }

@@ -14,7 +14,7 @@ describe("obj.match:", () => {
         describe('matches', () => {
             it('with explicit field matchers', () => {
                 const actual = {f: 2, g: 3};
-                assertThat(actual).is<{ f:number, g:number }>({f: 2, g: 3});
+                assertThat(actual).is({f: 2, g: 3});
             });
 
             it('explicit matcher object', () => {
