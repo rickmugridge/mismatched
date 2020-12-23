@@ -30,7 +30,7 @@ describe("obj.match:", () => {
 
             it('literal object with a field that is undefined', () => {
                 assertThat({f: undefined}).is({f: undefined});
-                assertThat({f: undefined}).is({});
+                assertThat({f: undefined}).is({} as any);
             });
 
             it('with no explicit field matchers but same object', () => {

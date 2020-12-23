@@ -10,7 +10,7 @@ describe("FieldTile", () => {
         assertThat(fieldTile).is({
             key: "a", stringLength: 8, complexity: 2,
             value: {complexity: 1, s: "hello", stringLength: 5}
-        });
+        } as any);
     });
 
     it("One field", () => {
@@ -19,6 +19,6 @@ describe("FieldTile", () => {
         assertThat(tile).is({
             key: "field", stringLength: 10, complexity: 2,
             value: {complexity: 1, s: "124", stringLength: 3}
-        });
+        } as any);
     });
 });

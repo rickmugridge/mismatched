@@ -11,7 +11,7 @@ describe("PredicateMatcher:", () => {
     describe("assertThat():", () => {
         it("Matches", () => {
             assertThat(5).is(matcher);
-            assertThat({a: 2}).is(v => v.a === 2);
+            assertThat({a: 2}).is(match.predicate(v => v.a === 2));
         });
 
         it("Mismatches", () => {

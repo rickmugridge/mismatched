@@ -4,11 +4,7 @@ The `mismatched` assertion mechanism is provided with `assertThat()`.
 
 This allows for
   - `is()` checks an actual value against an expected value or matcher. 
-     * To improve error-checking and auto-completion, this can optionally take a generic argument.
-     * The type argument is the type of the expected value. Eg:
-     * assertThat(result).is<MyType>(expected)
   - `isNot()` checks an actual value does not match an expected value or matcher.
-     * This can optionally take a generic argument, like `is()`.
   - `throwsError()` checks that the call throws an exception that has a suitable string message.
   - `throws()` checks that the call throws an exception that ise matched against.
   - `catches()` checks that the call returns a rejected Promise that is matched against.
@@ -33,6 +29,8 @@ The most commonly-used one is `is()`. For example:
 
 `is()` takes either a `mismatched` matcher or `any` JS value. 
 If it's not a matcher, it creates an internal matcher based on that value (allowing for embedded matchers).
+
+### `assertThat().isNot()`, `assertThat().isAnyOf()`, `assertThat().isAllOf()`
 
 Here are the other short-hand flavours related to `is()`, along with their long-hand form, for example:
 

@@ -114,7 +114,7 @@ This is used by default when matching a primitive type (other than a string or N
 
             it('object', () => {
                 const actual = {a: "b"};
-                assertThat(actual).is<{a:string}?(actual); // the generic type is optional here
+                assertThat(actual).is(actual);
                 assertThat(actual).isNot({a: "b"});
             });
 

@@ -10,7 +10,7 @@ import {ErrorMatcher} from "./matcher/ErrorMatcher";
 import {MatchResult} from "./MatchResult";
 import {Mismatched} from "./matcher/Mismatched";
 
-export function assertThat<T>(actual: any) {
+export function assertThat<T>(actual: T) {
     return new Assertion<T>(actual);
 }
 
