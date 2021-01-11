@@ -14,8 +14,8 @@ export class MatchResult {
     }
 
     bad(actual: any, message = "Mismatched") {
-        PrettyPrinter.make().logToConsole({actual, diff: this.diff});
-        throw new Error(message);
+        const diff = PrettyPrinter.make().render({actual, diff: this.diff});
+        throw new Error(message+":\n"+diff);
     }
 
     static wasExpected(was: any, expected: any, compares: any, matches: any) {
