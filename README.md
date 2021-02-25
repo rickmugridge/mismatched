@@ -3,7 +3,7 @@
 A Typescript-based assertion and matcher framework, inspired by Hamcrest.
 
 This can be used with:
-   - for `mismatched` assertions with `assertThat()`
+   - for `mismatched` assertions with `assertThat()`, defined here: [assertThat()](./ASSERTTHAT.md).
    - as matcher for arguments in mocked calls in `thespian`
    - for data validation with `validateThat()`
 
@@ -62,15 +62,11 @@ when matching fails, and the changes are minor, it provides feedback as a [diff 
 
 When the `address.number` was 3 but was expected to be 4.
 
-### AssertThat
-
-The `mismatched` assertion mechanism is defined here: [assertThat()](./ASSERTTHAT.md).
-
-### Matchers
+## Matchers
 
 There are many built-in matchers. See [Matchers](./MATCHERS.md). This includes a section on writing custom matchers.
 
-### Displaying the results of mismatches
+## Displaying the results of mismatches
 
 We aim to provide useful output when a match fails. 
 [PrettyPrinter](PRETTYPRINTER.md) does this.
@@ -85,50 +81,21 @@ Either extreme can make it difficult to read.
 
 It allows for custom renderers.
 
-## Example Validations with `validateThat()`
+## validateThat()
 
-`validateThat()` is intended for validating data received. 
+`validateThat()` is intended for validating data received.
 
-Here's two simple examples of validations (see the micro tests for individual matchers for other examples):
+Here's a simple example of validations (see the micro tests for individual matchers for other examples):
 
 ```
-    describe("validateThat():", () => {
-        const expected = {f: match.ofType.number(), g: match.ofType.boolean()};
-
-        it("succeeds", () => {
-            const validationResult = validateThat({f: 2, g: true}).satisfies(expected);
+    it("validateThat():", () => {
+            const validationResult = validateThat({f: 2, g: true})
+                .satisfies({f: match.ofType.number(), g: match.ofType.boolean()});
             assertThat(validationResult.passed()).is(true);
-        });
-
-        it("fails", () => {
-            const validationResult = validateThat({f: "2", g: 3}).satisfies(expected);
-            assertThat(validationResult.passed()).is(false);
-            assertThat(validationResult.errors).is([
-                `{"actual.f": "2", expected: "ofType.number"}`,
-                `{"actual.g": 3, expected: "ofType.boolean"}`
-            ]);
-        });
     });
 ```
 
-This makes use of the same matchers as above: [Matchers](./MATCHERS.md). 
-`match.array.every()` is particularly useful here for validating arrays (see [Array Matchers](./ArrayMatchers.md)).
-
-### validateThat
-
-The `mismatched` validation mechanism is `validateThat()`. 
-
-It uses the following call: `validateThat(actual).satisfies(matcher)`, where:
-
- - `actual` is an arbitrary value to be validated
- - `matcher` is a Javascript value or a `mismatched` matcher.
- 
- This returns a `ValidationResult`, which contains the errors as an `Array<string>`.
- 
-The `matcher` for validations will tend to use matchers that:
-  - distinguish between mandatory and optional fields. Eg, a field is a mandatory positive integer
-  - check the types of fields. Eg, a valid UTC Date string
-  - check the elements in an array
+See [validateThat()](./ValidateThat.md) for further details.
 
 ## Things to do
 
