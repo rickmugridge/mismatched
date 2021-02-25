@@ -1,11 +1,16 @@
 # mismatched
 
-A Typescript-based assertion and matcher framework, inspired by Hamcrest (https://en.wikipedia.org/wiki/Hamcrest).
+A Typescript-based assertion and matcher framework, inspired by Hamcrest.
 
 This can be used with:
    - for `mismatched` assertions with `assertThat()`
    - as matcher for arguments in mocked calls in `thespian`
    - for data validation with `validateThat()`
+
+For latest changes, see [What is New](./WhatIsNew.md)
+
+Also see: [assertThat()](./ASSERTTHAT.md), [matchers](./MATCHERS.md), [FAQ](./FAQ.md), 
+[PrettyPrinter](./PRETTYPRINTER.md), [Diff Tree](./DIFFTREE.md)
 
 ## Example Assertions
 

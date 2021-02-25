@@ -81,7 +81,7 @@ export const match = {
         PredicateMatcher.make(predicate, description),
     mapped: (map: (t: any) => any, matcher: DiffMatcher<any> | any, description: any) =>
         MappedMatcher.make(map, matcher, description),
-    bind: () => BindMatcher.make(),
+    bind: (matcher?: DiffMatcher<any> | any) => BindMatcher.make(matcher),
     describeContext: (describeContext: (outerContext: string, actual: any) => string, matcher: DiffMatcher<any> | any) =>
         DescribeContextMatcher.make(describeContext, matcher),
     describe: (matcher: DiffMatcher<any> | any, description: (actual: any, context:string) => string) =>
