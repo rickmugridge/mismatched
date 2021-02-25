@@ -85,7 +85,9 @@ Either extreme can make it difficult to read.
 
 It allows for custom renderers.
 
-## Example Validations
+## Example Validations with `validateThat()`
+
+`validateThat()` is intended for validating data received. 
 
 Here's two simple examples of validations (see the micro tests for individual matchers for other examples):
 
@@ -109,7 +111,8 @@ Here's two simple examples of validations (see the micro tests for individual ma
     });
 ```
 
-This makes use of the same matchers as above: [Matchers](./MATCHERS.md).
+This makes use of the same matchers as above: [Matchers](./MATCHERS.md). 
+`match.array.every()` is particularly useful here for validating arrays (see [Array Matchers](./ArrayMatchers.md)).
 
 ### validateThat
 
