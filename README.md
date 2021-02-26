@@ -4,9 +4,9 @@ A Typescript-based assertion and matcher framework, inspired by Hamcrest with a 
 Available at https://github.com/rickmugridge/mismatched.
 
 This can be used:
-   - for `mismatched` assertions with `assertThat()`, defined here: [assertThat()](./ASSERTTHAT.md).
+   - for `mismatched` assertions with [assertThat()](./ASSERTTHAT.md).
    - as matcher for arguments in mocked calls in [`thespian`](https://github.com/rickmugridge/)
-   - for data validation with `validateThat()`
+   - for data validation with [validateThat()](./ValidateThat.md)
 
 For latest changes, see [What is New](./WhatIsNew.md).
 
