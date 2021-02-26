@@ -102,5 +102,5 @@ See [validateThat()](./ValidateThat.md) for further details.
 
   - wire in the string diffing
   - add array diffing
-  - Allow for matching an expected object (in `is()`)) that includes self-references (ie, cycles).
+  - Match objects that includes self-references (ie, cycles).
   - Document MappedMatcher
