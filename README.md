@@ -1,16 +1,17 @@
 # mismatched
 
-A Typescript-based assertion and matcher framework, inspired by Hamcrest.
+A Typescript-based assertion and matcher framework, inspired by Hamcrest with a strong compositional approach.
+Available at https://github.com/rickmugridge/mismatched.
 
-This can be used with:
+This can be used:
    - for `mismatched` assertions with `assertThat()`, defined here: [assertThat()](./ASSERTTHAT.md).
-   - as matcher for arguments in mocked calls in `thespian`
+   - as matcher for arguments in mocked calls in [`thespian`](https://github.com/rickmugridge/)
    - for data validation with `validateThat()`
 
-For latest changes, see [What is New](./WhatIsNew.md)
+For latest changes, see [What is New](./WhatIsNew.md).
 
-Also see: [assertThat()](./ASSERTTHAT.md), [matchers](./MATCHERS.md), [FAQ](./FAQ.md), 
-[PrettyPrinter](./PRETTYPRINTER.md), [Diff Tree](./DIFFTREE.md)
+Also see: [FAQ](./FAQ.md), [assertThat()](./ASSERTTHAT.md), [validateThat()](./ValidateThat.md), 
+[matchers](./MATCHERS.md), [PrettyPrinter](./PRETTYPRINTER.md), [Diff Tree](./DIFFTREE.md).
 
 ## Example Assertions
 

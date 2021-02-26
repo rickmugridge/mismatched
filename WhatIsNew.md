@@ -1,4 +1,4 @@
-# What is New (since Feb 2021)
+# What is New (since Jan 2021)
 
  * Generalised match.bind() to:
    * Take an optional matcher argument, which then has to match the first use
