@@ -36,7 +36,9 @@ export class MatchResult {
 
     static was = Colour.bg_cyan("was     ");
     static expected = Colour.bg_cyan("expected");
+    static missing = Colour.bg_cyan("missing");
     static unexpected = Colour.bg_cyan("unexpected");
+    static nearMisses = Colour.bg_cyan("nearMisses");
 }
 
 export function handleSymbol(v: any): any {
