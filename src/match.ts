@@ -25,6 +25,7 @@ import {SetMatcher} from "./matcher/SetMatcher";
 import {BindMatcher} from "./matcher/BindMatcher";
 import {DescribeMatcher} from "./matcher/DescribeMatcher";
 import {DescribeContextMatcher} from "./matcher/DescribeContextMatcher";
+import {UnorderedArrayMatcher} from "./matcher/UnorderedArrayMatcher";
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -33,7 +34,9 @@ export const match = {
         match: (expected: Array<DiffMatcher<any> | any>) => ArrayMatcher.make(expected),
         contains: (expected: DiffMatcher<any> | any) => ArrayContainsMatcher.make(expected),
         every: (expected: DiffMatcher<any> | any) => ArrayEveryMatcher.make(expected),
-        length: (expected: number) => ArrayLengthMatcher.make(expected)
+        length: (expected: number) => ArrayLengthMatcher.make(expected),
+        unordered: (expected: Array<DiffMatcher<any> | any>) => UnorderedArrayMatcher.make(expected),
+        unorderedContains: (expected: Array<DiffMatcher<any> | any>) => UnorderedArrayMatcher.make(expected, true),
     },
     aSet: {
         match: (expected: Set<DiffMatcher<any>> | Set<any> | Array<any> | Map<any, any>) => SetMatcher.make(expected),
@@ -84,6 +87,6 @@ export const match = {
     bind: (matcher?: DiffMatcher<any> | any) => BindMatcher.make(matcher),
     describeContext: (describeContext: (outerContext: string, actual: any) => string, matcher: DiffMatcher<any> | any) =>
         DescribeContextMatcher.make(describeContext, matcher),
-    describe: (matcher: DiffMatcher<any> | any, description: (actual: any, context:string) => string) =>
+    describe: (matcher: DiffMatcher<any> | any, description: (actual: any, context: string) => string) =>
         DescribeMatcher.make(matcher, description)
 };

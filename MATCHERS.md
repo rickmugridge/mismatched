@@ -46,9 +46,11 @@ For example:
     });
 ```
 Other array matching:
- * `match.array.contains()`: Checking a subset of the elements
+ * `match.array.contains()`: Check a subset of the elements
  * `match.array.every()`: Each of the elements of the array have to satisfy these properties
- * `match.array.length`: Match the length of the array only
+ * `match.array.length()`: Match the length of the array only
+ * `match.array.unordered()`: Allow for the array to be unordered (allows for duplicate entries)
+ * `match.array.unorderedContains()`: Check a subset of an unordered array (allows for duplicate entries)
 
 See [Array Matchers](./ArrayMatchers.md) for further details.
 

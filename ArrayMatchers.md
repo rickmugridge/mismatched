@@ -65,3 +65,29 @@ For example:
      });
 ```
 
+## `match.array.unordered()`
+
+This matcher expects that each of the elements of the actual array can be matched by a corresponding 
+matcher/literal, regardless of order. There may be duplicate elements.
+
+For example:
+
+```
+     it("match.array.unordered()", () => {
+         assertThat([1, 1, 1, 2]).is(match.array.unordered([2, 1, 1, 1]));
+     });
+```
+
+## `match.array.unorderedContains()`
+
+This matcher expects that a subset of the elements of the actual array can be matched by a corresponding 
+matcher/literal, regardless of order. There may be duplicate elements.
+
+For example:
+
+```
+     it("match.array.unorderedContains()", () => {
+         assertThat([1, 1, 1, 2]).is(match.array.unorderedContains([2, 1]));
+     });
+```
+

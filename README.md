@@ -65,7 +65,8 @@ When the `address.number` was 3 but was expected to be 4.
 
 ## Matchers
 
-There are many built-in matchers. See [Matchers](./MATCHERS.md). This includes a section on writing custom matchers.
+There are many built-in matchers. See [Matchers](./MATCHERS.md). 
+This includes a section on writing custom matchers.
 
 ## Displaying the results of mismatches
 

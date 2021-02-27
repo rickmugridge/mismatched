@@ -1,6 +1,6 @@
 {
   "name": "mismatched",
-  "version": "2.5.1",
+  "version": "2.5.3",
   "description": "A composable matching/assertion/validation framework in Typescript that displays mismatches as diff trees",
   "author": {
     "name": "Rick Mugridge",
@@ -30,12 +30,12 @@
     "publishIt": "npm login && npm publish"
   },
   "devDependencies": {
-    "@types/mocha": "^5.2.3",
-    "@types/node": "~9.4.6",
-    "mocha": "^5.2.0",
-    "rimraf": "^2.6.2",
-    "ts-node": "^6.2.0",
-    "typescript": "3.5.2"
+    "@types/mocha": "^8.2.1",
+    "@types/node": "~14.14.31",
+    "mocha": "^8.3.0",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.1.1",
+    "typescript": "4.2.2"
   },
   "dependencies": {
     "fast-array-diff": "^0.2.0"
