@@ -13,7 +13,7 @@ For example:
 ```
     describe("array.match", () => {
         it("literal", () => {
-            assertThat([1, 2]).is<number[]>([1, 2]); // The generic type here is optional, giving compile-time feedback
+            assertThat([1, 2]).is([1, 2]);
             assertThat([1, 2]).is(match.array.match([1, 2])); // long-hand
         });
 

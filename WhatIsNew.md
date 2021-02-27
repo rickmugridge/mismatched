@@ -2,7 +2,7 @@
 
 ## 28 February 2022
 
-* Added `match.array.unordered()` and `match.array.unorderedContains()` to handle matching of array disregarding order.
+* Added `match.array.unordered()` and `match.array.unorderedContains()` to handle matching of arrays, disregarding order.
   There may be duplicate elements.
 * See [Array Matchers](./ArrayMatchers.md)
 

@@ -296,47 +296,6 @@ So we can use a binding matcher.
 
 See [Binding Matcher](./BindingMatcher.md) for further details.
 
-### describeContext and describe: for validation
-
-These are used together to tailor validation error messages. 
-For example, we want to validate an array of three persons, tailoring the error messages :
-
-```
-        it("Provides tailored validation error messages with array", () => {
-            const nameDescription = (actual, context) => `The name of person #${context} should be a string`;
-            const ageDescription = (actual, context) => `The current age of person #${context} should be a positive number`;
-            const expected = match.array.every(
-                match.describeContext((_,person) => person.personId || 'unknown',
-                    {
-                        personId: match.any(),
-                        name: match.describe(match.ofType.string(), nameDescription),
-                        age: match.describe(match.number.greaterEqual(0), ageDescription)
-                    })
-            );
-            const actual = [
-                {personId: 11, name: 3, age: 5},
-                {personId: 12, name: 'orange', age: -1},
-                {personId: undefined, name: 'pear', age: -1}
-            ];
-            const validation = validateThat(actual).satisfies(expected);
-            assertThat(validation.passed()).is(false);
-            assertThat(validation.errors).is([
-                "The name of person #11 should be a string",
-                "The current age of person #12 should be a positive number",
-                "The current age of person #unknown should be a positive number"
-            ]);
-        });
- ```
-
-Note that:
-  * We use `match.array.every()` to apply the same matcher to each element of the actual array.
-  * For each element, we use `match.describeContext()` to create a suitable context for errors, 
-    based on the `personId`. The first argument to the the function is any specialised outer context.
-  * In the individual fields of the Person object, we use `match.describe()` to define both the matcher
-   and the error message that results if the matcher fails. For example, the name field needs to be a string:
-      * `name: match.describe(match.ofType.string(), nameDescription),`
-
-
 ## Writing Custom Matchers
 
 Simple matchers can use `match.predicate`. For examples:
