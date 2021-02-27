@@ -42,12 +42,12 @@ export class SetMatcher<T> extends DiffMatcher<Set<T>> {
                     matches += result.matches;
                 }
             }
+            const matchResult = MatchResult.wasExpected(actual, this.describe(), compares, matches);
             if (remainingMatchers.size === 0 && nearMisses.size == 0 && (this.subset || completeMisses.length == 0)) {
-                return MatchResult.wasExpected(actual, this.describe(), compares, matches);
+                return matchResult;
             }
             mismatched.push(Mismatched.make(context, actual, this.describe()));
 
-            const matchResult = MatchResult.wasExpected(actual, this.describe(), compares, 0);
             const wrongMatches = this.handleMismatches(nearMisses, remainingMatchers, completeMisses);
 
             if (wrongMatches.length > 0) {
