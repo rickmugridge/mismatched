@@ -10,6 +10,8 @@ This can be used:
 
 For latest changes, see [What is New](./WhatIsNew.md).
 
+For general design decisions/rational, see [Design Rationale](./DesignRationale.md).
+
 Also see: [FAQ](./FAQ.md), [assertThat()](./ASSERTTHAT.md), [validateThat()](./ValidateThat.md), 
 [matchers](./MATCHERS.md), [PrettyPrinter](./PRETTYPRINTER.md), [Diff Tree](./DIFFTREE.md).
 

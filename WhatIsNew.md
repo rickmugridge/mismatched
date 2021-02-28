@@ -13,4 +13,6 @@
    * Once it matches once, it builds a matcher from that, to match subsequent uses. 
      This allows it to bind and then match objects/arrays.
    * See [Binding Matcher](./BindingMatcher.md)
-    
+
+
+[Home](./README.md)
