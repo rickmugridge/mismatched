@@ -1,27 +1,34 @@
-import {StringDiff} from "./StringDiff";
 import {assertThat} from "../assertThat";
+import {diffColourExtra, diffColourMissing, stringDiff} from "./StringDiff";
 
 describe("StringDiff", () => {
     it("Actual has one or more extra characters", () => {
-        assertThat(StringDiff.expectedDiff("", "b")).is("[b]");
-        assertThat(StringDiff.expectedDiff("", "bc")).is("[bc]");
-        assertThat(StringDiff.expectedDiff("a", "ab")).is("a[b]");
-        assertThat(StringDiff.expectedDiff("a", "abcd")).is("a[bcd]");
-        assertThat(StringDiff.expectedDiff("ac", "abc")).is("a[b]c");
-        assertThat(StringDiff.expectedDiff("ac", "abbbc")).is("a[bbb]c");
+        assertThat(stringDiff("", "b", true)).is("[b]");
+        assertThat(stringDiff("", "bc", true)).is("[bc]");
+        assertThat(stringDiff("a", "ab", true)).is("a[b]");
+        assertThat(stringDiff("a", "abcd", true)).is("a[bcd]");
+        assertThat(stringDiff("ac", "abc", true)).is("a[b]c");
+        assertThat(stringDiff("ac", "abbbc", true)).is("a[bbb]c");
     });
 
     it("Actual has one or more missing characters", () => {
-        assertThat(StringDiff.expectedDiff("b", "")).is("(b)");
-        assertThat(StringDiff.expectedDiff("bcde", "")).is("(bcde)");
-        assertThat(StringDiff.expectedDiff("abcde", "a")).is("a(bcde)");
-        assertThat(StringDiff.expectedDiff("abc", "ac")).is("a(b)c");
-        assertThat(StringDiff.expectedDiff("abbbbc", "ac")).is("a(bbbb)c");
+        assertThat(stringDiff("b", "", true)).is("(b)");
+        assertThat(stringDiff("bcde", "", true)).is("(bcde)");
+        assertThat(stringDiff("abcde", "a", true)).is("a(bcde)");
+        assertThat(stringDiff("abc", "ac", true)).is("a(b)c");
+        assertThat(stringDiff("abbbbc", "ac", true)).is("a(bbbb)c");
     });
 
     it("Actual has some extra and some missing characters", () => {
-        assertThat(StringDiff.expectedDiff("a", "b")).is("(a[b])");
-        assertThat(StringDiff.expectedDiff("ab", "bc")).is("(a)[c]b");
-        assertThat(StringDiff.expectedDiff("azbb", "bcde")).is("(az)b[cde](b)");
+        assertThat(stringDiff("ab", "bc", true)).is("(a)b[c]");
+        assertThat(stringDiff("aaab", "bccc", true)).is("(aaa)b[ccc]");
+        assertThat(stringDiff("azbb", "bcde", true)).is("(azb)b[cde]");
+        assertThat(stringDiff("Zbfg", "bCfXg", true)).is("(Z)b[C]f[X]g");
+        assertThat(stringDiff("ZZbfg", "bCCfXXgYY", true)).is("(ZZ)b[CC]f[XX]g[YY]");
+    });
+
+    it("With colours", () => {
+        assertThat(stringDiff("azbb", "bcde"))
+            .is(`${diffColourExtra("azb")}b${diffColourMissing("cde")}`);
     });
 });

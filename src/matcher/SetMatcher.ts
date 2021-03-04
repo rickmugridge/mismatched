@@ -50,15 +50,11 @@ export class SetMatcher<T> extends DiffMatcher<Set<T>> {
 
             const wrongMatches = this.handleMismatches(nearMisses, remainingMatchers, completeMisses);
 
-            if (wrongMatches.length > 0) {
-                matchResult.diff[MatchResult.differ] = wrongMatches.map(w => w.diff)
+            matchResult.differ(wrongMatches.map(w => w.diff));
+            if (!this.subset) {
+                matchResult.unexpected(completeMisses);
             }
-            if (!this.subset && completeMisses.length > 0) {
-                matchResult.diff[MatchResult.unexpected] = completeMisses
-            }
-            if (remainingMatchers.size > 0) {
-                matchResult.diff[MatchResult.missing] = Array.from(remainingMatchers).map(m => m.describe())
-            }
+            matchResult.missing(Array.from(remainingMatchers).map(m => m.describe()))
             return matchResult;
         }
         mismatched.push(Mismatched.make(context, actual, (this.subset ? "sub" : "") + "set expected"));

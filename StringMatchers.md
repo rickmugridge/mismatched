@@ -2,12 +2,13 @@
 
 Various matchers on strings.
 
-## `match.string.match()` matches the whole string
+## `match.string.match()` matches the whole string or regular expression
 
 ```
     it("string.match:", () => {
         assertThat("abcdefghijkl").is(match.string.match("abcdefghijkl"));
         assertThat("abcdefghijkl").is("abcdefghijkl");
+        assertThat("abcdefghijkl").is(/abc.efg.ijkl/);
     });
 ```
 

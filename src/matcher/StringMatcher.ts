@@ -1,9 +1,12 @@
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 import {ofType} from "../ofType";
 import {PredicateMatcher} from "./PredicateMatcher";
 import {Mismatched} from "./Mismatched";
-import {isString} from "util";
+import {RegExpMatcher} from "./RegExpMatcher";
+import {stringDiff} from "../diff/StringDiff";
+
+const minimum = 10
 
 export class StringMatcher extends DiffMatcher<string> {
     private constructor(private expected: string) {
@@ -19,10 +22,16 @@ export class StringMatcher extends DiffMatcher<string> {
             if (actual == this.expected) {
                 return MatchResult.good(1);
             }
-            // todo a diff using StringDiff
         }
         mismatched.push(Mismatched.make(context, actual, this.describe()));
-        return MatchResult.wasExpected(actual, this.describe(), 1, 0);
+        const matchResult = MatchResult.wasExpected(actual, this.describe(), 1, 0);
+        if (ofType.isString(actual)) {
+            if (actual.length > 0 && this.expected.length > 0 &&
+                (actual.length > minimum || this.expected.length > minimum)) {
+                matchResult.differ(stringDiff(this.expected, actual))
+            }
+        }
+        return matchResult;
     }
 
     describe(): any {
@@ -31,15 +40,16 @@ export class StringMatcher extends DiffMatcher<string> {
 }
 
 export const stringMatcher = {
-    match: (expected: string) => StringMatcher.make(expected),
+    match: (expected: string | RegExp) =>
+        ofType.isString(expected) ? StringMatcher.make(expected as string) : RegExpMatcher.make(expected as RegExp),
     startsWith: (expected: string) => PredicateMatcher.make(value =>
-        isString(value) && value.startsWith(expected),
+        ofType.isString(value) && value.startsWith(expected),
         {"string.startsWith": expected}),
     endsWith: (expected: string) => PredicateMatcher.make(value =>
-        isString(value) && value.endsWith(expected),
+        ofType.isString(value) && value.endsWith(expected),
         {"string.endsWith": expected}),
     includes: (expected: string) => PredicateMatcher.make(value =>
-        isString(value) && value.includes(expected),
+        ofType.isString(value) && value.includes(expected),
         {"string.includes": expected}),
 
 };

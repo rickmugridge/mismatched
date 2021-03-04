@@ -16,7 +16,7 @@ export class BindMatcher<T> extends DiffMatcher<T> {
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
-        if (isUndefined(this.boundValueMatcher)) {
+        if (this.boundValueMatcher === undefined) {
             if (this.matcher) {
                 const result = this.matcher.mismatches(context, mismatched, actual)
                 if (result.passed()) {
@@ -29,8 +29,6 @@ export class BindMatcher<T> extends DiffMatcher<T> {
             }
         }
         return this.boundValueMatcher.mismatches(context, mismatched, actual)
-        mismatched.push(Mismatched.make(context, actual, this.describe()));
-        return MatchResult.wasExpected(actual, this.describe(), 1, 0);
     }
 
     describe(): any {

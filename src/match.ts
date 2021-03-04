@@ -8,7 +8,7 @@ import {OptionalMatcher} from "./matcher/OptionalMatcher";
 import {NotMatcher} from "./matcher/NotMatcher";
 import {AnyMatcher} from "./matcher/AnyMatcher";
 import {PredicateMatcher} from "./matcher/PredicateMatcher";
-import {StringMatcher, stringMatcher} from "./matcher/StringMatcher";
+import {stringMatcher} from "./matcher/StringMatcher";
 import {ofType} from "./ofType";
 import {numberMatcher} from "./matcher/NumberMatcher";
 import {instanceOfMatcher} from "./matcher/instanceOfMatcher";
@@ -47,7 +47,7 @@ export const match = {
         has: (expected: Array<DiffMatcher<any>> | object) => ObjectSomeMatcher.make(expected),
     },
     string: {
-        match: (expected: string) => StringMatcher.make(expected),
+        match: (expected: string | RegExp) => stringMatcher.match(expected),
         startsWith: (expected: string) => stringMatcher.startsWith(expected),
         endsWith: (expected: string) => stringMatcher.endsWith(expected),
         includes: (expected: string) => stringMatcher.includes(expected)

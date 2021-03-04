@@ -51,15 +51,11 @@ export class UnorderedArrayMatcher<T> extends DiffMatcher<T[]> {
             const matchResult = MatchResult.wasExpected(actuals, this.describe(), compares, 0);
             const wrongMatches = this.handleMismatches(actuals, nearMisses, remainingMatchers, completeMisses);
 
-            if (wrongMatches.length > 0) {
-                matchResult.diff[MatchResult.differ] = wrongMatches.map(w => w.diff)
+            matchResult.differ(wrongMatches.map(w => w.diff))
+            if (!this.subset) {
+                matchResult.unexpected(completeMisses)
             }
-            if (!this.subset && completeMisses.length > 0) {
-                matchResult.diff[MatchResult.unexpected] = completeMisses
-            }
-            if (remainingMatchers.size > 0) {
-                matchResult.diff[MatchResult.missing] = Array.from(remainingMatchers).map(m => m.describe())
-            }
+            matchResult.missing(Array.from(remainingMatchers).map(m => m.describe()))
             return matchResult;
         }
         mismatched.push(Mismatched.make(context, actuals, (this.subset ? "sub" : "") + "set expected"));

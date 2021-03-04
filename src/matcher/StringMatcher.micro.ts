@@ -2,8 +2,9 @@ import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
+import {diffColourExtra, diffColourMissing} from "../diff/StringDiff";
 
 describe("StringMatcher:", () => {
     describe("assertThat():", () => {
@@ -13,11 +14,26 @@ describe("StringMatcher:", () => {
             assertThat(actual).is(actual);
         });
 
+        it('regular expression', () => {
+            assertThat("abc").is(match.string.match(/a.c/));
+        });
+
         it('mismatches', () => {
             assertThat("a").failsWith("b",
                 {[MatchResult.was]: "a", [MatchResult.expected]: "b"});
             assertThat("a").failsWith(null,
                 {[MatchResult.was]: "a", [MatchResult.expected]: null});
+        });
+
+        it('mismatches long strings', () => {
+            const actual = "abcd-e-fghijk";
+            const expected = "abcd+E+fghijk";
+            assertThat(actual).failsWith(expected,
+                {
+                    [MatchResult.was]: actual,
+                    [MatchResult.expected]: expected,
+                    [MatchResult.differ]: `abcd${diffColourMissing("-e-")}${diffColourExtra("+E+")}fghijk`
+                });
         });
 
         it('mismatches: errors', () => {

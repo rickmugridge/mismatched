@@ -27,7 +27,7 @@ describe("unorderedArray:", () => {
                     {
                         [MatchResult.was]: actual,
                         [MatchResult.expected]: new Set([1, 2]),
-                        [MatchResult.unexpected]: [3]
+                        [MatchResult.unexpected]: 3
                     });
             });
 
@@ -37,7 +37,7 @@ describe("unorderedArray:", () => {
                     {
                         [MatchResult.was]: actual,
                         [MatchResult.expected]: new Set([1, 2, 3]),
-                        [MatchResult.missing]: [3]
+                        [MatchResult.missing]: 3
                     });
             });
 
@@ -47,7 +47,7 @@ describe("unorderedArray:", () => {
                 assertThat(actual).failsWith(match.array.unordered(expected),
                     {
                         [MatchResult.was]: actual, [MatchResult.expected]: expected,
-                        [MatchResult.differ]: [{[MatchResult.was]: 3, [MatchResult.expected]: 4}]
+                        [MatchResult.differ]: {[MatchResult.was]: 3, [MatchResult.expected]: 4}
                     });
             });
 
@@ -64,10 +64,8 @@ describe("unorderedArray:", () => {
                 assertThat(actual).failsWith(match.array.unordered(expected), {
                     [MatchResult.was]: actual,
                     [MatchResult.expected]: expected,
-                    [MatchResult.differ]: [
-                        {a: 11, b: [{[MatchResult.was]: 0, [MatchResult.expected]: 1}]}
-                    ],
-                    [MatchResult.unexpected]: [{a: 1, b: [0]}],
+                    [MatchResult.differ]: {a: 11, b: [{[MatchResult.was]: 0, [MatchResult.expected]: 1}]},
+                    [MatchResult.unexpected]: {a: 1, b: [0]},
                 });
             });
 
@@ -77,10 +75,8 @@ describe("unorderedArray:", () => {
                 assertThat(actual).failsWith(match.array.unordered(expected), {
                     [MatchResult.was]: actual,
                     [MatchResult.expected]: expected,
-                    [MatchResult.differ]: [
-                        {a: 11, b: {c: [{[MatchResult.was]: 2, [MatchResult.expected]: 3}]}}
-                    ],
-                    [MatchResult.unexpected]: [{a: 1, b: {c: [1]}}],
+                    [MatchResult.differ]: {a: 11, b: {c: [{[MatchResult.was]: 2, [MatchResult.expected]: 3}]}},
+                    [MatchResult.unexpected]: {a: 1, b: {c: [1]}},
                 });
             });
         });
@@ -136,7 +132,7 @@ describe("unorderedArray:", () => {
                     {
                         [MatchResult.was]: actual,
                         [MatchResult.expected]: {subset: new Set([1, 4])},
-                        [MatchResult.differ]: [{[MatchResult.was]: 2, [MatchResult.expected]: 4}]
+                        [MatchResult.differ]: {[MatchResult.was]: 2, [MatchResult.expected]: 4}
                     });
             });
 
@@ -147,7 +143,7 @@ describe("unorderedArray:", () => {
                     {
                         [MatchResult.was]: actual,
                         [MatchResult.expected]: {subset: expected},
-                        [MatchResult.missing]: [4]
+                        [MatchResult.missing]: 4
                     });
             });
         });

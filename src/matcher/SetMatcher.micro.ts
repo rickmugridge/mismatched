@@ -17,7 +17,7 @@ describe("set:", () => {
                 assertThat(new Set([1, 2, 3])).is(match.aSet.match(new Set([1, 2, match.any()])));
                 assertThat([1, 2, 3]).is(match.aSet.match([2, 1, match.any()]));
                 assertThat([[1, 1], [2, 2], [3, 3]])
-                .is(match.aSet.match([[1, 1], [2, 2], match.ofType.array()]));
+                    .is(match.aSet.match([[1, 1], [2, 2], match.ofType.array()]));
             });
 
             it('does not match: too many', () => {
@@ -26,7 +26,7 @@ describe("set:", () => {
                     {
                         [MatchResult.was]: actual,
                         [MatchResult.expected]: new Set([1, 2]),
-                        [MatchResult.unexpected]: [3]
+                        [MatchResult.unexpected]: 3
                     });
             });
 
@@ -36,7 +36,7 @@ describe("set:", () => {
                     {
                         [MatchResult.was]: actual,
                         [MatchResult.expected]: new Set([1, 2, 3]),
-                        [MatchResult.missing]: [3]
+                        [MatchResult.missing]: 3
                     });
             });
 
@@ -46,7 +46,7 @@ describe("set:", () => {
                 assertThat(actual).failsWith(match.aSet.match(expected),
                     {
                         [MatchResult.was]: actual, [MatchResult.expected]: expected,
-                        [MatchResult.differ]: [{[MatchResult.was]: 3, [MatchResult.expected]: 4}]
+                        [MatchResult.differ]: {[MatchResult.was]: 3, [MatchResult.expected]: 4}
                     });
             });
 
@@ -62,13 +62,12 @@ describe("set:", () => {
                     {
                         [MatchResult.was]: actual,
                         [MatchResult.expected]: expected,
-                        [MatchResult.differ]: [
+                        [MatchResult.differ]:
                             {
                                 [MatchResult.was]: new Set([3, [5]]),
                                 [MatchResult.expected]: new Set([44, [5]]),
-                                [MatchResult.differ]: [{[MatchResult.was]: 3, [MatchResult.expected]: 44}]
+                                [MatchResult.differ]: {[MatchResult.was]: 3, [MatchResult.expected]: 44}
                             }
-                        ]
                     });
             });
 
@@ -78,10 +77,8 @@ describe("set:", () => {
                 assertThat(actual).failsWith(expected, {
                     [MatchResult.was]: actual,
                     [MatchResult.expected]: expected,
-                    [MatchResult.differ]: [
-                        {a: 11, b: [{[MatchResult.was]: 0, [MatchResult.expected]: 1}]}
-                    ],
-                    [MatchResult.unexpected]: [{a: 1, b: [0]}],
+                    [MatchResult.differ]: {a: 11, b: [{[MatchResult.was]: 0, [MatchResult.expected]: 1}]},
+                    [MatchResult.unexpected]: {a: 1, b: [0]},
                 });
             });
 
@@ -91,10 +88,8 @@ describe("set:", () => {
                 assertThat(actual).failsWith(expected, {
                     [MatchResult.was]: actual,
                     [MatchResult.expected]: expected,
-                    [MatchResult.differ]: [
-                        {a: 11, b: {c: [{[MatchResult.was]: 2, [MatchResult.expected]: 3}]}}
-                    ],
-                    [MatchResult.unexpected]: [{a: 1, b: {c: [1]}}],
+                    [MatchResult.differ]: {a: 11, b: {c: [{[MatchResult.was]: 2, [MatchResult.expected]: 3}]}},
+                    [MatchResult.unexpected]: {a: 1, b: {c: [1]}},
                 });
             });
         });
@@ -152,7 +147,7 @@ describe("set:", () => {
                     {
                         [MatchResult.was]: actual,
                         [MatchResult.expected]: {subset: new Set([1, 4])},
-                        [MatchResult.differ]: [{[MatchResult.was]: 2, [MatchResult.expected]: 4}]
+                        [MatchResult.differ]: {[MatchResult.was]: 2, [MatchResult.expected]: 4}
                     });
             });
 
@@ -163,7 +158,7 @@ describe("set:", () => {
                     {
                         [MatchResult.was]: actual,
                         [MatchResult.expected]: {subset: expected},
-                        [MatchResult.missing]: [4]
+                        [MatchResult.missing]: 4
                     });
             });
         });

@@ -3,7 +3,7 @@ import {match} from "../match";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
 import {ObjectMatcher} from "./ObjectMatcher";
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 import {PrettyPrinter} from "..";
 import {PredicateMatcher} from "./PredicateMatcher";
@@ -12,7 +12,7 @@ import {CustomiseMismatcher} from "../matchMaker/CustomiseMismatcher";
 describe("obj.match:", () => {
     describe("assertThat():", () => {
         describe('matches', () => {
-            it('with explicit field matchers', () => {
+            it('with implicit matchers', () => {
                 const actual = {f: 2, g: 3};
                 assertThat(actual).is({f: 2, g: 3});
             });
@@ -25,7 +25,7 @@ describe("obj.match:", () => {
             it('literal object', () => {
                 const actual = {f: 2, g: 3};
                 assertThat(actual).is(actual);
-                assertThat({f: 3, g: {expected: 4}}).is({f: 3, g: {expected: 4}});
+                assertThat({f: 3, g: {e: 4}}).is({f: 3, g: {e: 4}});
             });
 
             it('literal object with a field that is undefined', () => {
@@ -33,9 +33,9 @@ describe("obj.match:", () => {
                 assertThat({f: undefined}).is({} as any);
             });
 
-            it('with no explicit field matchers but same object', () => {
-                const actual = {f: 2, g: 3};
-                assertThat(actual).is(match.obj.match(actual));
+            it('with embedded matchers', () => {
+                assertThat({f: 2, g: 3})
+                    .is(match.obj.match({f: match.number.lessEqual(3), g: match.ofType.number()}));
             });
 
         });
@@ -66,7 +66,10 @@ describe("obj.match:", () => {
                 it('different sub-field value: errors', () => {
                     const mismatched: Array<Mismatched> = [];
                     const matcher = ObjectMatcher.make({f: 2, g: {h: 2}});
-                    (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, {f: 2, g: {h: 3}});
+                    (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, {
+                        f: 2,
+                        g: {h: 3}
+                    });
                     assertThat(mismatched).is([
                         {"actual.g.h": 3, expected: 2}
                     ]);
