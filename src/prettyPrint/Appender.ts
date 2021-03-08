@@ -59,7 +59,7 @@ export class Appender {
     }
 
     tooComplex(extraComplexity: number): boolean {
-        return this.currentLineComplexity + extraComplexity > this.maxComplexity; // todo test this
+        return this.currentLineComplexity + extraComplexity > this.maxComplexity;
     }
 
     static composeTile(tile: Tile | FieldTile) {

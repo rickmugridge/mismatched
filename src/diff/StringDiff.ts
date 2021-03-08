@@ -1,10 +1,10 @@
-import * as diff from "fast-array-diff";
 import {Colour} from "../Colour";
-import {PrettyPrinter} from "../prettyPrint/PrettyPrinter";
+import {PatchItem} from "fast-array-diff/dist/diff/patch";
+import * as diff from "fast-array-diff";
 
-export const stringDiff = (expected: string, actual: string, testing = false): string => {
-    const result = Array.from(actual);
-    const deltas = diff.getPatch(result, Array.from(expected), compare);
+export const differ = (deltas: PatchItem<string>[],
+                       result: string[],
+                       testing = false): string => {
     let offset = 0;
     deltas.forEach(delta => {
         switch (delta.type) {
@@ -24,41 +24,46 @@ export const stringDiff = (expected: string, actual: string, testing = false): s
     return result.join("");
 }
 
-// export const stringDiff = (expected: string, actual: string, testing = true): string => {
-//     const result = Array.from(expected);
-//     const deltas = diff.getPatch(result, Array.from(actual), compare);
-//     let offset = 0;
-//     PrettyPrinter.logToConsole(deltas);
-//     deltas.forEach(delta => {
-//         switch (delta.type) {
-//             case "add":
-//                 const insert = add(delta.items.join(""), testing);
-//                 result.splice(delta.newPos + offset, 0, insert);
-//                 offset += 1;
-//                 break;
-//             case "remove":
-//                 const start = delta.newPos + offset;
-//                 const removed = result.splice(start, delta.items.length).join('');
-//                 result.splice(start, 0, minus(removed, testing));
-//                 // result.splice(start, 0, "(");
-//                 // result.splice(start + 1 + delta.items.length, 0, ")");
-//                 offset += 1; // - delta.items.length;
-//                 break;
-//         }
-//     });
-//     return result.join("");
-// }
-
 const add = (s: string, testing: boolean): string =>
-    testing ? "(" + s + ")" : diffColourExtra(s)
+    testing ? "(" + s + ")" : extraColour(s)
 
 const minus = (s: string, testing: boolean): string =>
-    testing ? "[" + s + "]" : diffColourMissing(s)
+    testing ? "[" + s + "]" : missingColour(s)
+
+const extraColour = (s: string) => Colour.green(s);
+
+const missingColour = (s: string) => Colour.red(s);
+
+const getPatch = (expected: string, actual: string) =>
+    diff.getPatch(Array.from(actual), Array.from(expected), compare);
+
+const patchDiffer = (expected: string, actual: string, testing = false) => {
+    return differ(getPatch(expected, actual), Array.from(actual), testing)
+}
+
+const lengths = (deltas: PatchItem<string>[]) => {
+    let totalAddLength = 0
+    let totalRemoveLength = 0
+    deltas.forEach(delta => {
+        switch (delta.type) {
+            case "add":
+                totalAddLength += delta.items.length;
+                break;
+            case "remove":
+                totalRemoveLength += delta.items.length;
+                break;
+        }
+    });
+    return {totalAddLength, totalRemoveLength}
+}
 
 const compare = (a, b) => a === b;
 
-// todo to display colours, we MAY need to update the string, not the array??
-export const diffColourExtra = (s: string) => Colour.green(s);
-
-export const diffColourMissing = (s: string) => Colour.red(s);
-
+export const stringDiff = {
+    getPatch,
+    differ,
+    patchDiffer,
+    lengths,
+    extraColour,
+    missingColour
+}

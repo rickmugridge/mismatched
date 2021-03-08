@@ -4,7 +4,7 @@ import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
-import {diffColourExtra, diffColourMissing} from "../diff/StringDiff";
+import {stringDiff} from "../diff/StringDiff";
 
 describe("StringMatcher:", () => {
     describe("assertThat():", () => {
@@ -32,7 +32,7 @@ describe("StringMatcher:", () => {
                 {
                     [MatchResult.was]: actual,
                     [MatchResult.expected]: expected,
-                    [MatchResult.differ]: `abcd${diffColourMissing("-e-")}${diffColourExtra("+E+")}fghijk`
+                    [MatchResult.differ]: `abcd${stringDiff.missingColour("-e-")}${stringDiff.extraColour("+E+")}fghijk`
                 });
         });
 

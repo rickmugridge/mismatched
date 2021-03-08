@@ -5,8 +5,9 @@ import {PredicateMatcher} from "./PredicateMatcher";
 import {Mismatched} from "./Mismatched";
 import {RegExpMatcher} from "./RegExpMatcher";
 import {stringDiff} from "../diff/StringDiff";
+import {PatchItem} from "fast-array-diff/dist/diff/patch";
 
-const minimum = 10
+const minimum = 5
 
 export class StringMatcher extends DiffMatcher<string> {
     private constructor(private expected: string) {
@@ -24,11 +25,17 @@ export class StringMatcher extends DiffMatcher<string> {
             }
         }
         mismatched.push(Mismatched.make(context, actual, this.describe()));
-        const matchResult = MatchResult.wasExpected(actual, this.describe(), 1, 0);
+        const deltas: PatchItem<string>[] = stringDiff.getPatch(this.expected, actual);
+        const {totalAddLength, totalRemoveLength} = stringDiff.lengths(deltas);
+        const rating =
+            matchRating(actual.length, totalRemoveLength) +
+            matchRating(this.expected.length, totalAddLength)
+        const matchResult = MatchResult.wasExpected(actual, this.describe(), 1, rating);
         if (ofType.isString(actual)) {
             if (actual.length > 0 && this.expected.length > 0 &&
-                (actual.length > minimum || this.expected.length > minimum)) {
-                matchResult.differ(stringDiff(this.expected, actual))
+                (actual.length > minimum || this.expected.length > minimum) &&
+                (totalRemoveLength < actual.length || totalAddLength < this.expected.length)) {
+                matchResult.differ(stringDiff.differ(deltas, Array.from(actual)))
             }
         }
         return matchResult;
@@ -51,5 +58,9 @@ export const stringMatcher = {
     includes: (expected: string) => PredicateMatcher.make(value =>
         ofType.isString(value) && value.includes(expected),
         {"string.includes": expected}),
-
 };
+
+const compare = (a, b) => a === b;
+
+const matchRating = (length: number, totalLength: number) =>
+    length > 0 ? (length - totalLength) / (length * 2) : 0
