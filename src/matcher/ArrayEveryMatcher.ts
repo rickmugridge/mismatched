@@ -21,7 +21,7 @@ export class ArrayEveryMatcher<T> extends DiffMatcher<Array<T>> {
                     corrects += 1;
                 }
                 compares += result.compares;
-                matches += result.matches;
+                matches += result.matchRate * result.compares;
                 i += 1;
             }
             if (corrects === actual.length) {

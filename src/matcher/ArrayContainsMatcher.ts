@@ -20,7 +20,7 @@ export class ArrayContainsMatcher<T> extends DiffMatcher<Array<T>> {
                     return MatchResult.good(result.compares);
                 }
                 compares += result.compares;
-                matches += result.matches;
+                matches += result.matchRate * result.compares;
                 i += 1;
             }
             mismatched.push(Mismatched.make(context, actual, this.describe()));

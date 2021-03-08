@@ -39,7 +39,7 @@ export class SetMatcher<T> extends DiffMatcher<Set<T>> {
                         compares += 1
                 } else {
                     compares += result.compares;
-                    matches += result.matches;
+                    matches += result.matchRate * result.compares;
                 }
             }
             const matchResult = MatchResult.wasExpected(actual, this.describe(), compares, matches);

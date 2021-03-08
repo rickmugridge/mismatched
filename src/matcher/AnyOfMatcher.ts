@@ -1,4 +1,4 @@
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {matchMaker} from "..";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
@@ -30,7 +30,7 @@ export class AnyOfMatcher<T> extends DiffMatcher<T> {
                 nonZeroMatcherResults.push(matchResult)
             }
             compares += matchResult.compares;
-            matches += matchResult.matches;
+            matches += matchResult.matchRate * matchResult.compares;
         }
         if (nonZeroMatchers.length === 1) {
             const nonZeroMatcher = nonZeroMatchers[0];

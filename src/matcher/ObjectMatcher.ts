@@ -1,6 +1,5 @@
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {ofType} from "../ofType";
-import {isUndefined} from "util";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
 import {DiffFieldMatcher} from "./DiffFieldMatcher";
@@ -8,6 +7,10 @@ import {DiffFieldMatcher} from "./DiffFieldMatcher";
 export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
     private constructor(private expectedObject: object, private expected: Array<DiffFieldMatcher<T>>) {
         super();
+    }
+
+    static make<T extends object>(obj: object): any {
+        return new ObjectMatcher<T>(obj, DiffFieldMatcher.makeAll<T>(obj));
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
@@ -33,13 +36,13 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
                 errors += 1;
             }
             compares += result.compares;
-            matches += result.matches;
+            matches += result.matchRate * result.compares;
         });
         const unexpected: any = {};
         let wasUnexpected = false;
         Object.keys(actual).forEach(key => {
             // Careful, as a field may have an explicit value of undefined:
-            if (!isUndefined(actual[key]) && isUndefined(results[key])) {
+            if (actual[key] !== undefined && results[key] === undefined) {
                 unexpected[key] = actual[key];
                 errors += 1;
                 compares += 1;
@@ -59,12 +62,7 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
     describe(): any {
         return concatObjects(this.expected.map(e => e.describe()));
     }
-
-    static make<T extends object>(obj: object): any {
-        return new ObjectMatcher<T>(obj, DiffFieldMatcher.makeAll<T>(obj));
-    }
 }
-
 
 
 export function concatObjects(objects: Array<object>): object {

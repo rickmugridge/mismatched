@@ -1,12 +1,16 @@
 import {matchMaker} from "../matchMaker/matchMaker";
 import {MatchResult} from "../MatchResult";
 import {isArray} from "util";
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {Mismatched} from "./Mismatched";
 
 export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
     private constructor(private expected: Array<DiffMatcher<T>>) {
         super();
+    }
+
+    static make<T>(expected: Array<DiffMatcher<T> | any>): any {
+        return new ArrayMatcher<T>(expected.map(e => matchMaker(e)));
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
@@ -16,7 +20,7 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
         }
         if (actual.length !== this.expected.length) {
             mismatched.push(Mismatched.make(context, actual, {length: this.expected.length}));
-            return MatchResult.wasExpected(actual, {lengthExpected:this.expected.length}, 1, 0);
+            return MatchResult.wasExpected(actual, {lengthExpected: this.expected.length}, 1, 0);
         }
         const results: Array<any> = [];
         let errors = 0;
@@ -32,19 +36,12 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
                 errors += 1;
             }
             compares += result.compares;
-            matches += result.matches;
-        }
-        if (errors === 0) {
-            return MatchResult.good(compares);
+            matches += result.matchRate * result.compares;
         }
         return new MatchResult(results, compares, matches);
     }
 
     describe(): any {
         return this.expected.map(e => e.describe());
-    }
-
-    static make<T>(expected: Array<DiffMatcher<T> | any>): any {
-        return new ArrayMatcher<T>(expected.map(e => matchMaker(e)));
     }
 }

@@ -1,4 +1,4 @@
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {matchMaker} from "../matchMaker/matchMaker";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
@@ -32,7 +32,7 @@ export class AllOfMatcher<T> extends DiffMatcher<T> {
                 incorrectMatchers.push(m);
             }
             compares += matchResult.compares;
-            matches += matchResult.matches;
+            matches += matchResult.matchRate * matchResult.compares;
         });
         if (incorrectMatchers.length === 0) {
             return MatchResult.good(compares);

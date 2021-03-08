@@ -40,7 +40,7 @@ export class UnorderedArrayMatcher<T> extends DiffMatcher<T[]> {
                         compares += 1
                 } else {
                     compares += result.compares;
-                    matches += result.matches;
+                    matches += result.matchRate * result.compares;
                 }
             }
             if (remainingMatchers.size === 0 && nearMisses.size == 0 && (this.subset || completeMisses.length == 0)) {
