@@ -103,7 +103,5 @@ See [validateThat()](./ValidateThat.md) for further details.
 
 ## Things to do
 
-  - wire in the string diffing
-  - add array diffing
   - Match objects that includes self-references (ie, cycles).
   - Document MappedMatcher
