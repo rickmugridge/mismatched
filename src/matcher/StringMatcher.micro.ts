@@ -18,6 +18,11 @@ describe("StringMatcher:", () => {
             assertThat("abc").is(match.string.match(/a.c/));
         });
 
+        it('not a string', () => {
+            assertThat(1 as any).failsWith("a",
+                {[MatchResult.was]: 1, [MatchResult.expected]: "a"});
+        });
+
         it('mismatches', () => {
             assertThat("a").failsWith("b",
                 {[MatchResult.was]: "a", [MatchResult.expected]: "b"});

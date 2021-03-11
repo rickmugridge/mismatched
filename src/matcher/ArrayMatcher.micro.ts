@@ -2,14 +2,14 @@ import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("array.match:", () => {
     describe("assertThat():", () => {
         it('matches', () => {
             const actual = [2, 2, 2];
-            assertThat(actual).is(match.array.match([2, 2, 2]));
+            assertThat(actual).is([2, 2, 2]);
         });
 
         it('matches literally', () => {
@@ -17,15 +17,34 @@ describe("array.match:", () => {
             assertThat(actual).is([2, 2, 2]);
         });
 
-        it('does not match: length difference', () => {
-            const actual = ["a", "b"];
-            assertThat(actual).failsWith(match.array.match([2, 2, 2]),
-                {[MatchResult.was]: ["a", "b"], [MatchResult.expected]: {lengthExpected: 3}});
+        it('Length difference: Removal', () => {
+            assertThat(["a", "b", "c", "d"]).failsWith(["a", "c"],
+                ["a", {[MatchResult.unexpected]: "b"}, "c", {[MatchResult.unexpected]: "d"}]);
+        });
+
+        it('Length difference: Addition', () => {
+            assertThat([]).failsWith(["a", "b"] as any,
+                [{[MatchResult.expected]: "a"}, {[MatchResult.expected]: "b"}]);
+        });
+
+        it('Length difference: Removal and Addition', () => {
+            // assertThat(["b", "x", "y"]).is(["a", "b", "c", "x"] as any);
+            assertThat(["b", "x", "y"]).failsWith(["a", "b", "c", "x"] as any,
+                [
+                    {[MatchResult.expected]: "a"}, "b", {[MatchResult.expected]: "c"}, "x",
+                    {[MatchResult.unexpected]: "y"}
+                ]);
+        });
+
+        it('Length difference: Removal and Addition with objects', () => {
+            assertThat([{b: "b"}, ["x"], "y"]).failsWith([{a: "a"}, {b: "b"}, "c", ["x"]] as any,
+                [{[MatchResult.expected]: {a: "a"}}, {b: "b"}, {[MatchResult.expected]: "c"}, ["x"],
+                    {[MatchResult.unexpected]: "y"}]);
         });
 
         it('does not match: length difference: errors', () => {
             const mismatched: Array<Mismatched> = [];
-            const matcher = match.array.match([2, 2, 2]);
+            const matcher = match.array.match(["a", "b", "c"]);
             (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, ["a", "b"]);
             assertThat(mismatched).is([
                 {actual: ["a", "b"], expected: {length: 3}}
@@ -34,7 +53,7 @@ describe("array.match:", () => {
 
         it('does not match: values mismatch', () => {
             const actual = ["a", "b"];
-            assertThat(actual).failsWith(match.array.match(["a", "c"]),
+            assertThat(actual).failsWith(["a", "c"],
                 ["a", {[MatchResult.was]: "b", [MatchResult.expected]: "c"}]);
         });
 
@@ -56,7 +75,7 @@ describe("array.match:", () => {
             const actual = [1, 2, [3, [5]]];
             assertThat(actual).failsWith([2, 2, [3, [4, 6]]],
                 [{[MatchResult.was]: 1, [MatchResult.expected]: 2}, 2,
-                    [3, {[MatchResult.was]: [5], [MatchResult.expected]: {lengthExpected: 2}}]]);
+                    [3, [{[MatchResult.unexpected]: 5}, {[MatchResult.expected]: 4}, {[MatchResult.expected]: 6}]]]);
             assertThat(actual).failsWith([1, 2, [3, [6]]],
                 [1, 2, [3, [{[MatchResult.was]: 5, [MatchResult.expected]: 6}]]]);
         });
@@ -77,7 +96,7 @@ describe("array.match:", () => {
             assertThat(actual).failsWith(expected,
                 [1, 2, [3, {[MatchResult.was]: [5], [MatchResult.expected]: "a"}]]);
             assertThat(expected).failsWith(actual,
-                [1, 2, [3, {[MatchResult.was]: "a", [MatchResult.expected]: "array expected"}]]);
+                [1, 2, [3, {[MatchResult.was]: "a", [MatchResult.expected]: [5]}]]);
         });
     });
 

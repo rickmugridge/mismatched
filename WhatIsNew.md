@@ -1,5 +1,8 @@
 # What is New (since Jan 2021)
 
+## 12 March 2021
+ * When the actual and expected arrays are of different length, a full diff is provided.
+
 ## 5 March 2021
 
  * `match.string.match()` can now take an argument of a string or a regular expression (eg, `match.string.match(/a.c/)`)

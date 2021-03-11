@@ -1,8 +1,9 @@
 import {matchMaker} from "../matchMaker/matchMaker";
 import {MatchResult} from "../MatchResult";
-import {isArray} from "util";
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {Mismatched} from "./Mismatched";
+import {arrayDiff} from "../diff/arrayDiff";
+import {ofType} from "../ofType";
 
 export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
     private constructor(private expected: Array<DiffMatcher<T>>) {
@@ -14,13 +15,14 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
-        if (!isArray(actual)) {
+        if (!ofType.isArray(actual)) {
             mismatched.push(Mismatched.make(context, actual, "array expected"));
-            return MatchResult.wasExpected(actual, "array expected", 1, 0);
+            return MatchResult.wasExpected(actual, this.describe(), 1, 0);
         }
         if (actual.length !== this.expected.length) {
             mismatched.push(Mismatched.make(context, actual, {length: this.expected.length}));
-            return MatchResult.wasExpected(actual, {lengthExpected: this.expected.length}, 1, 0);
+            const diff = arrayDiff(this.expected, actual)
+            return new MatchResult(diff, Math.max(this.expected.length, actual.length), 0);
         }
         const results: Array<any> = [];
         let errors = 0;
