@@ -73,8 +73,12 @@ describe("array.match:", () => {
 
         it('does not match: values mismatch', () => {
             const actual = ["a", "b"];
-            assertThat(actual).failsWith(["a", "c"],
+            const expected = ["a", "c"];
+            assertThat(actual).failsWith(expected,
                 ["a", {[MatchResult.was]: "b", [MatchResult.expected]: "c"}]);
+            const matcher: ArrayMatcher<string> = ArrayMatcher.make(expected)
+            const result = matcher.matches(actual)
+            assertThat(result.matchRate).is(0.5)
         });
 
         it('does not match: values mismatch: errors', () => {
