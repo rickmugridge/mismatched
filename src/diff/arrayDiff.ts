@@ -2,7 +2,7 @@ import {DiffMatcher} from "../matcher/DiffMatcher";
 import * as diff from "fast-array-diff";
 import {MatchResult} from "../MatchResult";
 
-export const arrayDiff = <T>(expected: DiffMatcher<T>[], actual: any[]): any[] => {
+export const arrayDiff = <T>(expected: DiffMatcher<T>[], actual: any[]): [any[],number] => {
     const map = new Map<T, Map<DiffMatcher<T>, MatchResult>>()
     const subMap = (value: T): Map<DiffMatcher<T>, MatchResult> => {
         const map2 = map.get(value)
@@ -25,6 +25,7 @@ export const arrayDiff = <T>(expected: DiffMatcher<T>[], actual: any[]): any[] =
     const deltas = diff.getPatch(actual, expected, compare);
     const result = Array.from(actual);
     let offset = 0;
+    let removes = 0;
     deltas.forEach(delta => {
         switch (delta.type) {
             case "add":
@@ -39,8 +40,9 @@ export const arrayDiff = <T>(expected: DiffMatcher<T>[], actual: any[]): any[] =
                 for (let i = start; i < end; i++) {
                     result[i] = {[MatchResult.unexpected]: result[i]}
                 }
+                removes += delta.items.length
                 break;
         }
     })
-    return result // todo also return number of matches
+    return [result, actual.length - removes]
 }

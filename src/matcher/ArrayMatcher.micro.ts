@@ -4,6 +4,7 @@ import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
+import {ArrayMatcher} from "./ArrayMatcher";
 
 describe("array.match:", () => {
     describe("assertThat():", () => {
@@ -18,22 +19,41 @@ describe("array.match:", () => {
         });
 
         it('Length difference: Removal', () => {
-            assertThat(["a", "b", "c", "d"]).failsWith(["a", "c"],
-                ["a", {[MatchResult.unexpected]: "b"}, "c", {[MatchResult.unexpected]: "d"}]);
+            const actual = ["a", "b", "c", "d"];
+            const expected = ["a", "c"];
+            assertThat(actual).failsWith(expected,
+                [
+                    "a",
+                    {[MatchResult.unexpected]: "b"},
+                    "c",
+                    {[MatchResult.unexpected]: "d"}
+                ]);
+            const matcher: ArrayMatcher<string> = ArrayMatcher.make(expected)
+            const result = matcher.matches(actual)
+            assertThat(result.matchRate).is(0.5)
         });
 
         it('Length difference: Addition', () => {
-            assertThat([]).failsWith(["a", "b"] as any,
-                [{[MatchResult.expected]: "a"}, {[MatchResult.expected]: "b"}]);
+            const actual = ["c", "d"];
+            const expected = ["a", "b", "c", "d"];
+            assertThat(actual).failsWith(expected as any,
+                [{[MatchResult.expected]: "a"}, {[MatchResult.expected]: "b"}, "c", "d"]);
+            const matcher: ArrayMatcher<string> = ArrayMatcher.make(expected)
+            const result = matcher.matches(actual)
+            assertThat(result.matchRate).is(0.5)
         });
 
         it('Length difference: Removal and Addition', () => {
-            // assertThat(["b", "x", "y"]).is(["a", "b", "c", "x"] as any);
-            assertThat(["b", "x", "y"]).failsWith(["a", "b", "c", "x"] as any,
+            const actual = ["b", "x", "y"];
+            const expected = ["a", "b", "c", "x"];
+            assertThat(actual).failsWith(expected as any,
                 [
                     {[MatchResult.expected]: "a"}, "b", {[MatchResult.expected]: "c"}, "x",
                     {[MatchResult.unexpected]: "y"}
                 ]);
+            const matcher: ArrayMatcher<string> = ArrayMatcher.make(expected)
+            const result = matcher.matches(actual)
+            assertThat(result.matchRate).is(0.5)
         });
 
         it('Length difference: Removal and Addition with objects', () => {

@@ -21,8 +21,8 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
         }
         if (actual.length !== this.expected.length) {
             mismatched.push(Mismatched.make(context, actual, {length: this.expected.length}));
-            const diff = arrayDiff(this.expected, actual)
-            return new MatchResult(diff, Math.max(this.expected.length, actual.length), 0);
+            const [diff, matches] = arrayDiff(this.expected, actual)
+            return new MatchResult(diff, Math.max(this.expected.length, actual.length), matches);
         }
         const results: Array<any> = [];
         let errors = 0;
