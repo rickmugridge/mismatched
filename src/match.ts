@@ -57,7 +57,8 @@ export const match = {
         less: (expected: number) => numberMatcher.less(expected),
         lessEqual: (expected: number) => numberMatcher.lessEqual(expected),
         greater: (expected: number) => numberMatcher.greater(expected),
-        greaterEqual: (expected: number) => numberMatcher.greaterEqual(expected)
+        greaterEqual: (expected: number) => numberMatcher.greaterEqual(expected),
+        withinDelta: (expected: number, delta: number) => numberMatcher.withinDelta(expected, delta)
     },
     regEx: {
         match: (expected: RegExp) => RegExpMatcher.make(expected)
