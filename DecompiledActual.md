@@ -73,11 +73,11 @@ It's not clear where the various values come from.
 (This could be improved for generated strings in builders but not for other types, such as dates, numbers, etc.)
 
 Let's call `match.decompiledActual()` to provide better information. This takes three arguments:
- 1 The *actual* value (result)
- 1 An object containing any input values of relevance - the *contributors*
- 1 An object containing any enums of relevance
+ 1. The *actual* value (result)
+ 1. An object containing any input values of relevance - the *contributors*
+ 1. An object containing any enums of relevance
 
-(Note that argumenst 2 and 3 are each provided within an object so that both their names and their values are provided.)
+(Note that arguments 2 and 3 are each provided within an object so that both their names and their values are provided.)
 
 Result from running
 `match.decompiledActual(party, {businessCode, persons, detailTracker}, {PartyVersion, DomainType, DomainState)`:
