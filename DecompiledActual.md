@@ -1,35 +1,42 @@
-# Decompiled Actual: Saving time with complex tests
+# Decompiled Actual: Saving time with complex tests with `match.decompiledActual()`
 
-You've just written a test involving inputs of complex, nested objects and arrays.
-The output from the tested code is equally complex. 
-We call this output the *actual* value, as compared to the *expected* value (a matcher, etc).
+Sometimes, when writing code involving complex, nested objects and arrays as inputs and outputs, it's
+easier to develop the tests and code together, developing each test step after the code changes.
+That's because it can be tedious to write the test first, especially when the displayed result can be 
+hundreds of lines long.
 
-However, the actual value contains values that have been derived from the inputs.
-It's not necessarily obvious where those values have come from, 
-especially when a builder pattern is used to create the input values. 
-And especially when values are somewhat random.
+This approach also applies to developers who write their tests afterwards.
 
-To make the expected value comprehensible, we need to revise it to be clear where the values within it come from.
-This can be rather tedious with complex structures.
+So we can run the test code, manually check that the result is as expected, 
+and then use that result in any checks/assertions.
 
-We call this "decompiling", for the want of a better word. 
-But it's really being clear about how the values in the result were derived from the inputs (and any enums).
+However, it's not immediately obvious where those values have come from, 
+as the result, or *actual* value, contains values that have been derived from the inputs. 
+(This is especially so when a [builder pattern](https://en.wikipedia.org/wiki/Builder_pattern) 
+is used to create the input values, where some values are randomly generated.)
+
+But the *expected* values in the final test assertions need to be comprehensible in terms of the inputs, 
+and independent of any randomness of a single test run.
+However, it can be tedious, with complex structures, to revise them to be clear where the values came from.
+
+We call this process "decompiling", for the want of a better word, 
+so that values in the result are shown as being derived from the inputs (and any enums).
+
+## Example
 
 Here's a unit test, which uses a `BusinessGraphBuilder` builder to create test input data:
 
 ```
-   it('Unknown with no Persons', () => {
+   it('fromBusiness(). Unknown with no Persons', () => {
       const [businessCode, []] = new BusinessGraphBuilder().addPerson().toPartyGraph()
       const detailTracker = new DetailTracker();
-      const party = asParty.fromBusiness(businessCode, [], detailTracker)
-
-      match.decompiledActual(party, {}, {})
-      // match.decompiledActual(party, {}, {PartyVersion, DomainType, DomainState)
-      // match.decompiledActual(party, {businessCode, detailTracker}, {PartyVersion, DomainType, DomainState)
+ 
+      const party = fromBusiness(businessCode, [], detailTracker)
+      assertThat(party).is({} as any) // Don't yet known what the result should be
     })
 ```
 
-The call to `decompiledActual(party, {}, {})` displays the bare result without alteration:
+Running this, we can see that the result (from that run) was:
 
 ```
 {
@@ -58,41 +65,22 @@ The call to `decompiledActual(party, {}, {})` displays the bare result without a
 }
 
 ```
+Note the use of randomly-generated values here from the builder, such as the UUID of the id, "some-name-6" and the dates.
+(Our builder creates a string value for a "name" field of the form "some-name-6", 
+with the trailing number being distinct across strings generated, ensuring they are unique across objects.)
+
 It's not clear where the various values come from. 
+(This could be improved for generated strings in builders but not for other types, such as the date.)
 
-Let's call `match.decompiledActual(party, {}, {PartyVersion, DomainType, DomainState)` instead. 
-The third argument is a list of relevant enums.
-The output now identifies where enum values are being used (eg, the `partyType` field below):
+Let's call `match.decompiledActual()` to provide better information. This takes three arguments:
+ * The *actual* value (result)
+ * An object containing any input values of relevance - the *contributors*
+ * An object containing any enums of relevance
 
-```
-{
-  id: "9eee6a40-8c37-4030-8729-69d551366170", version: PartyVersion.PersistedInitially, 
-  partyType: DomainType.UnknownParty, relationships: [], subParties: [], 
-  state: {
-    timeline: [
-      {
-        value: DomainState.Current, dateTime: {date: {}, microseconds: 0.814}, 
-        modifiedBy: "unknown"
-      }
-    ], ignoreDelta: undefined
-  }, created: {date: {}, microseconds: 0.809}, 
-  UnknownParty: {
-    timeline: {
-      name: {
-        timeline: [
-          {
-            value: "some-name-6", dateTime: {date: {}, microseconds: 0.814}, 
-            modifiedBy: "unknown"
-          }
-        ], ignoreDelta: undefined
-      }
-    }
-  }
-}
-```
+(Note that there are provided within an object so that the function has both their names and their values.)
 
-Now let's feed in the inputs into the second argument, calling 
-`match.decompiledActual(party, {businessCode, detailTracker}, {PartyVersion, DomainType, DomainState)` instead:
+Result from running
+`match.decompiledActual(party, {businessCode, detailTracker}, {PartyVersion, DomainType, DomainState)`:
 
 ```
 {
@@ -134,4 +122,14 @@ We can now easily clean it up to use it in our assertion:
       })
 ```
 
-Of course, this is particularly effective when the inputs and results are more complex.
+## Limitations, requiring some disambiguation
+
+ * If a value could come from several different *contributors*, it just shows one of them.
+ * If several enums have the same value, it just shows one of them.
+   For example the value "UnknownParty" is shown to be from the enum value `DomainType.UnknownParty` 
+   but it was actually from `PartyType.UnknownParty`.
+
+Things that can help:
+ * Use a builder that generates values sufficiently randomly, where possible,
+   across all object values, including strings.
+ * Use string-based enums and make the values distinct across enums
