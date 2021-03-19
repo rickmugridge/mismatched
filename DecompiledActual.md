@@ -77,7 +77,7 @@ Let's call `match.decompiledActual()` to provide better information. This takes 
  1. An object containing any input values of relevance - the *contributors*
  1. An object containing any enums of relevance
 
-(Note that arguments 2 and 3 are each provided within an object so that both their names and their values are provided.)
+(Arguments 2 and 3 are each within an object so that both their names and their values are provided.)
 
 Result from running
 `match.decompiledActual(party, {businessCode, persons, detailTracker}, {PartyVersion, DomainType, DomainState)`:
