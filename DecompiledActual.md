@@ -1,4 +1,4 @@
-# Decompiled Actual: Saving time with complex tests with `match.decompiledActual()`
+# Saving time with complex tests with `match.decompiledActual()`
 
 Sometimes, when writing code involving complex, nested objects and arrays as inputs and outputs, it's
 easier to develop the tests and code together, developing each test step after the code changes.
@@ -22,16 +22,16 @@ However, it can be tedious, with complex structures, to revise them to be clear 
 We call this process "decompiling", for the want of a better word, 
 so that values in the result are shown as being derived from the inputs (and any enums).
 
-## Example
+## Simple Example
 
 Here's a unit test, which uses a `BusinessGraphBuilder` builder to create test input data:
 
 ```
-   it('fromBusiness(). Unknown with no Persons', () => {
-      const [businessCode, []] = new BusinessGraphBuilder().addPerson().toPartyGraph()
+   it('partyFromBusiness(). Unknown with no Persons', () => {
+      const [businessCode, persons] = new BusinessGraphBuilder().addPerson().toPartyGraph()
       const detailTracker = new DetailTracker();
  
-      const party = fromBusiness(businessCode, [], detailTracker)
+      const party = partyFromBusiness(businessCode, persons, detailTracker)
       assertThat(party).is({} as any) // Don't yet known what the result should be
     })
 ```
@@ -70,17 +70,17 @@ Note the use of randomly-generated values here from the builder, such as the UUI
 with the trailing number being distinct across strings generated, ensuring they are unique across objects.)
 
 It's not clear where the various values come from. 
-(This could be improved for generated strings in builders but not for other types, such as the date.)
+(This could be improved for generated strings in builders but not for other types, such as dates, numbers, etc.)
 
 Let's call `match.decompiledActual()` to provide better information. This takes three arguments:
- * The *actual* value (result)
- * An object containing any input values of relevance - the *contributors*
- * An object containing any enums of relevance
+ 1 The *actual* value (result)
+ 1 An object containing any input values of relevance - the *contributors*
+ 1 An object containing any enums of relevance
 
-(Note that there are provided within an object so that the function has both their names and their values.)
+(Note that argumenst 2 and 3 are each provided within an object so that both their names and their values are provided.)
 
 Result from running
-`match.decompiledActual(party, {businessCode, detailTracker}, {PartyVersion, DomainType, DomainState)`:
+`match.decompiledActual(party, {businessCode, persons, detailTracker}, {PartyVersion, DomainType, DomainState)`:
 
 ```
 {
@@ -124,7 +124,7 @@ We can now easily clean it up to use it in our assertion:
 
 ## Limitations, requiring some disambiguation
 
- * If a value could come from several different *contributors*, it just shows one of them.
+ * If a value could come from several *contributors*, it just shows one of them.
  * If several enums have the same value, it just shows one of them.
    For example the value "UnknownParty" is shown to be from the enum value `DomainType.UnknownParty` 
    but it was actually from `PartyType.UnknownParty`.
