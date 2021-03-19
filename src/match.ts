@@ -26,6 +26,7 @@ import {BindMatcher} from "./matcher/BindMatcher";
 import {DescribeMatcher} from "./matcher/DescribeMatcher";
 import {DescribeContextMatcher} from "./matcher/DescribeContextMatcher";
 import {UnorderedArrayMatcher} from "./matcher/UnorderedArrayMatcher";
+import {decompiledActual} from "./decompile/decompileActual";
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -52,6 +53,7 @@ export const match = {
         endsWith: (expected: string) => stringMatcher.endsWith(expected),
         includes: (expected: string) => stringMatcher.includes(expected)
     },
+    uuid: () => stringMatcher.uuid(),
     number: {
         nan: () => numberMatcher.nan(),
         less: (expected: number) => numberMatcher.less(expected),
@@ -89,5 +91,7 @@ export const match = {
     describeContext: (describeContext: (outerContext: string, actual: any) => string, matcher: DiffMatcher<any> | any) =>
         DescribeContextMatcher.make(describeContext, matcher),
     describe: (matcher: DiffMatcher<any> | any, description: (actual: any, context: string) => string) =>
-        DescribeMatcher.make(matcher, description)
+        DescribeMatcher.make(matcher, description),
+    decompiledActual: (actual: any, contributors: object, enums: object = {}): any =>
+        decompiledActual(actual, contributors, enums)
 };

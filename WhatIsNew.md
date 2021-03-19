@@ -1,5 +1,13 @@
 # What is New (since Jan 2021)
 
+## 19 March 2021 (2.6.5)
+ * Added `match.decompiledActual(actual, contributors, enums)`. 
+   This provides a very useful form that can be used as the expected part in an `assertThat()`. 
+   It takes an actual result and replaces values within it by any contributors or enums used.
+   A contributor is some value/object/array that was used as an input into testing some code.
+   See [Decompiled Actual](./DecompiledActual.md) for an example to make sense of this.
+ * Added `match.uuid()` for matching a string containing a UUID.
+
 ## 12 March 2021
  * When the actual and expected arrays are of different length, a full diff is provided.
 

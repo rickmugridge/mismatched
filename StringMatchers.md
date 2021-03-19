@@ -37,3 +37,13 @@ Various matchers on strings.
     });
 ```
 
+## `match.uuid()` matches a string containing a UUID
+
+```
+    it("uuid", () => {
+        assertThat('b28a0a82-a721-11e9-9037-077495dd0010').is(match.uuid())
+        assertThat('077495dd00').isNot(match.uuid())
+    });
+```
+
+

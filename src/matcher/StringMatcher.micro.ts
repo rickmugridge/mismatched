@@ -18,6 +18,11 @@ describe("StringMatcher:", () => {
             assertThat("abc").is(match.string.match(/a.c/));
         });
 
+        it("uuid", () => {
+            assertThat('b28a0a82-a721-11e9-9037-077495dd0010').is(match.uuid())
+            assertThat('077495dd00').isNot(match.uuid())
+        });
+
         it('not a string', () => {
             assertThat(1 as any).failsWith("a",
                 {[MatchResult.was]: 1, [MatchResult.expected]: "a"});

@@ -49,6 +49,8 @@ export class StringMatcher extends DiffMatcher<string> {
     }
 }
 
+const uuidRegExp = /^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$/
+
 export const stringMatcher = {
     match: (expected: string | RegExp) =>
         ofType.isString(expected) ? StringMatcher.make(expected as string) : RegExpMatcher.make(expected as RegExp),
@@ -61,6 +63,9 @@ export const stringMatcher = {
     includes: (expected: string) => PredicateMatcher.make(value =>
         ofType.isString(value) && value.includes(expected),
         {"string.includes": expected}),
+    uuid: () => PredicateMatcher.make(value =>
+        ofType.isString(value) && value.match(uuidRegExp) !== null,
+        "uuid"),
 };
 
 const compare = (a, b) => a === b;
