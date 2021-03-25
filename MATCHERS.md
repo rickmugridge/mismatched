@@ -302,7 +302,7 @@ Sometimes, it's difficult to match directly on an object or a part of it.
 
 This matcher allows the actual value to be mapped and the matcher is applied to the result.
 
-See [MappedMatchers](./MappedMatcher.md) for an example and further details.
+See [MappedMatcher](./MappedMatcher.md) for an example and further details.
 
 
 ## Writing Custom Matchers
