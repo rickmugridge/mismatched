@@ -22,4 +22,4 @@ I can't match it directly, because the id of that object was auto-generated.
 So it's difficult to match it within the JSON string without a messy regExp, which is confusing.
 What's a better way of doing that?
 
- * See [MappedMatchers](./MappedMatchers.md) for a general solution.
+ * See [MappedMatcher](./MappedMatcher.md) for a general solution.
