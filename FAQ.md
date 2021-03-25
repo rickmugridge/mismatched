@@ -16,4 +16,10 @@
  * Use `match.aSet.match()` which compares the actual as a set against the expected set.
  * See [Matchers](./MATCHERS.md) for details
 
+## A larger returned object contains a field that holds the JSON from some object.
 
+I can't match it directly, because the id of that object was auto-generated.
+So it's difficult to match it within the JSON string without a messy regExp, which is confusing.
+What's a better way of doing that?
+
+ * See [MappedMatchers](./MappedMatchers.md) for a general solution.

@@ -296,6 +296,15 @@ So we can use a binding matcher.
 
 See [Binding Matcher](./BindingMatcher.md) for further details.
 
+### Mapping Matcher
+
+Sometimes, it's difficult to match directly on an object or a part of it. 
+
+This matcher allows the actual value to be mapped and the matcher is applied to the result.
+
+See [MappedMatchers](./MappedMatchers.md) for an example and further details.
+
+
 ## Writing Custom Matchers
 
 Simple matchers can use `match.predicate`. For examples:

@@ -2,12 +2,13 @@ import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("MappedMatcher()", () => {
     describe("assertThat():", () => {
         const matcher = match.mapped(a => a.m, 2, {extract: "m"});
+
         it("matches", () => {
             assertThat({m: 2}).is(matcher);
         });
@@ -26,6 +27,13 @@ describe("MappedMatcher()", () => {
             assertThat(mismatched).is([
                 {actual: undefined, expected: 2}
             ]);
+        });
+
+        it("Handles a string mapped", () => {
+            const actual = {
+                detail: JSON.stringify({f:[0]})
+            }
+            assertThat(actual).is({detail: match.mapped(JSON.parse, {f:[0]},'json')})
         });
     });
 
