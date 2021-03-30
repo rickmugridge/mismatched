@@ -80,7 +80,9 @@ export const match = {
         number: () => PredicateMatcher.make(ofType.isNumber, "ofType.number"),
         boolean: () => PredicateMatcher.make(ofType.isBoolean, "ofType.boolean"),
         regExp: () => PredicateMatcher.make(ofType.isRegExp, "ofType.regExp"),
-        symbol: () => PredicateMatcher.make(ofType.isSymbol, "ofType.symbol")
+        symbol: () => PredicateMatcher.make(ofType.isSymbol, "ofType.symbol"),
+        enum: (enumeration: any) => match.predicate(v => !!Object.values(enumeration).find(e => e === v))
+
     },
     predicate: (predicate: (v: any) => boolean,
                 description: any = {predicateFailed: PrettyPrinter.functionDetails(predicate)}) =>

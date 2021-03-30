@@ -7,7 +7,7 @@ export class MatchResult {
     static expected = Colour.bg_cyan("expected");
     static missing = Colour.bg_cyan("missing");
     static unexpected = Colour.bg_cyan("unexpected");
-    static differ = Colour.bg_cyan("differ");
+    static differ = Colour.bg_cyan("differ  ");
     public matchRate: number;
 
     constructor(public diff: any, public compares: number, public matches: number) {

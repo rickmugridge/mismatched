@@ -1,5 +1,9 @@
 # What is New (since Jan 2021)
 
+## 30 March 2021
+
+* Added and documented `match.enum()`
+
 ## 26 March 2021
 
 * Documented `match.mapped()`
