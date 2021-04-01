@@ -23,8 +23,7 @@ const buildMap = (contributors: object, enums: object): Map<any, string> => {
         const enumeration = enums[enumKey]
         Object.keys(enumeration).forEach(key => {
             const enumValue = enumeration[key]
-            const existing = mapValueToName.get(enumValue)
-            if (!existing) {
+            if (!mapValueToName.get(enumValue)) {
                 mapValueToName.set(enumValue, `${enumKey}.${key}`)
             }
         })
@@ -33,22 +32,19 @@ const buildMap = (contributors: object, enums: object): Map<any, string> => {
 }
 
 const walk = (name: string, contributor: any, mapValueToContributorName: Map<any, string[]>) => {
-    const existings = mapValueToContributorName.get(contributor);
+    const references = mapValueToContributorName.get(contributor);
     // Do not override one with a shorter name
-    if (existings) {
-        const currentlLength = existings[0].split('.').length;
+    if (references) {
+        const currentLength = references[0].split('.').length;
         const newLength = name.split('.').length;
-        if (newLength === currentlLength) {
-            existings.push(name);
-        } else if (newLength < currentlLength) {
+        if (newLength === currentLength) {
+            references.push(name);
+        } else if (newLength < currentLength) {
             mapValueToContributorName.set(contributor, [name]);
         }
     } else {
         mapValueToContributorName.set(contributor, [name]);
     }
-    // if (!existings || existings[0].split('.').length > name.split('.').length) {
-    //     mapValueToContributorName.set(contributor, [name]);
-    // }
     if (ofType.isArray(contributor)) {
         for (let i = 0; i < contributor.length; i++) {
             walk(`${name}[${i}]`, contributor[i], mapValueToContributorName)
