@@ -1,7 +1,6 @@
 import {assertThat} from "../assertThat";
 import {PrettyPrinter} from "../prettyPrint/PrettyPrinter";
 import {decompile} from "./decompileActual";
-import {match} from "../match";
 
 describe("decompile()", () => {
     it("is primitive, unmapped", () => {
@@ -38,9 +37,9 @@ describe("decompile()", () => {
         const aa = [1, a2]
         const dee = "d";
         const b = {c: dee};
-        const counterpartyCode = '123456'
-        const counterparty = {counterpartyCode}
-        const actual = {a: aa, b, ce: E.A, counterparty, counterpartyCode}
+        const productCode = '123456'
+        const product = {productCode}
+        const actual = {a: aa, b, ce: E.A, product, productCode}
         assertThat(decompile(actual, {all: actual}, [E]))
             .is(identifier("all"))
         assertThat(decompile(actual, {aa, b}))
@@ -52,7 +51,7 @@ describe("decompile()", () => {
         assertThat(decompile(actual, {aa}, {E}))
             .is({...actual, a: identifier("aa"), ce: identifier('E.A')})
         assertThat(decompile(actual, {a2})).is({...actual, a: [1, identifier("a2")]})
-        match.decompiledActual(actual, {dee, a1, counterpartyCode, counterparty}, {E})
+        // match.decompiledActual(actual, {dee, a1, counterpartyCode, counterparty}, {E})
     });
 });
 

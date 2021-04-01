@@ -10,30 +10,45 @@ export const decompile = (actual: any, contributors: object, enums: object = {})
 
 
 const buildMap = (contributors: object, enums: object): Map<any, string> => {
-    const mapValueToContributorName = new Map<any, string>();
+    const mapValueToContributorNames = new Map<any, string[]>();
     Object.keys(contributors).forEach(key => {
-        walk(key, contributors[key], mapValueToContributorName)
-    })
+        walk(key, contributors[key], mapValueToContributorNames)
+    });
+    const mapValueToName = new Map(Array.from(mapValueToContributorNames).map(mapElement => {
+        const [key, values] = mapElement;
+        return [key, values.join(" || ")]
+    }));
     // Only use enums where no contributor (sub)value matches
     Object.keys(enums).forEach(enumKey => {
         const enumeration = enums[enumKey]
         Object.keys(enumeration).forEach(key => {
             const enumValue = enumeration[key]
-            const exists = mapValueToContributorName.get(enumValue)
-            if (!exists) {
-                mapValueToContributorName.set(enumValue,`${enumKey}.${key}`)
+            const existing = mapValueToName.get(enumValue)
+            if (!existing) {
+                mapValueToName.set(enumValue, `${enumKey}.${key}`)
             }
         })
-    })
-    return mapValueToContributorName
+    });
+    return mapValueToName;
 }
 
-const walk = (name: string, contributor: any, mapValueToContributorName: Map<any, string>) => {
-    const existing = mapValueToContributorName.get(contributor);
+const walk = (name: string, contributor: any, mapValueToContributorName: Map<any, string[]>) => {
+    const existings = mapValueToContributorName.get(contributor);
     // Do not override one with a shorter name
-    if (!existing || existing.split('.').length > name.split('.').length) {
-        mapValueToContributorName.set(contributor, name);
+    if (existings) {
+        const currentlLength = existings[0].split('.').length;
+        const newLength = name.split('.').length;
+        if (newLength === currentlLength) {
+            existings.push(name);
+        } else if (newLength < currentlLength) {
+            mapValueToContributorName.set(contributor, [name]);
+        }
+    } else {
+        mapValueToContributorName.set(contributor, [name]);
     }
+    // if (!existings || existings[0].split('.').length > name.split('.').length) {
+    //     mapValueToContributorName.set(contributor, [name]);
+    // }
     if (ofType.isArray(contributor)) {
         for (let i = 0; i < contributor.length; i++) {
             walk(`${name}[${i}]`, contributor[i], mapValueToContributorName)
