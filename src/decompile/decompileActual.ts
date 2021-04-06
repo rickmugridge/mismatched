@@ -14,21 +14,21 @@ const buildMap = (contributors: object, enums: object): Map<any, string> => {
     Object.keys(contributors).forEach(key => {
         walk(key, contributors[key], mapValueToContributorNames)
     });
-    const mapValueToName = new Map(Array.from(mapValueToContributorNames).map(mapElement => {
-        const [key, values] = mapElement;
-        return [key, values.join(" || ")]
-    }));
-    // Only use enums where no contributor (sub)value matches
+    // Only use enums where no contributor (sub)value matches or there are more than one
     Object.keys(enums).forEach(enumKey => {
         const enumeration = enums[enumKey]
         Object.keys(enumeration).forEach(key => {
             const enumValue = enumeration[key]
-            if (!mapValueToName.get(enumValue)) {
-                mapValueToName.set(enumValue, `${enumKey}.${key}`)
+            const contributors = mapValueToContributorNames.get(enumValue);
+            if (!contributors || contributors.length > 1) {
+                mapValueToContributorNames.set(enumValue, [`${enumKey}.${key}`])
             }
         })
     });
-    return mapValueToName;
+    return new Map(Array.from(mapValueToContributorNames).map(mapElement => {
+        const [key, values] = mapElement;
+        return [key, values.join(" || ")]
+    }));
 }
 
 const walk = (name: string, contributor: any, mapValueToContributorName: Map<any, string[]>) => {
