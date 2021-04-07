@@ -1,10 +1,5 @@
 # What is New (since Jan 2021)
 
-## 7 April 2021
-
-* `assertThat(T1).is(match.obj.has(T2))` now requires that the type of `T2` is a `Partial` of `T1`.
-  This means, for example, that `mismatched` will complain if odd fields are added to the T2 type.
-
 ## 30 March 2021
 
 * Added and documented `match.enum()`
