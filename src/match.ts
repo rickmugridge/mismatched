@@ -45,7 +45,7 @@ export const match = {
     },
     obj: {
         match: (obj: object) => ObjectMatcher.make(obj),
-        has: (expected: Array<DiffMatcher<any>> | object) => ObjectSomeMatcher.make(expected),
+        has: <T extends U, U>(expected: Array<DiffMatcher<any>> | U): T => ObjectSomeMatcher.make(expected as any),
     },
     string: {
         match: (expected: string | RegExp) => stringMatcher.match(expected),

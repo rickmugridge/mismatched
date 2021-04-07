@@ -2,8 +2,6 @@ import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
 import {DiffFieldMatcher} from "./DiffFieldMatcher";
-import {Mismatched} from "./Mismatched";
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("obj.some:", () => {
@@ -18,8 +16,7 @@ describe("obj.some:", () => {
 
             it('literal object', () => {
                 const actual = {f: 2, g: 3, h: 4};
-                const expected = match.obj.has({f: 2, g: 3});
-                assertThat(actual).is(expected);
+                assertThat(actual).is(match.obj.has({f: 2, g: 3}));
             });
         });
 
@@ -29,15 +26,6 @@ describe("obj.some:", () => {
                 const expected = match.obj.has({f: 3});
                 assertThat(actual).failsWith(expected,
                     {f: {[MatchResult.was]: 2, [MatchResult.expected]: 3}});
-            });
-
-            it('an object: errors', () => {
-                const mismatched: Array<Mismatched> = [];
-                const matcher = match.obj.has({f: 3});
-                (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, {f: 2, g: 3});
-                assertThat(mismatched).is([
-                    {"actual.f": 2, expected: 3}
-                ]);
             });
 
             it('not an object', () => {
@@ -64,12 +52,20 @@ describe("obj.some:", () => {
             assertThat(validation.passed()).is(true);
         });
 
-        it("fails", () => {
+        it("fails wrong types", () => {
             const validation = validateThat({f: "2", g: 3, h: 45}).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
                 `{"actual.f": "2", expected: "ofType.number"}`,
                 `{"actual.g": 3, expected: "ofType.boolean"}`
+            ]);
+        });
+
+        it("fails to match", () => {
+            const validation = validateThat({f: "2"}).satisfies({f: 3});
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                '{"actual.f": "2", expected: 3}'
             ]);
         });
     });
