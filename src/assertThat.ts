@@ -64,6 +64,8 @@ class Assertion<T> {
     // This is used internally for testing error messages:
     failsWith(expected: any, message: object) {
         const result = this.match(expected);
+        if(result.passed()) {throw new Error('Did not expect it to pass')
+        }
         const matchResult = assertThat(result.diff).match(message);
         if (!matchResult.passed()) {
             throw new Error(`Incorrect message: 

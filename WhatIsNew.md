@@ -1,5 +1,9 @@
 # What is New (since Jan 2021)
 
+## 26 April 2021
+
+* Fixed `match.aSet.match()` when all actual match but there are extra expected elements.
+
 ## 30 March 2021
 
 * Added and documented `match.enum()`

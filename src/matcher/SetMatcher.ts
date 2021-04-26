@@ -1,7 +1,7 @@
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {Mismatched} from "./Mismatched";
 import {MatchResult} from "../MatchResult";
-import {matchMaker} from "..";
+import {matchMaker, PrettyPrinter} from "..";
 import {ofType} from "../ofType";
 
 export class SetMatcher<T> extends DiffMatcher<Set<T>> {
@@ -42,12 +42,12 @@ export class SetMatcher<T> extends DiffMatcher<Set<T>> {
                     matches += result.matchRate * result.compares;
                 }
             }
-            const matchResult = MatchResult.wasExpected(actual, this.describe(), compares, matches);
+            const matchResult = MatchResult.wasExpected(actual, this.describe(),
+                compares + remainingMatchers.size, matches);
             if (remainingMatchers.size === 0 && nearMisses.size == 0 && (this.subset || completeMisses.length == 0)) {
                 return matchResult;
             }
             mismatched.push(Mismatched.make(context, actual, this.describe()));
-
             const wrongMatches = this.handleMismatches(nearMisses, remainingMatchers, completeMisses);
 
             matchResult.differ(wrongMatches.map(w => w.diff));
