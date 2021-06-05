@@ -20,9 +20,29 @@ export class ObjectSomeMatcher<T> extends DiffMatcher<T> {
             return MatchResult.wasExpected(actual, this.describe(), 1, 0);
         }
         const results = {};
+        let errors = 0;
         let compares = 0;
         let matches = 0;
-        this.expected.forEach(e => {
+        let matchedObjectKey = false
+        const keyMatchers = this.expected.filter(m => m.isKey());
+        if (keyMatchers.length > 0) {
+            keyMatchers.forEach(e => {
+                const result = e.mismatches(context, mismatched, actual);
+                if (result.passed()) {
+                    results[e.fieldName] = actual[e.fieldName];
+                } else {
+                    results[e.fieldName] = result.diff;
+                    errors += 10;
+                }
+                compares += result.compares;
+                matches += result.matchRate * result.compares;
+            });
+            if (errors === 0) {
+                matchedObjectKey = true
+            }
+        }
+        const nonKeyMatchers = this.expected.filter(m => !m.isKey());
+        nonKeyMatchers.forEach(e => {
             const result = e.mismatches(context, mismatched, actual);
             if (result.passed()) {
                 results[e.fieldName] = actual[e.fieldName];
@@ -32,7 +52,7 @@ export class ObjectSomeMatcher<T> extends DiffMatcher<T> {
             compares += result.compares;
             matches += result.matchRate * result.compares;
         });
-        return new MatchResult(results, compares, matches);
+        return new MatchResult(results, compares, matches, matchedObjectKey);
     }
 
     describe(): any {

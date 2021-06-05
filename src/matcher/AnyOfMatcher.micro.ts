@@ -83,6 +83,34 @@ describe("AnyOfMatcher:", () => {
             ]);
         });
 
+        it("Just mentions the failures to match within the single key match with some", () => {
+            const matchTypeA = match.obj.has({type: match.obj.key('a'), f: match.ofType.string()});
+            const matchTypeB = match.obj.has({type: match.obj.key('b'), f: match.ofType.number()});
+            const actual = {type: 'a', f: 4};
+
+            const validation = validateThat(actual).satisfies(match.anyOf([matchTypeA, matchTypeB]));
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                '[{"actual.f": 4, expected: "ofType.string"}]'
+            ]);
+        });
+
+        it("Just mentions the failures to match within the single key match nested", () => {
+            const extra = {id: match.any()}
+            const matchTypeA = {...extra, type: match.obj.key('a'), f: match.ofType.string()};
+            const matchTypeB = {...extra, type: match.obj.key('b'), f: match.ofType.number()};
+            const actual = {x: true, b: {a: {id: 3, type: 'a', f: 4}}};
+
+            const validation = validateThat(actual).satisfies({
+                x: match.any(),
+                b: {a: match.anyOf([matchTypeA, matchTypeB])}
+            });
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                '[{"actual.b.a.f": 4, expected: "ofType.string"}]'
+            ]);
+        });
+
         it("fails with no key", () => {
             const expected = match.anyOf([
                 {type: 'a', f: 3},
@@ -93,5 +121,6 @@ describe("AnyOfMatcher:", () => {
                 '{actual: {type: "a", f: 4}, expected: {anyOf: [{type: "a", f: 3}, {type: "b", f: 4}]}}'
             ]);
         });
+
     });
 });
