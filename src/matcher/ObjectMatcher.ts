@@ -19,17 +19,34 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
             return MatchResult.wasExpected(actual, this.describe(), 1, 0);
         }
         if (this.expectedObject === actual) {
-            return MatchResult.good(1);
+            return MatchResult.good(1, true);
         }
         const results = {};
         let errors = 0;
         let compares = 0;
         let matches = 0;
-        this.expected.forEach(e => {
+        let matchedObjectKey = false
+        const keyMatchers = this.expected.filter(m => m.isKey());
+        if (keyMatchers.length > 0) {
+            keyMatchers.forEach(e => {
+                const result = e.mismatches(context, mismatched, actual);
+                if (result.passed()) {
+                    results[e.fieldName] = actual[e.fieldName];
+                } else {
+                    results[e.fieldName] = result.diff;
+                    errors += 10;
+                }
+                compares += result.compares;
+                matches += result.matchRate * result.compares;
+            });
+            if (errors === 0) {
+                matchedObjectKey = true
+            }
+        }
+        const nonKeyMatchers = this.expected.filter(m => !m.isKey());
+        nonKeyMatchers.forEach(e => {
             const result = e.mismatches(context, mismatched, actual);
             if (result.passed()) {
-                // todo Don't add passes to the results if this.expected.length > 6
-                // todo Instead, put in '...'
                 results[e.fieldName] = actual[e.fieldName];
             } else {
                 results[e.fieldName] = result.diff;
@@ -54,16 +71,15 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
             results[MatchResult.unexpected] = unexpected;
         }
         if (errors === 0) {
-            return MatchResult.good(compares);
+            return MatchResult.good(compares, matchedObjectKey);
         }
-        return new MatchResult(results, compares, matches);
+        return new MatchResult(results, compares, matches, matchedObjectKey);
     }
 
     describe(): any {
         return concatObjects(this.expected.map(e => e.describe()));
     }
 }
-
 
 export function concatObjects(objects: Array<object>): object {
     const result = {};

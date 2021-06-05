@@ -187,6 +187,26 @@ For example:
     });
 ```
 
+We can improve the validation errors when matching across subtypes of objects.
+Define the `key` fields of each type of object with `match.obj.key()`.
+Eg, we're validating that an object is either of type 'a' or type 'b':
+
+```
+        it("Just mentions the failures to match within the single key match", () => {
+            const matchTypeA = {type: match.obj.key('a'), f: match.ofType.string()};
+            const matchTYpeB = {type: match.obj.key('b'), f: match.ofType.number()};
+            const actual = {type: 'a', f: 4};
+            
+            const validation = validateThat(actual).satisfies(match.anyOf([matchTypeA, matchTYpeB]));
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                '[{"actual.f": 4, expected: "ofType.string"}]'
+            ]);
+        });
+```
+
+The error above is then specific to type 'a'. Without specifying the key, either type would match equally well.
+
 ### AllOf Matcher
 
 Matches all of the given matchers.

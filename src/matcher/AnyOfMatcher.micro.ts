@@ -2,7 +2,7 @@ import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("AnyOfMatcher:", () => {
@@ -60,14 +60,37 @@ describe("AnyOfMatcher:", () => {
             ]);
         });
 
-        it("fails and just mentions the single match that was cloese", () => {
+        it("fails and just mentions the single match that was close", () => {
             const expected = match.anyOf([
                 match.instanceOf(Date),
-                {f:3, g:4}]);
-            const validation = validateThat({f:3}).satisfies(expected);
+                {f: 3, g: 4}]);
+            const validation = validateThat({f: 3}).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{actual: {f: 3}, expected: {f: 3, g: 4}}`
+                '[{"actual.g": undefined, expected: 4}]'
+            ]);
+        });
+
+        it("Just mentions the failures to match within the single key match", () => {
+            const matchTypeA = {type: match.obj.key('a'), f: match.ofType.string()};
+            const matchTypeB = {type: match.obj.key('b'), f: match.ofType.number()};
+            const actual = {type: 'a', f: 4};
+
+            const validation = validateThat(actual).satisfies(match.anyOf([matchTypeA, matchTypeB]));
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                '[{"actual.f": 4, expected: "ofType.string"}]'
+            ]);
+        });
+
+        it("fails with no key", () => {
+            const expected = match.anyOf([
+                {type: 'a', f: 3},
+                {type: 'b', f: 4}]);
+            const validation = validateThat({type: 'a', f: 4}).satisfies(expected);
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                '{actual: {type: "a", f: 4}, expected: {anyOf: [{type: "a", f: 3}, {type: "b", f: 4}]}}'
             ]);
         });
     });

@@ -27,6 +27,7 @@ import {DescribeMatcher} from "./matcher/DescribeMatcher";
 import {DescribeContextMatcher} from "./matcher/DescribeContextMatcher";
 import {UnorderedArrayMatcher} from "./matcher/UnorderedArrayMatcher";
 import {decompiledActual} from "./decompile/decompileActual";
+import {ObjectKeyMatcher} from "./matcher/ObjectKeyMatcher";
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -46,6 +47,7 @@ export const match = {
     obj: {
         match: (obj: object) => ObjectMatcher.make(obj),
         has: (expected: Array<DiffMatcher<any>> | object) => ObjectSomeMatcher.make(expected),
+        key: (expected: any) => ObjectKeyMatcher.make(expected)
     },
     string: {
         match: (expected: string | RegExp) => stringMatcher.match(expected),

@@ -2,6 +2,7 @@ import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
 import {Mismatched} from "./Mismatched";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "../matchMaker/matchMaker";
+import {ObjectKeyMatcher} from "./ObjectKeyMatcher";
 
 export class DiffFieldMatcher<T> extends DiffMatcher<T> {
     private constructor(public fieldName: string, private expected: DiffMatcher<T>) {
@@ -10,18 +11,14 @@ export class DiffFieldMatcher<T> extends DiffMatcher<T> {
 
     mismatches(context: ContextOfValidationError, errors: Array<Mismatched>, actual: T): MatchResult {
         return this.expected.mismatches(context.add("." + this.fieldName), errors, actual[this.fieldName]);
-        // // If too many errors, report the expected and actual completely separated
-        // const matchResult = this.expected.matches(actual[this.fieldName]);
-        // let mostlymatches = true; // base this on the rating and counts of matches, etc in the matchResult when it fails
-        // if (matchResult.passed()  || mostlymatches) {
-        //     return matchResult;
-        // }
-        // return MatchResult.wasExpected(actual[this.fieldName],
-        //     this.expected.describe(), matchResult.compares, matchResult.matches);
     }
 
     describe(): any {
         return {[this.fieldName]: this.expected.describe()};
+    }
+
+    isKey() {
+        return this.expected instanceof ObjectKeyMatcher
     }
 
     static make<T>(fieldName: string, expected: DiffMatcher<T> | any): DiffFieldMatcher<T> {

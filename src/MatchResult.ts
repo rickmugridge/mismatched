@@ -10,7 +10,7 @@ export class MatchResult {
     static differ = Colour.bg_cyan("  differ");
     public matchRate: number;
 
-    constructor(public diff: any, public compares: number, public matches: number) {
+    constructor(public diff: any, public compares: number, public matches: number, public matchedObjectKey = false) {
         this.matchRate = compares === 0 ? 1.0 : matches / compares;
     }
 
@@ -26,8 +26,8 @@ export class MatchResult {
         return handleSymbol(description);
     }
 
-    static good(compares: number) {
-        return new MatchResult({}, compares, compares);
+    static good(compares: number, matchedObjectKey = false) {
+        return new MatchResult({}, compares, compares, matchedObjectKey);
     }
 
     passed() {

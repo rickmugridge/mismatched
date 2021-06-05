@@ -1,5 +1,10 @@
 # What is New (since Jan 2021)
 
+## 5 June 2021
+
+* Added `match.object.key()` to narrow down `validateThat` errors when matching subtypes with `match.anyOf()`.
+* See `anyOf()` in [MATCHERS](./MATCHERS.md)
+
 ## 26 April 2021
 
 * Fixed `match.aSet.match()` when all actual match but there are extra expected elements.

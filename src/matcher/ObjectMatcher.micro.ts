@@ -38,6 +38,11 @@ describe("obj.match:", () => {
                     .is(match.obj.match({f: match.number.lessEqual(3), g: match.ofType.number()}));
             });
 
+            it('with a key', () => {
+                assertThat({f: 2, g: 3})
+                    .is(match.obj.match({f: match.obj.key(2), g: 3}));
+            });
+
         });
 
         describe('does not match actual as:', () => {
@@ -176,18 +181,46 @@ describe("obj.match:", () => {
                 assertThat(2).failsWith({f: 2},
                     {[MatchResult.was]: 2, [MatchResult.expected]: {f: 2}});
             });
+
+            it("has a missing key", () => {
+                const actual = {f: 3, g: 4};
+                assertThat(actual).failsWith({f: match.obj.key(2), g: 5},
+                    {
+                        f: {[MatchResult.was]: 3, [MatchResult.expected]: 2},
+                        g: {[MatchResult.was]: 4, [MatchResult.expected]: 5}
+                    });
+            });
+
+            it("has two missing keys", () => {
+                const actual = {f: 3, g: 4};
+                const expected = {f: match.obj.key(2), g: match.obj.key(5)};
+                assertThat(actual).failsWith(expected,
+                    {
+                        f: {[MatchResult.was]: 3, [MatchResult.expected]: 2},
+                        g: {[MatchResult.was]: 4, [MatchResult.expected]: 5}
+                    });
+            });
+
+            it("has one missing key of two keys", () => {
+                const actual = {f: 3, g: 4};
+                const expected = {f: match.obj.key(2), g: match.obj.key(4)};
+                assertThat(actual).failsWith(expected,
+                    {
+                        f: {[MatchResult.was]: 3, [MatchResult.expected]: 2}, g: 4
+                    });
+            });
         });
     });
 
     describe("validateThat():", () => {
-        const expected = {f: match.ofType.number(), g: match.ofType.boolean()};
-
         it("succeeds", () => {
+            const expected = {f: match.ofType.number(), g: match.ofType.boolean()};
             const validationResult = validateThat({f: 2, g: true}).satisfies(expected);
             assertThat(validationResult.passed()).is(true);
         });
 
         it("fails on one field", () => {
+            const expected = {f: match.ofType.number(), g: match.ofType.boolean()};
             const validationResult = validateThat({f: "2", g: true}).satisfies(expected);
             assertThat(validationResult.passed()).is(false);
             assertThat(validationResult.errors).is([
@@ -196,6 +229,7 @@ describe("obj.match:", () => {
         });
 
         it("fails", () => {
+            const expected = {f: match.ofType.number(), g: match.ofType.boolean()};
             const validationResult = validateThat({f: "2", g: 3}).satisfies(expected);
             assertThat(validationResult.passed()).is(false);
             assertThat(validationResult.errors).is([
@@ -216,6 +250,16 @@ describe("obj.match:", () => {
             assertThat(validationResult.passed()).is(false);
             assertThat(validationResult.errors).is([
                 `{"actual.f.h.j": "2", expected: "ofType.number"}`
+            ]);
+        });
+
+        it("has a missing key", () => {
+            const validationResult = validateThat({f: "2", g: 3}).satisfies({
+                f: match.obj.key(match.ofType.number()),
+                g: 3
+            });
+            assertThat(validationResult.errors).is([
+                `{"actual.f": "2", expected: "ofType.number"}`
             ]);
         });
     });
