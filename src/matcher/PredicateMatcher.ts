@@ -14,7 +14,7 @@ export class PredicateMatcher extends DiffMatcher<any> {
             if (this.expected(actual)) {
                 return MatchResult.good(1);
             }
-        } catch (e) {
+        } catch (e: any) {
             const actualAndException = {actual, exception: e.message || e};
             mismatched.push(Mismatched.make(context, actualAndException, this.describe()));
             return MatchResult.wasExpected(actualAndException, this.describe(), 1, 0);

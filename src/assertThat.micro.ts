@@ -87,7 +87,7 @@ describe("assertThat():", () => {
             try {
                 assertThat(() => 3).throws(match.instanceOf(Error));
                 passed = true;
-            } catch (e) {
+            } catch (e: any) {
                 assertThat(e).is({message: "Problem in throws()"});
             }
             assertThat(passed).is(false);
@@ -116,7 +116,7 @@ describe("assertThat():", () => {
         it("Mismatches", () => {
             return assertThat(Promise.resolve(4))
                 .catches(4)
-                .catch(e => assertThat(e).is("Problem in catches()"));
+                .catch((e:any) => assertThat(e).is("Problem in catches()"));
         });
 
         it("Actual is not a function", () => {

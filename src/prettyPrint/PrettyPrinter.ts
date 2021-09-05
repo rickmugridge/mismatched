@@ -65,7 +65,7 @@ export class PrettyPrinter {
                 }
                 return {arrow: details};
             }
-        } catch (e) {
+        } catch (e: any) {
         }
         return {function: "no details"};
     }
@@ -102,8 +102,8 @@ export class PrettyPrinter {
                 const items = this.selfReference.recurse(context, value, () =>
                     (value as Array<any>).map((v, i) => this.tile(context + "[" + i + "]", v)));
                 return new ArrayTile(items);
-            } catch (e) {
-                return new SimpleTile(e.message);
+            } catch (e: any) {
+                return new SimpleTile(exceptionMessage(e));
             }
         }
         if (ofType.isObject(value)) {
@@ -145,8 +145,8 @@ export class PrettyPrinter {
                     return new FieldTile(renderedKey, this.tile(context + renderedKey, (value as any)[key]))
                 }));
             return new ObjectTile(fields);
-        } catch (e) {
-            return new SimpleTile(e.message); // todo Change this to an auto-coloured Tile
+        } catch (e: any) {
+            return new SimpleTile(exceptionMessage(e)); // todo Change this to an auto-coloured Tile
         }
     }
 }
@@ -162,4 +162,14 @@ export function cleanString(value: string): string {
         return '`' + value + '`';
     }
     return JSON.stringify(value);
+}
+
+export const exceptionMessage = (e:any) => {
+    if (e instanceof Error) return e.message
+    if (ofType.isString(e)) return e
+    if (ofType.isFunction(e)) return JSON.stringify(e)
+    if (ofType.isObject(e)) return JSON.stringify(e)
+    if (ofType.isNull(e)) return 'null'
+    if (ofType.isUndefined(e)) return 'undefined'
+    return 'An unknown exception type'
 }

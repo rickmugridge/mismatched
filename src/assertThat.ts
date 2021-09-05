@@ -5,7 +5,7 @@ import {matchMaker} from "./matchMaker/matchMaker";
 import {fail} from "assert";
 import {match} from "./match";
 import {ofType} from "./ofType";
-import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
+import {exceptionMessage, PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 import {ErrorMatcher} from "./matcher/ErrorMatcher";
 import {MatchResult} from "./MatchResult";
 import {Mismatched} from "./matcher/Mismatched";
@@ -89,10 +89,10 @@ expected: '${printer.render(message)}'`);
         try {
             this.actual();
             passed = true;
-        } catch (e) {
+        } catch (e: any) {
             const result = matcher.matches(e);
             if (!result.passed()) {
-                result.bad(e.message);
+                result.bad(exceptionMessage(e));
             }
         }
         if (passed) {
@@ -164,7 +164,7 @@ class ExceptionAssertion<T> {
         try {
             result = this.fn();
             failed = true;
-        } catch (e) {
+        } catch (e: any) {
             assertThat(e.message).is(expected);
         }
         if (failed) {
@@ -178,7 +178,7 @@ class ExceptionAssertion<T> {
         try {
             result = this.fn();
             failed = true;
-        } catch (e) {
+        } catch (e: any) {
             assertThat(e).is(expected);
         }
         if (failed) {
