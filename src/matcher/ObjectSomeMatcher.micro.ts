@@ -32,14 +32,14 @@ describe("obj.some:", () => {
                 const actual = 3;
                 const expected = match.obj.has({f: 3});
                 assertThat(actual).failsWith(expected,
-                    {[MatchResult.was]: 3, [MatchResult.expected]: {"obj.some": {f: 3}}});
+                    {[MatchResult.was]: 3, [MatchResult.expected]: {"obj.has": {f: 3}}});
             });
 
             it('undefined', () => {
                 const actual = undefined;
                 const expected = match.obj.has({f: 3});
                 assertThat(actual).failsWith(expected,
-                    {[MatchResult.expected]: {"obj.some": {f: 3}}});
+                    {[MatchResult.expected]: {"obj.has": {f: 3}}});
             });
         });
     });

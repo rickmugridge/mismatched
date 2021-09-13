@@ -56,6 +56,6 @@ export class ObjectSomeMatcher<T> extends DiffMatcher<T> {
     }
 
     describe(): any {
-        return {"obj.some": concatObjects(this.expected.map(e => e.describe()))};
+        return {"obj.has": concatObjects(this.expected.map(e => e.describe()))};
     }
 }
