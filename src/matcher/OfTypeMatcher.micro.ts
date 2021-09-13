@@ -53,6 +53,7 @@ describe("OfTypeMatcher:", () => {
             }
             assertThat(E.First).is(match.ofType.enum(E, "E"));
             assertThat(E.Second).is(match.ofType.enum(E, "E"));
+            assertThat("junk").isNot(match.ofType.enum(E, "E"));
             assertThat(undefined).isNot(match.ofType.enum(E, "E"));
             assertThat(null).isNot(match.ofType.enum(E, "E"));
             assertThat(false).isNot(match.ofType.enum(E, "E"));

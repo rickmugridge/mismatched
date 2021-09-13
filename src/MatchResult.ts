@@ -2,7 +2,9 @@ import {ofType} from "./ofType";
 import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 import {Colour} from "./Colour";
 
+
 export class MatchResult {
+    static consoleLogging = false
     static was = Colour.bg_cyan("     was");
     static expected = Colour.bg_cyan("expected");
     static missing = Colour.bg_cyan("missing");
@@ -12,6 +14,10 @@ export class MatchResult {
 
     constructor(public diff: any, public compares: number, public matches: number, public matchedObjectKey = false) {
         this.matchRate = compares === 0 ? 1.0 : matches / compares;
+    }
+
+    static useConsoleLogging() {
+        MatchResult.consoleLogging = true
     }
 
     static wasExpected(was: any, expected: any, compares: any, matches: any): MatchResult {
@@ -36,7 +42,12 @@ export class MatchResult {
 
     bad(actual: any, message = "Mismatched") {
         const diff = PrettyPrinter.make().render({actual, diff: this.diff});
-        throw new Error(message + ":\n" + diff);
+        if (MatchResult.consoleLogging) {
+            console.log(diff)
+            throw new Error(message)
+        } else {
+            throw new Error(message + ":\n" + diff);
+        }
     }
 
     differ(items: any): this {
