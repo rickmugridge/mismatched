@@ -15,7 +15,7 @@ export class RegExpMatcher extends DiffMatcher<any> {
         if (ofType.isString(actual) && actual.match(this.expected)) {
             return MatchResult.good(1);
         }
-        mismatched.push(Mismatched.make(context, actual, this.describe()));
+        mismatched.push(Mismatched.makeExpectedMessage(context, actual, this.describe()));
         return MatchResult.wasExpected(actual, this.describe(), 1, 0);
     }
 

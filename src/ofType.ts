@@ -2,6 +2,10 @@ function isUndefined(v: any): v is undefined {
     return typeof v === "undefined";
 }
 
+function isDefined<T>(v: T | undefined): v is T {
+    return !isUndefined(v)
+}
+
 function isNull(v: any): v is null {
     return v === null;
 }
@@ -42,7 +46,7 @@ function isBoolean(v: any): v is boolean {
     return typeof v === 'boolean';
 }
 
-function isRegExp(v: any): boolean {
+function isRegExp(v: any): v is RegExp {
     return v instanceof RegExp;
 }
 
@@ -73,5 +77,6 @@ export const ofType = {
     isRegExp,
     isString,
     isSymbol,
-    isUndefined
+    isUndefined,
+    isDefined
 };

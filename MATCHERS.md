@@ -314,7 +314,7 @@ In matching, we want to ensure that those values are all the same, but we dont k
 
 So we can use a binding matcher. 
 
-See [Binding Matcher](./BindingMatcher.md) for further details.
+See [Binding Matcher](./BindingMatcher.md) for an example and further details.
 
 ### Mapping Matcher
 

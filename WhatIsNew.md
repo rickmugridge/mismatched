@@ -1,8 +1,23 @@
 # What is New (since Jan 2021)
 
+## 31 October 2021
+
+* Extended the [FAQ](./FAQ.md) considerably, including [Custom Matchers](./CustomMatchers.md)and [DecompiledActual](./DecompiledActual.md)
+* Added  [MismatchedAtWork](./MismatchedAtWork.md)
+* Revised the algorithms for matching arrays:
+  * Used fast-diff for all matching
+* Revised the algorithms for matching sets and unordered arrays (bags):
+  * Used a new algorithm, based on the "complexity" of the matchers, which aims to measure how constrained a matcher is.
+  * The matchers are tried from most constrained to least, to try and find the best overall match
+* For both of these algorithm changes:
+  * Takes account of `match.object.keys()` in matching. If the key matches:
+    * The whole is considered to matched (even if there are other differences)
+    * Those differences are displayed in the final result
+  * Now a `match.bind()` only binds once the actual/expected have been matched up
+
 ## 5 June 2021
 
-* Added `match.object.key()` to narrow down `validateThat` errors when matching subtypes with `match.anyOf()`.
+* Added `match.object.key()` to improve diffs and to narrow down `validateThat` errors when matching subtypes with `match.anyOf()`.
 * See `anyOf()` in [MATCHERS](./MATCHERS.md)
 
 ## 26 April 2021

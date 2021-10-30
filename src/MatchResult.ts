@@ -7,7 +7,6 @@ export class MatchResult {
     static consoleLogging = false
     static was = Colour.bg_cyan("     was");
     static expected = Colour.bg_cyan("expected");
-    static missing = Colour.bg_cyan("missing");
     static unexpected = Colour.bg_cyan("unexpected");
     static differ = Colour.bg_cyan("  differ");
     public matchRate: number;
@@ -67,17 +66,6 @@ export class MatchResult {
                 this.diff[MatchResult.unexpected] = items[0]
             } else {
                 this.diff[MatchResult.unexpected] = items;
-            }
-        }
-        return this
-    }
-
-    missing(items: any): this {
-        if (items.length > 0) {
-            if (items.length === 1) {
-                this.diff[MatchResult.missing] = items[0]
-            } else {
-                this.diff[MatchResult.missing] = items;
             }
         }
         return this

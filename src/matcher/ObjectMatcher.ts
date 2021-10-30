@@ -5,8 +5,9 @@ import {Mismatched} from "./Mismatched";
 import {DiffFieldMatcher} from "./DiffFieldMatcher";
 
 export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
-    private constructor(private expectedObject: object, private expected: Array<DiffFieldMatcher<T>>) {
+    private constructor(private expectedObject: object, private matchers: Array<DiffFieldMatcher<T>>) {
         super();
+        this.complexity = DiffMatcher.andComplexity(matchers)
     }
 
     static make<T extends object>(obj: object): any {
@@ -15,7 +16,7 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
         if (!ofType.isObject(actual)) {
-            mismatched.push(Mismatched.make(context, actual, "object expected"));
+            mismatched.push(Mismatched.makeExpectedMessage(context, actual, "object expected"));
             return MatchResult.wasExpected(actual, this.describe(), 1, 0);
         }
         if (this.expectedObject === actual) {
@@ -26,7 +27,7 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
         let compares = 0;
         let matches = 0;
         let matchedObjectKey = false
-        const keyMatchers = this.expected.filter(m => m.isKey());
+        const keyMatchers = this.matchers.filter(m => m.isKey());
         if (keyMatchers.length > 0) {
             keyMatchers.forEach(e => {
                 const result = e.mismatches(context, mismatched, actual);
@@ -43,7 +44,7 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
                 matchedObjectKey = true
             }
         }
-        const nonKeyMatchers = this.expected.filter(m => !m.isKey());
+        const nonKeyMatchers = this.matchers.filter(m => !m.isKey());
         nonKeyMatchers.forEach(e => {
             const result = e.mismatches(context, mismatched, actual);
             if (result.passed()) {
@@ -67,7 +68,7 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
             }
         });
         if (wasUnexpected) {
-            mismatched.push(Mismatched.make(context, actual, "unexpected", unexpected));
+            mismatched.push(Mismatched.makeUnexpectedMessage(context, actual, unexpected));
             results[MatchResult.unexpected] = unexpected;
         }
         if (errors === 0) {
@@ -77,7 +78,7 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
     }
 
     describe(): any {
-        return concatObjects(this.expected.map(e => e.describe()));
+        return concatObjects(this.matchers.map(e => e.describe()));
     }
 }
 

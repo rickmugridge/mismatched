@@ -78,6 +78,9 @@ For example:
      });
 ```
 
+Unordered arrays are matched with the same algorithm as for sets, except that it allows for duplicate entries.
+See the tips under set matchers to get more useful results when things don't match correctly.
+
 ## `match.array.unorderedContains()`
 
 This matcher expects that a subset of the elements of the actual array can be matched by a corresponding 

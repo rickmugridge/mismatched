@@ -7,6 +7,7 @@ import {matchMaker} from "../matchMaker/matchMaker";
 export class ArrayEveryMatcher<T> extends DiffMatcher<Array<T>> {
     private constructor(private expected: DiffMatcher<T>) {
         super();
+        this.complexity = expected.complexity
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
@@ -29,7 +30,7 @@ export class ArrayEveryMatcher<T> extends DiffMatcher<Array<T>> {
             }
             return MatchResult.wasExpected(actual, this.describe(), compares, matches);
         }
-        mismatched.push(Mismatched.make(context, actual, "array expected"));
+        mismatched.push(Mismatched.makeExpectedMessage(context, actual, "array expected"));
         return MatchResult.wasExpected(actual, this.describe(), 1, 0);
     }
 

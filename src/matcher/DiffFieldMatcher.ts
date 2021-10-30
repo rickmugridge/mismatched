@@ -3,22 +3,28 @@ import {Mismatched} from "./Mismatched";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "../matchMaker/matchMaker";
 import {ObjectKeyMatcher} from "./ObjectKeyMatcher";
+import {BindMatcher} from "./BindMatcher";
 
 export class DiffFieldMatcher<T> extends DiffMatcher<T> {
-    private constructor(public fieldName: string, private expected: DiffMatcher<T>) {
+    private constructor(public fieldName: string, private matcher: DiffMatcher<T>) {
         super();
+        this.complexity = matcher.complexity
     }
 
     mismatches(context: ContextOfValidationError, errors: Array<Mismatched>, actual: T): MatchResult {
-        return this.expected.mismatches(context.add("." + this.fieldName), errors, actual[this.fieldName]);
+        return this.matcher.mismatches(context.add("." + this.fieldName), errors, actual[this.fieldName]);
     }
 
     describe(): any {
-        return {[this.fieldName]: this.expected.describe()};
+        return {[this.fieldName]: this.matcher.describe()};
     }
 
     isKey() {
-        return this.expected instanceof ObjectKeyMatcher
+        return this.matcher instanceof ObjectKeyMatcher
+    }
+
+    isBind() {
+        return this.matcher instanceof BindMatcher
     }
 
     static make<T>(fieldName: string, expected: DiffMatcher<T> | any): DiffFieldMatcher<T> {

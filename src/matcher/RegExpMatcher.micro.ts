@@ -9,7 +9,10 @@ describe("RegExpMatcher:", () => {
     describe("assertThat():", () => {
         it("Matches", () => {
             assertThat("ab").is(match.regEx.match(/a./));
+            assertThat("ab").is(/a./ as any);
             assertThat("ab").is(match.regEx.match(/ab/));
+            assertThat("AB").is(match.regEx.match(/ab/ig));
+            assertThat("AB").is(match.regEx.match(/ab/i));
             assertThat(/[ap]\.?m?\.?/i).is(/[ap]\.?m?\.?/i);
         });
 

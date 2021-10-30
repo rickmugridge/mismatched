@@ -3,10 +3,12 @@ import {MatchResult} from "../MatchResult";
 import {isFunction} from "util";
 import {PrettyPrinter} from "..";
 import {Mismatched} from "./Mismatched";
+import {exceptionMessage} from "../prettyPrint/PrettyPrinter";
 
 export class PredicateMatcher extends DiffMatcher<any> {
     private constructor(private expected: (value: any) => boolean, private description: any) {
         super();
+        this.complexity = 2
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: any): MatchResult {
@@ -15,11 +17,11 @@ export class PredicateMatcher extends DiffMatcher<any> {
                 return MatchResult.good(1);
             }
         } catch (e: any) {
-            const actualAndException = {actual, exception: e.message || e};
-            mismatched.push(Mismatched.make(context, actualAndException, this.describe()));
+            const actualAndException = {actual, exception: exceptionMessage(e)};
+            mismatched.push(Mismatched.makeExpectedMessage(context, actualAndException, this.describe()));
             return MatchResult.wasExpected(actualAndException, this.describe(), 1, 0);
         }
-        mismatched.push(Mismatched.make(context, actual, this.describe()));
+        mismatched.push(Mismatched.makeExpectedMessage(context, actual, this.describe()));
         return MatchResult.wasExpected(actual, this.describe(), 1, 0);
     }
 

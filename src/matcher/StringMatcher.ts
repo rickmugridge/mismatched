@@ -24,10 +24,10 @@ export class StringMatcher extends DiffMatcher<string> {
                 return MatchResult.good(1);
             }
         } else {
-            mismatched.push(Mismatched.make(context, actual, this.expected));
+            mismatched.push(Mismatched.makeExpectedMessage(context, actual, this.expected));
             return MatchResult.wasExpected(actual, this.expected, 1, 0);
         }
-        mismatched.push(Mismatched.make(context, actual, this.describe()));
+        mismatched.push(Mismatched.makeExpectedMessage(context, actual, this.describe()));
         const deltas: PatchItem<string>[] = stringDiff.getPatch(this.expected, actual);
         const {totalAddLength, totalRemoveLength} = stringDiff.lengths(deltas);
         const rating =

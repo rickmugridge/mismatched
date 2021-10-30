@@ -8,85 +8,91 @@ import {ArrayMatcher} from "./ArrayMatcher";
 
 describe("array.match:", () => {
     describe("assertThat():", () => {
-        it('matches', () => {
-            const actual = [2, 2, 2];
-            assertThat(actual).is([2, 2, 2]);
+        it('matches with undefined and null', () => {
+            const actual = [2, undefined, null];
+            assertThat(actual).is([2, undefined, null]);
         });
+        describe("Primitive values only", () => {
+            it('matches', () => {
+                const actual = [2, 2, 2];
+                assertThat(actual).is([2, 2, 2]);
+            });
 
-        it('matches literally', () => {
-            const actual = [2, 2, 2];
-            assertThat(actual).is([2, 2, 2]);
-        });
+            it('Actual longer: unexpected', () => {
+                const actual = ["a", "b", "c", "d"];
+                const expected = ["a", "c"];
+                assertThat(actual).failsWith(expected,
+                    [
+                        "a",
+                        {[MatchResult.unexpected]: "b"},
+                        "c",
+                        {[MatchResult.unexpected]: "d"}
+                    ]);
+                const matcher: ArrayMatcher<string> = ArrayMatcher.make(expected)
+                const result = matcher.matches(actual)
+                assertThat(result.matchRate).is(0.5)
+            });
 
-        it('Length difference: Removal', () => {
-            const actual = ["a", "b", "c", "d"];
-            const expected = ["a", "c"];
-            assertThat(actual).failsWith(expected,
-                [
-                    "a",
-                    {[MatchResult.unexpected]: "b"},
-                    "c",
-                    {[MatchResult.unexpected]: "d"}
+            it('Expected longer: expected', () => {
+                const actual = ["c", "d"];
+                const expected = ["a", "b", "c", "d"];
+                assertThat(actual).failsWith(expected as any,
+                    [{[MatchResult.expected]: "a"}, {[MatchResult.expected]: "b"}, "c", "d"]);
+                const matcher: ArrayMatcher<string> = ArrayMatcher.make(expected)
+                const result = matcher.matches(actual)
+                assertThat(result.matchRate).is(0.5)
+            });
+
+            it('Various differences, including in order: unexpected and expected', () => {
+                const actual = ["b", "x", "y"];
+                const expected = ["a", "b", "c", "x"];
+                assertThat(actual).failsWith(expected as any,
+                    [
+                        {[MatchResult.expected]: "a"}, "b", {[MatchResult.expected]: "c"}, "x",
+                        {[MatchResult.unexpected]: "y"}
+                    ]);
+                const matcher: ArrayMatcher<string> = ArrayMatcher.make(expected)
+                const result = matcher.matches(actual)
+                assertThat(result.matchRate).is(0.4)
+            });
+
+            it('does not match: length difference: errors', () => {
+                const mismatched: Array<Mismatched> = [];
+                const matcher = match.array.match(["a", "b", "c"]);
+                (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, ["a", "b"]);
+                assertThat(mismatched).is([
+                    {actual: ["a", "b"], expected: "c"}
                 ]);
-            const matcher: ArrayMatcher<string> = ArrayMatcher.make(expected)
-            const result = matcher.matches(actual)
-            assertThat(result.matchRate).is(0.5)
+            });
         });
 
-        it('Length difference: Addition', () => {
-            const actual = ["c", "d"];
-            const expected = ["a", "b", "c", "d"];
-            assertThat(actual).failsWith(expected as any,
-                [{[MatchResult.expected]: "a"}, {[MatchResult.expected]: "b"}, "c", "d"]);
-            const matcher: ArrayMatcher<string> = ArrayMatcher.make(expected)
-            const result = matcher.matches(actual)
-            assertThat(result.matchRate).is(0.5)
-        });
-
-        it('Length difference: Removal and Addition', () => {
-            const actual = ["b", "x", "y"];
-            const expected = ["a", "b", "c", "x"];
-            assertThat(actual).failsWith(expected as any,
-                [
-                    {[MatchResult.expected]: "a"}, "b", {[MatchResult.expected]: "c"}, "x",
-                    {[MatchResult.unexpected]: "y"}
-                ]);
-            const matcher: ArrayMatcher<string> = ArrayMatcher.make(expected)
-            const result = matcher.matches(actual)
-            assertThat(result.matchRate).is(0.5)
-        });
-
-        it('Length difference: Removal and Addition with objects', () => {
+        it('Other differences', () => {
             assertThat([{b: "b"}, ["x"], "y"]).failsWith([{a: "a"}, {b: "b"}, "c", ["x"]] as any,
                 [{[MatchResult.expected]: {a: "a"}}, {b: "b"}, {[MatchResult.expected]: "c"}, ["x"],
                     {[MatchResult.unexpected]: "y"}]);
         });
 
-        it('does not match: length difference: errors', () => {
-            const mismatched: Array<Mismatched> = [];
-            const matcher = match.array.match(["a", "b", "c"]);
-            (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, ["a", "b"]);
-            assertThat(mismatched).is([
-                {actual: ["a", "b"], expected: {length: 3}}
-            ]);
+        it('matches the best first (sub)', () => {
+            assertThat([{a: 11, b: [0]}]).failsWith([{a: 11, b: [1]}],
+                [{a: 11, b: [{[MatchResult.unexpected]: 0}, {[MatchResult.expected]: 1}]}]);
         });
+
 
         it('does not match: values mismatch', () => {
             const actual = ["a", "b"];
             const expected = ["a", "c"];
             assertThat(actual).failsWith(expected,
-                ["a", {[MatchResult.was]: "b", [MatchResult.expected]: "c"}]);
-            const matcher: ArrayMatcher<string> = ArrayMatcher.make(expected)
-            const result = matcher.matches(actual)
-            assertThat(result.matchRate).is(0.5)
+                ["a", {[MatchResult.unexpected]: "b"}, {[MatchResult.expected]: "c"}]);
         });
 
         it('does not match: values mismatch: errors', () => {
             const mismatched: Array<Mismatched> = [];
             const matcher = match.array.match(["a", "c"]);
-            (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, ["a", "b"]);
+            (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched,
+                ["a", "b"]);
             assertThat(mismatched).is([
-                {"actual[1]": "b", expected: "c"}
+                {"actual[1]": ["a", "b"], unexpected: "b"},
+                {actual: ["a", "b"], expected: "c"}
             ]);
         });
 
@@ -98,19 +104,25 @@ describe("array.match:", () => {
         it('does not match literally nested', () => {
             const actual = [1, 2, [3, [5]]];
             assertThat(actual).failsWith([2, 2, [3, [4, 6]]],
-                [{[MatchResult.was]: 1, [MatchResult.expected]: 2}, 2,
-                    [3, [{[MatchResult.unexpected]: 5}, {[MatchResult.expected]: 4}, {[MatchResult.expected]: 6}]]]);
+                [
+                    {[MatchResult.unexpected]: 1},
+                    {[MatchResult.expected]: 2},
+                    2,
+                    [3, {[MatchResult.unexpected]: [5]}, {[MatchResult.expected]: [4, 6]}]
+                ]);
             assertThat(actual).failsWith([1, 2, [3, [6]]],
-                [1, 2, [3, [{[MatchResult.was]: 5, [MatchResult.expected]: 6}]]]);
+                [1, 2, [3, {[MatchResult.unexpected]: [5]}, {[MatchResult.expected]: [6]}]]);
         });
 
         it('does not match literally nested: errors', () => {
             const mismatched: Array<Mismatched> = [];
-            const matcher = match.array.match([2, 2, [3, [4, 6]]]);
-            (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, [1, 2, [3, [5]]]);
+            const matcher = match.array.match([2, 2, [3, [5, 6]]]);
+            (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched,
+                [1, 2, [3, [5]]]);
             assertThat(mismatched).is([
-                {"actual[0]": 1, expected: 2},
-                {"actual[2][1]": [5], expected: {length: 2}}
+                {"actual[0]": [1, 2, [3, [5]]], unexpected: 1},
+                {actual: [1, 2, [3, [5]]], expected: 2},
+                {"actual[2][1]": [5], expected: 6}
             ]);
         });
 
@@ -118,9 +130,25 @@ describe("array.match:", () => {
             const actual = [1, 2, [3, [5]]];
             let expected = [1, 2, [3, "a"]];
             assertThat(actual).failsWith(expected,
-                [1, 2, [3, {[MatchResult.was]: [5], [MatchResult.expected]: "a"}]]);
+                [1, 2, [3, {[MatchResult.unexpected]: [5]}, {[MatchResult.expected]: "a"}]]);
             assertThat(expected).failsWith(actual,
-                [1, 2, [3, {[MatchResult.was]: "a", [MatchResult.expected]: [5]}]]);
+                [1, 2, [3, {[MatchResult.unexpected]: "a"}, {[MatchResult.expected]: [5]}]]);
+        });
+
+        it("uses match.bind() to check for two values the same", () => {
+            const value = {
+                colours: [
+                    {id: "615fa1d3-2c79-4f46-a06a-0d04cdc9c0eb", type: "Red"},
+                    {id: "615fa1d3-2c79-4f46-a06a-0d04cdc9c0eb", type: "Red"},
+                ]
+            };
+            const bindColour = match.bind(match.ofType.object())
+            assertThat(value).is({
+                colours: [
+                    bindColour,
+                    bindColour
+                ]
+            })
         });
     });
 
@@ -133,11 +161,23 @@ describe("array.match:", () => {
             assertThat(validation.passed()).is(true);
         });
 
-        it("fails as incorrect array", () => {
+        it("fails as incorrect array, simple", () => {
             const validation = validateThat([1, 2, [3, ["s"]]]).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{"actual[2][1][0]": "s", expected: "ofType.number"}`
+                '{"actual[2][1]": [3, ["s"]], unexpected: ["s"]}',
+                '{"actual[2]": [3, ["s"]], expected: ["ofType.number"]}'
+            ]);
+        });
+
+        it("fails as incorrect array with nested arrays", () => {
+            const validation = validateThat([undefined, 2, [3, ["s"]]]).satisfies(expected);
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                '{"actual[0]": [undefined, 2, [3, ["s"]]], unexpected: undefined}',
+                '{actual: [undefined, 2, [3, ["s"]]], expected: "ofType.number"}',
+                '{"actual[2][1]": [3, ["s"]], unexpected: ["s"]}',
+                '{"actual[2]": [3, ["s"]], expected: ["ofType.number"]}'
             ]);
         });
 

@@ -46,6 +46,14 @@ export class PrettyPrinter {
         return PrettyPrinter.make().logToConsole(value);
     }
 
+    static logStackToConsole() {
+        try {
+            throw new Error('Grab Stack')
+        } catch(e: any) {
+            PrettyPrinter.logToConsole({ stack: e.stack })
+        }
+    }
+
     static functionDetails(fn: Function) {
         try { // who knows when some weird JS will make this fail
             if (fn.toString) {

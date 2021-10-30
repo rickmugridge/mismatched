@@ -6,8 +6,9 @@ import {concatObjects} from "./ObjectMatcher";
 import {DiffFieldMatcher} from "./DiffFieldMatcher";
 
 export class ObjectSomeMatcher<T> extends DiffMatcher<T> {
-    private constructor(private expected: Array<DiffFieldMatcher<T>>) {
+    private constructor(private matchers: Array<DiffFieldMatcher<T>>) {
         super();
+        this.complexity = DiffMatcher.andComplexity(matchers)
     }
 
     static make<T extends object>(expected: object): any {
@@ -16,7 +17,7 @@ export class ObjectSomeMatcher<T> extends DiffMatcher<T> {
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
         if (!ofType.isObject(actual)) {
-            mismatched.push(Mismatched.make(context, actual, "object expected"));
+            mismatched.push(Mismatched.makeExpectedMessage(context, actual, "object expected"));
             return MatchResult.wasExpected(actual, this.describe(), 1, 0);
         }
         const results = {};
@@ -24,7 +25,7 @@ export class ObjectSomeMatcher<T> extends DiffMatcher<T> {
         let compares = 0;
         let matches = 0;
         let matchedObjectKey = false
-        const keyMatchers = this.expected.filter(m => m.isKey());
+        const keyMatchers = this.matchers.filter(m => m.isKey());
         if (keyMatchers.length > 0) {
             keyMatchers.forEach(e => {
                 const result = e.mismatches(context, mismatched, actual);
@@ -41,7 +42,7 @@ export class ObjectSomeMatcher<T> extends DiffMatcher<T> {
                 matchedObjectKey = true
             }
         }
-        const nonKeyMatchers = this.expected.filter(m => !m.isKey());
+        const nonKeyMatchers = this.matchers.filter(m => !m.isKey());
         nonKeyMatchers.forEach(e => {
             const result = e.mismatches(context, mismatched, actual);
             if (result.passed()) {
@@ -56,6 +57,6 @@ export class ObjectSomeMatcher<T> extends DiffMatcher<T> {
     }
 
     describe(): any {
-        return {"obj.has": concatObjects(this.expected.map(e => e.describe()))};
+        return {"obj.has": concatObjects(this.matchers.map(e => e.describe()))};
     }
 }

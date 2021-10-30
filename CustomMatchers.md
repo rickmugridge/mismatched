@@ -15,7 +15,8 @@ Simple matchers can implicitly or explicitly use `match.predicate`. For examples
     });
  ```
 
-Writing a matcher that composes over matchers can be more complex.
+Writing a matcher that composes over matchers can be more complex, as it requires understanding 
+much more of the architecture.
 For a very simple example of a matcher that does this, see `NotMatcher`.
 All Matcher classes extend `DiffMatcher<T>`.
 

@@ -1,4 +1,4 @@
-# Set Matchers
+# Set and UnorderedArray Matchers
 
 These match whole Sets and subsets.
 
@@ -28,22 +28,15 @@ Checks for a subset of the actual Set.
 
 The argument to `match.aSet.subset()` can be a Set, Array or Map.
 
-## Care with general matchers
+## Improved matching error reporting when elements have unique values (keys) 
 
-Care is needed when using general matchers, however.
-The following fails because the `match.any()` matches whatever it finds first:
+Consider when matching a set of objects and each object has key for uniqueness, from one or more fields.
 
-```
-   it('matches wrong', () => {
-        const actual = new Set([1, 2, 3]);
-        assertThat(actual).is(match.aSet.match(new Set([match.any(), 1, 2])));
-    });
-```
+Use `match.obj.key()` to specify those keys to narrow down the matching of elements :
 
-So put the most general matcher last:
-```
-    it('matches right', () => {
-        const actual = new Set([1, 2, 3]);
-        assertThat(actual).is(match.set.match(new Set([1, 2, match.any()])));
-    });
-```
+            it('matches with a key', () => {
+                const actual = new Set([{a: 1, b: 1}, {a: 2, b: 2}]);
+                assertThat(actual).is(new Set([
+                    {a: match.obj.key(1), b: 2},
+                    {a: match.obj.key(2), b: 0}]));
+            });

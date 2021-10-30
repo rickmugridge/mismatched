@@ -4,10 +4,11 @@ import {MatchResult} from "../MatchResult";
 import {matchMaker} from "..";
 import {ofType} from "../ofType";
 
-// Like SetMatcher except that we allow for duplicates and so track actuals by their index rather than their value
 export class UnorderedArrayMatcher<T> extends DiffMatcher<T[]> {
-    private constructor(private expected: DiffMatcher<T>[], private subset: boolean) {
+    constructor(private matchers: DiffMatcher<T>[], private subset: boolean) {
         super();
+        this.complexity = DiffMatcher.andComplexity(matchers)
+        matchers.sort((a, b) => b.complexity - a.complexity)
     }
 
     static make<T>(expected: Set<DiffMatcher<T>> | Set<T> | Array<T> | Map<any, any>, subset = false): any {
@@ -20,101 +21,74 @@ export class UnorderedArrayMatcher<T> extends DiffMatcher<T[]> {
 
     mismatches(context: ContextOfValidationError,
                mismatched: Array<Mismatched>,
-               actuals: Array<T>): MatchResult {
+               actuals: T[]): MatchResult {
         if (ofType.isArray(actuals)) {
-            const remainingMatchers = new Set<DiffMatcher<T>>(this.expected)
-            const nearMisses: Map<number, CrossMatch<T>[]> = new Map()
-            const completeMisses: T[] = []
+            const matcherPerActual: { matcher?: DiffMatcher<T> } [] = actuals.map(a => ({matcher: undefined}))
+            const matchedActual: boolean[] = actuals.map(a => false)
+            const failingMatchers: DiffMatcher<T>[] = []
+            this.matchers.forEach(matcher =>
+                this.tryMatch(context, matcher, actuals, matcherPerActual, matchedActual, failingMatchers))
+
             let compares = 0;
             let matches = 0;
-            for (let i = 0; i < actuals.length; i++) {
-                const actual = actuals[i]
-                const result = this.match(context.add(`[${i}]`), mismatched, actual, remainingMatchers);
-                if (Array.isArray(result)) {
-                    if (result.length === 0) {
-                        completeMisses.push(actual)
-                    } else {
-                        nearMisses.set(i, result)
-                    }
-                    if (!this.subset)
-                        compares += 1
-                } else {
+            const results = matcherPerActual.map((matched, i) => {
+                const actual = actuals[i];
+                if (matched.matcher) {
+                    const result = matched.matcher.mismatches(context.add("[" + i + "]"), mismatched, actual)
                     compares += result.compares;
                     matches += result.matchRate * result.compares;
+                    if (result.passed()) {
+                        return actual;
+                    } else {
+                        return result.diff;
+                    }
+                } else {
+                    if (this.subset) return actual
+                    compares += 1
+                    return {[MatchResult.unexpected]: actuals[i]}
                 }
-            }
-            if (remainingMatchers.size === 0 && nearMisses.size == 0 && (this.subset || completeMisses.length == 0)) {
-                return MatchResult.wasExpected(actuals, this.describe(), compares, matches);
-            }
-            // mismatched.push(Mismatched.make(context, actuals, this.describe()));
-
-            const matchResult = MatchResult.wasExpected(actuals, this.describe(), compares, 0);
-            const wrongMatches = this.handleMismatches(actuals, nearMisses, remainingMatchers, completeMisses);
-
-            matchResult.differ(wrongMatches.map(w => w.diff))
-            if (!this.subset) {
-                matchResult.unexpected(completeMisses)
-            }
-            matchResult.missing(Array.from(remainingMatchers).map(m => m.describe()))
-            return matchResult;
+            })
+            compares += failingMatchers.length
+            failingMatchers.forEach(matcher => results.push({[MatchResult.expected]: matcher.describe()}))
+            return new MatchResult(results, compares, matches);
         }
-        mismatched.push(Mismatched.make(context, actuals, (this.subset ? "sub" : "") + "set expected"));
+        mismatched.push(Mismatched.makeExpectedMessage(context, actuals, (this.subset ? "sub" : "") + "array expected"));
         return MatchResult.wasExpected(actuals, this.describe(), 1, 0);
     }
 
+    tryMatch(context: ContextOfValidationError,
+             matcher: DiffMatcher<T>,
+             actuals: Array<T>,
+             matcherPerActual: { matcher?: DiffMatcher<T> } [],
+             matchedActual: boolean[],
+             failingMatchers: DiffMatcher<T>[]) {
+        let bestActualIndex = -1
+        let bestMatchResult: MatchResult | undefined = undefined
+        for (let i = 0; i < actuals.length; i++) {
+            if (!matchedActual[i]) {
+                const actual = actuals[i]
+                const result = matcher.trialMatches(actual);
+                if (result.passed() || result.matchedObjectKey) {
+                    matchedActual[i] = true
+                    matcherPerActual[i].matcher = matcher
+                    return
+                }
+                if (!bestMatchResult || result.matchRate > bestMatchResult!.matchRate) {
+                    bestMatchResult = result
+                    bestActualIndex = i
+                }
+            }
+        }
+        if (bestActualIndex >= 0) {
+            matchedActual[bestActualIndex] = true
+            matcherPerActual[bestActualIndex].matcher = matcher
+        } else {
+            failingMatchers.push(matcher)
+        }
+    }
+
     describe(): any {
-        const unorderedArray = Array.from(this.expected).map(e => e.describe());
+        const unorderedArray = Array.from(this.matchers).map(e => e.describe());
         return this.subset ? {subset: unorderedArray} : unorderedArray;
     }
-
-    // When we first find a match, we return the result. The matcher used is no longer remaining to be used.
-    // Otherwise we track the cross matches that failed, so we can pick the best one later
-    private match(context: ContextOfValidationError,
-                  mismatched: Array<Mismatched>,
-                  actual: T,
-                  remainingMatchers: Set<DiffMatcher<T>>): MatchResult | CrossMatch<T>[] {
-        const missed: CrossMatch<T>[] = []
-        for (const matcher of remainingMatchers) {
-            const result = matcher.mismatches(context, mismatched, actual);
-            if (result.passed()) {
-                remainingMatchers.delete(matcher)
-                return result;
-            }
-            missed.push({matcher, result})
-        }
-        return missed
-    }
-
-    // Take the best matches before others, based on the MatchResult.matchRate
-    private handleMismatches(actuals: Array<T>,
-                             nearMisses: Map<number, CrossMatch<T>[]>,
-                             remainingMatchers: Set<DiffMatcher<T>>,
-                             completeMisses: T[]): MatchResult[] {
-        let nearMissesArray = Array.from(nearMisses)
-        nearMissesArray.forEach(e => e[1].sort(sortCrossMatch))
-        nearMissesArray = nearMissesArray.sort(expectedMissingArraySort)
-        const wrongMatches: MatchResult[] = []
-        for (let i = 0; i < nearMissesArray.length; i++) {
-            let [valueIndex, crossMatches] = nearMissesArray[i]
-            crossMatches = crossMatches.filter(cm => remainingMatchers.has(cm.matcher)) // Some may have since been used
-            if (crossMatches.length > 0) {
-                const wrongMatch = crossMatches[0]
-                wrongMatches.push(wrongMatch.result)
-                remainingMatchers.delete(wrongMatch.matcher)
-            } else {
-                completeMisses.push(actuals[valueIndex])
-            }
-        }
-        return wrongMatches
-    }
 }
-
-interface CrossMatch<T> {
-    matcher: DiffMatcher<T>
-    result: MatchResult
-}
-
-const sortCrossMatch = <T>(a: CrossMatch<T>, b: CrossMatch<T>) => b.result.matchRate - a.result.matchRate
-
-const expectedMissingArraySort = <T>(a: [number, CrossMatch<T>[]], b: [number, CrossMatch<T>[]]) =>
-    b[1][0].result.matchRate - a[1][0].result.matchRate

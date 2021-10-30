@@ -13,10 +13,8 @@ describe("fast-array-diff", () => {
     });
 
     it("string", () => {
-        const expected = "bcdefhi";
-        const expecteds = Array.from(expected);
-        const actual = "abcEFGij";
-        const actuals = Array.from(actual);
+        const actuals = Array.from("abcEFGij");
+        const expecteds = Array.from("bcdefhi");
         const deltas = diff.getPatch(expecteds, actuals, compare);
         assertThat(deltas).is([
             {type: "add", oldPos: 0, newPos: 0, items: ["a"]},

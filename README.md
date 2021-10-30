@@ -1,6 +1,6 @@
 # mismatched
 
-A Typescript-based assertion and matcher framework, inspired by Hamcrest with a strong compositional approach.
+`mismatched` is a Typescript-based assertion and matcher framework, with a sophisticated compositional approach.
 Available at https://github.com/rickmugridge/mismatched.
 
 This can be used:
@@ -9,8 +9,6 @@ This can be used:
    - for data validation with [validateThat()](./ValidateThat.md)
 
 For latest changes, see [What is New](./WhatIsNew.md).
-
-For general design decisions/rational, see [Design Rationale](./DesignRationale.md).
 
 Also see: [FAQ](./FAQ.md), [assertThat()](./ASSERTTHAT.md), [validateThat()](./ValidateThat.md), 
 [matchers](./MATCHERS.md), [PrettyPrinter](./PRETTYPRINTER.md), [Diff Tree](./DIFFTREE.md).

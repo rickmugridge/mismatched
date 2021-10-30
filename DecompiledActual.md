@@ -28,7 +28,7 @@ Here's a unit test, which uses a `BusinessGraphBuilder` builder to create test i
 
 ```
    it('partyFromBusiness(). Unknown with no Persons', () => {
-      const [businessCode, persons] = new BusinessGraphBuilder().addPerson().toPartyGraph()
+      const [businessCode, persons] = new BusinessGraphBuilder().addPerson().to()
       const detailTracker = new DetailTracker();
  
       const party = partyFromBusiness(businessCode, persons, detailTracker)

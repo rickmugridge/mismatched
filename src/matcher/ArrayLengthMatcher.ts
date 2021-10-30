@@ -11,7 +11,7 @@ export class ArrayLengthMatcher<T> extends DiffMatcher<Array<T>> {
         if (actual.length === this.expected) {
             return MatchResult.good(1);
         }
-        mismatched.push(Mismatched.make(context, actual, this.describe()));
+        mismatched.push(Mismatched.makeExpectedMessage(context, actual, this.describe()));
         return MatchResult.wasExpected(actual.length, this.describe(), 1, 0);
     }
 

@@ -7,6 +7,7 @@ import {AnyMatcher} from "./AnyMatcher";
 export class AllOfMatcher<T> extends DiffMatcher<T> {
     private constructor(private matchers: Array<DiffMatcher<T>>) {
         super();
+        this.complexity = DiffMatcher.andComplexity(matchers)
     }
 
     static make<T>(matchers: Array<DiffMatcher<T> | any>): any {

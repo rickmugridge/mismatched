@@ -5,8 +5,9 @@ import {instanceOfMatcher} from "./instanceOfMatcher";
 import {Mismatched} from "./Mismatched";
 
 export class ErrorMatcher<T> extends DiffMatcher<T> {
-    private constructor(private matcher: DiffMatcher<string> | any) {
+    private constructor(private matcher: DiffMatcher<string>) {
         super();
+        this.complexity = matcher.complexity
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
