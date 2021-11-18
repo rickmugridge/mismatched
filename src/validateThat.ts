@@ -1,4 +1,4 @@
-import {DiffMatcher, ContextOfValidationError} from "./matcher/DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./matcher/DiffMatcher";
 import {matchMaker} from "./matchMaker/matchMaker";
 import {Mismatched} from "./matcher/Mismatched";
 import {ensureNoFunction} from "./assertThat";
@@ -20,6 +20,10 @@ class Validator<T> {
         matcher.mismatches(new ContextOfValidationError(), mismatched, this.actual);
         return new ValidationResult(mismatched.map(m => (ofType.isString(m) ? m as string :
             PrettyPrinter.make(500, 5000).render(m))));
+    }
+
+    is(expected: DiffMatcher<T> | any): ValidationResult {
+        return this.satisfies(expected);
     }
 }
 

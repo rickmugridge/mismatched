@@ -1,5 +1,9 @@
 # What is New (since Jan 2021)
 
+## 19 November 2021
+
+* Allowed use of `.is()` as well as `.satisfies()` for `validateThat()` checks.
+
 ## 31 October 2021
 
 * Extended the [FAQ](./FAQ.md) considerably, including [Custom Matchers](./CustomMatchers.md)and [DecompiledActual](./DecompiledActual.md)

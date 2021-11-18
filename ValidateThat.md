@@ -31,8 +31,11 @@ Eg, "actual.f" refers to the `f` field of the supplied object.
 
 ## `validateThat()`
 
-This uses the following call: `validateThat(actual).satisfies(matcher)`, where:
+This uses one of the following calls: 
+- `validateThat(actual).satisfies(matcher)` or
+- `validateThat(actual).is(matcher)`
 
+where:
 - `actual` is an arbitrary value to be validated
 - `matcher` is a Javascript value or a `mismatched` matcher.
 
@@ -78,7 +81,7 @@ For example, we want to validate an array of three persons, tailoring the error 
 Note that:
 * We use `match.array.every()` to apply the same matcher to each element of the actual array.
 * For each element, we use `match.describeContext()` to create a suitable context for errors,
-  based on the `personId`. The first argument to the the function is any specialised outer context.
+  based on the `personId`. The first argument to the function is any specialised outer context.
 * In the individual fields of the Person object, we use `match.describe()` to define both the matcher
   and the error message that results if the matcher fails. For example, the name field needs to be a string:
     * `name: match.describe(match.ofType.string(), nameDescription),`

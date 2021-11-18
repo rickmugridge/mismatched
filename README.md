@@ -103,3 +103,4 @@ See [validateThat()](./ValidateThat.md) for further details.
 
   - Match objects that includes self-references (ie, cycles).
   - Document MappedMatcher
+  - Make error messages more precise and concise for validateThat()
