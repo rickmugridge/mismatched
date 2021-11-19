@@ -140,11 +140,11 @@ expected: '${printer.render(message)}'`);
     }
 
     private checkForFunction() {
-        ensureNoFunction(this.actual);
+        ensureNotFunction(this.actual);
     }
 }
 
-export function ensureNoFunction(actual: any) {
+export function ensureNotFunction(actual: any) {
     if (ofType.isFunction(actual && !actual[PrettyPrinter.symbolForMockName])) {
         throw new Error("Can't assertThat() on a function, as functions are not matched");
     }

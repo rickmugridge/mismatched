@@ -67,7 +67,16 @@ describe("StringMatcher:", () => {
             assertThat(validation.passed()).is(true);
         });
 
-        it("fails", () => {
+        it("fails string match", () => {
+            const expected = "c";
+            const validation = validateThat("b").satisfies(expected);
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                `{actual: "b", expected: "c"}`
+            ]);
+        });
+
+        it("fails with 'starts with'", () => {
             const validation = validateThat("b").satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([

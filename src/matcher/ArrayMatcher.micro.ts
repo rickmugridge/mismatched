@@ -61,7 +61,7 @@ describe("array.match:", () => {
                 const matcher = match.array.match(["a", "b", "c"]);
                 (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, ["a", "b"]);
                 assertThat(mismatched).is([
-                    {actual: ["a", "b"], expected: "c"}
+                    {actual: ["a", "b"], missing: "c"}
                 ]);
             });
         });
@@ -91,8 +91,8 @@ describe("array.match:", () => {
             (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched,
                 ["a", "b"]);
             assertThat(mismatched).is([
-                {"actual[1]": ["a", "b"], unexpected: "b"},
-                {actual: ["a", "b"], expected: "c"}
+                {actual: ["a", "b"], unexpected: "b"},
+                {actual: ["a", "b"], missing: "c"}
             ]);
         });
 
@@ -120,9 +120,9 @@ describe("array.match:", () => {
             (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched,
                 [1, 2, [3, [5]]]);
             assertThat(mismatched).is([
-                {"actual[0]": [1, 2, [3, [5]]], unexpected: 1},
-                {actual: [1, 2, [3, [5]]], expected: 2},
-                {"actual[2][1]": [5], expected: 6}
+                {actual: [1, 2, [3, [5]]], unexpected: 1},
+                {actual: [1, 2, [3, [5]]], missing: 2},
+                {"actual[2][1]": [5], missing: 6}
             ]);
         });
 
@@ -161,12 +161,40 @@ describe("array.match:", () => {
             assertThat(validation.passed()).is(true);
         });
 
-        it("fails as incorrect array, simple", () => {
+      it("fails as element missing", () => {
+        const expected = [isNumber];
+        const validation = validateThat([]).satisfies(expected);
+        assertThat(validation.passed()).is(false);
+        assertThat(validation.errors).is([
+          '{actual: [], missing: "ofType.number"}'
+        ]);
+      });
+
+      it("fails as element unexpectedly present", () => {
+        const expected = [];
+        const validation = validateThat([1]).satisfies(expected);
+        assertThat(validation.passed()).is(false);
+        assertThat(validation.errors).is([
+          '{actual: [1], unexpected: 1}'
+        ]);
+      });
+
+      it("fails as incorrect array, simple", () => {
+        const expected = [isNumber];
+        const validation = validateThat(["s"]).satisfies(expected);
+        assertThat(validation.passed()).is(false);
+        assertThat(validation.errors).is([
+          '{actual: ["s"], unexpected: "s"}',
+          '{actual: ["s"], missing: "ofType.number"}'
+        ]);
+      });
+
+      it("fails as incorrect array, less simple", () => {
             const validation = validateThat([1, 2, [3, ["s"]]]).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '{"actual[2][1]": [3, ["s"]], unexpected: ["s"]}',
-                '{"actual[2]": [3, ["s"]], expected: ["ofType.number"]}'
+                '{"actual[2]": [3, ["s"]], unexpected: ["s"]}',
+                '{"actual[2]": [3, ["s"]], missing: ["ofType.number"]}'
             ]);
         });
 
@@ -174,10 +202,10 @@ describe("array.match:", () => {
             const validation = validateThat([undefined, 2, [3, ["s"]]]).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '{"actual[0]": [undefined, 2, [3, ["s"]]], unexpected: undefined}',
-                '{actual: [undefined, 2, [3, ["s"]]], expected: "ofType.number"}',
-                '{"actual[2][1]": [3, ["s"]], unexpected: ["s"]}',
-                '{"actual[2]": [3, ["s"]], expected: ["ofType.number"]}'
+                '{actual: [undefined, 2, [3, ["s"]]], unexpected: undefined}',
+                '{actual: [undefined, 2, [3, ["s"]]], missing: "ofType.number"}',
+                '{"actual[2]": [3, ["s"]], unexpected: ["s"]}',
+                '{"actual[2]": [3, ["s"]], missing: ["ofType.number"]}'
             ]);
         });
 

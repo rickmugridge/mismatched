@@ -29,7 +29,7 @@ export const arrayDiff = <T>(matchers: DiffMatcher<T>[], actuals: any[]): Possib
     const result: PossibleMatch<T>[] = actuals.map((actual, index) =>
         ({
             actual: new Some(actual), // as Option.of(undefined) === Option.none()
-            index,
+            actualIndex: index,
             matcher: Option.none()
         }))
     let expectedOffset = 0;
@@ -82,7 +82,7 @@ export const arrayDiff = <T>(matchers: DiffMatcher<T>[], actuals: any[]): Possib
 export interface PossibleMatch<T> {
     actual: Option<T>
     matcher: Option<DiffMatcher<T>>
-    index?: number
+    actualIndex?: number
 }
 
 const unexpected = <T>(possible: PossibleMatch<T>) => possible.actual.isSome() && possible.matcher.isNone()

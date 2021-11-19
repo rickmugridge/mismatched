@@ -3,6 +3,7 @@
 ## 19 November 2021
 
 * Allowed use of `.is()` as well as `.satisfies()` for `validateThat()` checks.
+* Improved error messages for array validation.
 
 ## 31 October 2021
 

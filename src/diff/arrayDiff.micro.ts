@@ -16,7 +16,7 @@ describe("arrayDiff", () => {
         const matcher = match.isEquals(1);
         const actual = 1;
         const result = arrayDiff([matcher], [actual])
-        assertThat(result).is([{actual: Option.of(actual), index: 0, matcher: isMatcher(matcher)}])
+        assertThat(result).is([{actual: Option.of(actual), actualIndex: 0, matcher: isMatcher(matcher)}])
     });
 
     it("is same with undefined", () => {
@@ -24,7 +24,7 @@ describe("arrayDiff", () => {
         const matcher = match.isEquals(undefined);
         const actual = undefined;
         const result = arrayDiff([matcher], [actual])
-        assertThat(result).is([{actual: new Some(actual), index: 0, matcher: isMatcher(matcher)}])
+        assertThat(result).is([{actual: new Some(actual), actualIndex: 0, matcher: isMatcher(matcher)}])
     });
 
     it("is same with null", () => {
@@ -32,7 +32,7 @@ describe("arrayDiff", () => {
         const matcher = match.isEquals(null);
         const actual = null;
         const result = arrayDiff([matcher], [actual])
-        assertThat(result).is([{actual: new Some(actual), index: 0, matcher: isMatcher(matcher)}])
+        assertThat(result).is([{actual: new Some(actual), actualIndex: 0, matcher: isMatcher(matcher)}])
     });
 
     it("expected 1 but there were none", () => {
@@ -44,7 +44,7 @@ describe("arrayDiff", () => {
     it("expected none but there was one", () => {
         const actual = 1;
         const result = arrayDiff([], [actual])
-        assertThat(result).is([{actual: Option.of(actual), index: 0, matcher: Option.none()}])
+        assertThat(result).is([{actual: Option.of(actual), actualIndex: 0, matcher: Option.none()}])
     });
 
     it("expected a 1 but there was a 2", () => {
@@ -52,7 +52,7 @@ describe("arrayDiff", () => {
         const actual = 2;
         const result = arrayDiff([matcher], [actual])
         assertThat(result).is([
-            {actual: Option.of(actual), index: 0, matcher: Option.none()},
+            {actual: Option.of(actual), actualIndex: 0, matcher: Option.none()},
             {actual: Option.none(), matcher: isMatcher(matcher)}])
     });
 
@@ -60,7 +60,7 @@ describe("arrayDiff", () => {
         const matcher = match.isEquals(1);
         const actual = undefined;
         const result = arrayDiff([matcher], [actual])
-        assertThat(result).is([{actual: new Some(actual), index: 0, matcher: Option.none()},
+        assertThat(result).is([{actual: new Some(actual), actualIndex: 0, matcher: Option.none()},
             {actual: Option.none(), matcher: isMatcher(matcher)}])
     });
 
@@ -68,7 +68,7 @@ describe("arrayDiff", () => {
         const matcher = match.isEquals(undefined);
         const actual = 1;
         const result = arrayDiff([matcher], [actual])
-        assertThat(result).is([{actual: Option.of(actual), index: 0, matcher: Option.none()},
+        assertThat(result).is([{actual: Option.of(actual), actualIndex: 0, matcher: Option.none()},
             {actual: Option.none(), matcher: isMatcher(matcher)}])
     });
 
@@ -78,7 +78,7 @@ describe("arrayDiff", () => {
         const actual = 1;
         const result = arrayDiff([matcher1, matcher2], [actual])
         assertThat(result).is([
-            {actual: Option.of(actual), index: 0, matcher: isMatcher(matcher1)},
+            {actual: Option.of(actual), actualIndex: 0, matcher: isMatcher(matcher1)},
             {actual: Option.none(), matcher: isMatcher(matcher2)}
         ])
     });
@@ -90,7 +90,7 @@ describe("arrayDiff", () => {
         const result = arrayDiff([matcher1, matcher2], [actual])
         assertThat(result).is([
             {actual: Option.none(), matcher: isMatcher(matcher1)},
-            {actual: Option.of(actual), index: 0, matcher: isMatcher(matcher2)}
+            {actual: Option.of(actual), actualIndex: 0, matcher: isMatcher(matcher2)}
         ])
     });
 
@@ -101,8 +101,8 @@ describe("arrayDiff", () => {
         const actual2 = 3;
         const result = arrayDiff([matcher1, matcher2], [actual1, actual2])
         assertThat(result).is([
-            {actual: Option.of(actual1), index: 0, matcher: isMatcher(matcher1)},
-            {actual: Option.of(actual2), index: 1, matcher: Option.none()},
+            {actual: Option.of(actual1), actualIndex: 0, matcher: isMatcher(matcher1)},
+            {actual: Option.of(actual2), actualIndex: 1, matcher: Option.none()},
             {actual: Option.none(), matcher: isMatcher(matcher2)}
         ])
     });
@@ -114,8 +114,8 @@ describe("arrayDiff", () => {
         const actual2 = undefined;
         const result = arrayDiff([matcher1, matcher2], [actual1, actual2])
         assertThat(result).is([
-            {actual: Option.of(actual1), index: 0, matcher: isMatcher(matcher1)},
-            {actual: Option.of(actual2), index: 1, matcher: Option.none()},
+            {actual: Option.of(actual1), actualIndex: 0, matcher: isMatcher(matcher1)},
+            {actual: Option.of(actual2), actualIndex: 1, matcher: Option.none()},
             {actual: Option.none(), matcher: isMatcher(matcher2)}
         ])
     });
@@ -127,9 +127,9 @@ describe("arrayDiff", () => {
         const actual2 = undefined;
         const result = arrayDiff([matcher1, matcher2], [actual1, actual2])
         assertThat(result).is([
-            {actual: Option.of(actual1), index: 0, matcher: Option.none()},
+            {actual: Option.of(actual1), actualIndex: 0, matcher: Option.none()},
             {actual: Option.none(), matcher: isMatcher(matcher1)},
-            {actual: Option.of(actual2), index: 1, matcher: isMatcher(matcher2)}
+            {actual: Option.of(actual2), actualIndex: 1, matcher: isMatcher(matcher2)}
         ])
     });
 
@@ -137,7 +137,7 @@ describe("arrayDiff", () => {
         const matcher = match.obj.match({f: 1});
         const actual = {f: 2};
         const result = arrayDiff([matcher], [actual])
-        assertThat(result).is([{actual: Option.of(actual), index: 0, matcher: Option.none()},
+        assertThat(result).is([{actual: Option.of(actual), actualIndex: 0, matcher: Option.none()},
             {actual: Option.none(), matcher: isMatcher(matcher)}])
     });
 
@@ -145,7 +145,7 @@ describe("arrayDiff", () => {
         const matcher = match.array.match([0]);
         const actual = [2];
         const result = arrayDiff([matcher], [actual])
-        assertThat(result).is([{actual: Option.of(actual), index: 0, matcher: Option.none()},
+        assertThat(result).is([{actual: Option.of(actual), actualIndex: 0, matcher: Option.none()},
             {actual: Option.none(), matcher: isMatcher(matcher)}])
     });
 
@@ -153,8 +153,8 @@ describe("arrayDiff", () => {
         const matcher = match.array.match([0, 1]);
         const actual = [0, 2];
         const result = arrayDiff([matcher], actual)
-        assertThat(result).is([{actual: Option.of(0), index: 0, matcher: Option.none()},
-            {actual: Option.of(2), index: 1, matcher: Option.none()},
+        assertThat(result).is([{actual: Option.of(0), actualIndex: 0, matcher: Option.none()},
+            {actual: Option.of(2), actualIndex: 1, matcher: Option.none()},
             {actual: Option.none(), matcher: match.any()}])
     });
 
@@ -164,7 +164,7 @@ describe("arrayDiff", () => {
         const result = arrayDiff(
             [matcher],
             [actual])
-        assertThat(result).is([{actual: Option.of(actual), index: 0, matcher: isMatcher(matcher)}])
+        assertThat(result).is([{actual: Option.of(actual), actualIndex: 0, matcher: isMatcher(matcher)}])
     });
 
     it("expected a single key match that otherwise fails, along with unexpected before and after", () => {
@@ -174,9 +174,9 @@ describe("arrayDiff", () => {
             [matcher],
             [10, actual2, 20])
         assertThat(result).is([
-            {actual: Option.of(10), index: 0, matcher: Option.none()},
-            {actual: Option.of(actual2), index: 1, matcher: isMatcher(matcher)},
-            {actual: Option.of(20), index: 2, matcher: Option.none()}])
+            {actual: Option.of(10), actualIndex: 0, matcher: Option.none()},
+            {actual: Option.of(actual2), actualIndex: 1, matcher: isMatcher(matcher)},
+            {actual: Option.of(20), actualIndex: 2, matcher: Option.none()}])
     });
 
     it("expected a single key match that otherwise fails, along with expected before and after", () => {
@@ -187,7 +187,7 @@ describe("arrayDiff", () => {
         const result = arrayDiff([matcher1, matcher2, matcher3], [actual])
         assertThat(result).is([
             {actual: Option.none(), matcher: isMatcher(matcher1)},
-            {actual: Option.of(actual), index: 0, matcher: isMatcher(matcher2)},
+            {actual: Option.of(actual), actualIndex: 0, matcher: isMatcher(matcher2)},
             {actual: Option.none(), matcher: isMatcher(matcher3)}])
     });
 
@@ -204,7 +204,7 @@ describe("arrayDiff", () => {
             {actual: Option.none(), matcher: isMatcher(matcherA)},
             {actual: Option.none(), matcher: isMatcher(matcher1)},
             {actual: Option.none(), matcher: isMatcher(matcherB)},
-            {actual: Option.of(actual), index: 0, matcher: isMatcher(matcher2)},
+            {actual: Option.of(actual), actualIndex: 0, matcher: isMatcher(matcher2)},
             {actual: Option.none(), matcher: isMatcher(matcher3)}])
     });
 });

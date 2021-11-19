@@ -1,7 +1,7 @@
 import {ContextOfValidationError, DiffMatcher} from "./matcher/DiffMatcher";
 import {matchMaker} from "./matchMaker/matchMaker";
 import {Mismatched} from "./matcher/Mismatched";
-import {ensureNoFunction} from "./assertThat";
+import {ensureNotFunction} from "./assertThat";
 import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 import {ofType} from "./ofType";
 
@@ -14,7 +14,7 @@ class Validator<T> {
     }
 
     satisfies(expected: DiffMatcher<T> | any): ValidationResult {
-        ensureNoFunction(this.actual);
+        ensureNotFunction(this.actual);
         const matcher = matchMaker(expected);
         const mismatched: Array<Mismatched> = [];
         matcher.mismatches(new ContextOfValidationError(), mismatched, this.actual);
