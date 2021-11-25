@@ -126,3 +126,29 @@ See `SetMatcher.micro.ts`, for example.
 # How does `mismatched` work?
 
 * See [MismatchedAtWork](./MismatchedAtWork.md) for some high level details.
+
+# How can I partially match on the message of an Error? `assertThat().throws()` doesn't work.
+
+The following doesn't work:
+
+```
+        it("Matches all", () => {
+            assertThat(() => {
+                throw new Error("error");
+            }).throws(new Error(match.string.startsWith("e")));
+        });
+
+```
+
+That's because an `Error` is not a proper JS object and so mismatched matchers cannot be used within it.
+
+But this does:
+
+```
+        it("Matches all", () => {
+            assertThat(() => {
+                throw new Error("error");
+            }).throwsError(match.string.startsWith("e"));
+        });
+```
+```

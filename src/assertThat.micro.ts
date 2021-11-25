@@ -2,6 +2,7 @@ import {assertThat} from "./assertThat";
 import {match} from "./match";
 import {MatchResult} from "./MatchResult";
 import {fail} from "assert";
+import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 
 describe("assertThat():", () => {
     describe("is():", () => {
@@ -100,6 +101,21 @@ describe("assertThat():", () => {
         });
     });
 
+    describe("throwsError()", () => {
+        it("Matches all", () => {
+            assertThat(() => {
+                throw new Error("error");
+            }).throwsError(match.string.startsWith("e"));
+            const matcher = match.string.startsWith("e");
+        });
+
+       it("Matches start", () => {
+            assertThat(() => {
+                throw new Error("error");
+            }).throwsError("error");
+        });
+    });
+
     describe("catches():", () => {
         it("Matches", () => {
             return assertThat(Promise.reject(4)).catches(4);
@@ -116,7 +132,7 @@ describe("assertThat():", () => {
         it("Mismatches", () => {
             return assertThat(Promise.resolve(4))
                 .catches(4)
-                .catch((e:any) => assertThat(e).is("Problem in catches()"));
+                .catch((e: any) => assertThat(e).is("Problem in catches()"));
         });
 
         it("Actual is not a function", () => {

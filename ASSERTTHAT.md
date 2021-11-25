@@ -81,6 +81,31 @@ The assertion fails if:
   - the exception is thrown but the result doesn't match
 
 (Note that an `Error` is a strange object that doesn't follow the usual conventions.
+It is not a proper Object, even though it looks like it. Sometimes, the following is more convenient to use.)
+
+### `assertThat().throwsError()`
+
+This checks more generally that a suitable exception has been thrown, based on the provided lambda. For example:
+
+```
+        it("Matches all", () => {
+            assertThat(() => {
+                throw new Error("error");
+            }).throwsError(match.string.startsWith("e"));
+        });
+```
+
+This only work if an Error is thrown. 
+Given we're just matching on the message, we can use various matchers with it, as shown in the example above.
+
+The `throws()` optionally take an arbitrary value or matcher; a `match.any()` is used by default.
+The assertion fails if:
+
+  - a function is not provided to `assertThat()`; or 
+  - if no exception is thrown; or
+  - the exception is thrown but the result doesn't match
+
+(Note that an `Error` is a strange object that doesn't follow the usual conventions.
 It is not a proper Object, even though it looks like it.)
 
 ### `assertThat().catches()`
