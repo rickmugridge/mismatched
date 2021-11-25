@@ -280,13 +280,13 @@ describe("PrettyPrinter():", () => {
     it("Set", () => {
         prettyPrinter = PrettyPrinter.make();
         assertThat(prettyPrinter.render(new Set([1, 2, 3])))
-            .is("new Set(1, 2, 3)")
+            .is("new Set([1, 2, 3])")
     });
 
     it("Map", () => {
         prettyPrinter = PrettyPrinter.make();
         assertThat(prettyPrinter.render(new Map([[1, 10], [2, 20], [3, 30]])))
-            .is("new Map([1, 10], [2, 20], [3, 30])")
+            .is("new Map([[1, 10], [2, 20], [3, 30]])")
     });
 
     describe("function", () => {
