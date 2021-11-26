@@ -12,15 +12,18 @@ import {DiffMatcher} from "../matcher/DiffMatcher";
 
 export const defaultLineWidth = 80;
 export const defaultMaxComplexity = 30;
+export const defaultMaxTilesCount = 10000;
 
 export class PrettyPrinter {
     static symbolForPseudoCall = Symbol("pseudoCall");
     static symbolForMockName: any | undefined;
     private static customPrettyPrinters = new Map<DiffMatcher<any>, (t: any) => string>();
     selfReference = new SelfReferenceChecker();
+    tilesCount = 0;
 
     private constructor(private lineWidth: number,
-                        private maxComplexity: number) {
+                        private maxComplexity: number,
+                        private maxTilesCount = defaultMaxTilesCount) {
     }
 
     static addCustomPrettyPrinter(matcher: DiffMatcher<any>, toString: (t: any) => string) {
@@ -29,11 +32,12 @@ export class PrettyPrinter {
 
     static make(lineWidth = defaultLineWidth,
                 maxComplexity = defaultMaxComplexity,
+                maxTilesCount = defaultMaxTilesCount,
                 symbolForMockName?: any): PrettyPrinter {
         if (symbolForMockName) {
             PrettyPrinter.symbolForMockName = symbolForMockName; // Just use the latest one
         }
-        return new PrettyPrinter(lineWidth, maxComplexity);
+        return new PrettyPrinter(lineWidth, maxComplexity, maxTilesCount);
     }
 
     static isMock(value: any): boolean {
@@ -49,8 +53,8 @@ export class PrettyPrinter {
     static logStackToConsole() {
         try {
             throw new Error('Grab Stack')
-        } catch(e: any) {
-            PrettyPrinter.logToConsole({ stack: e.stack })
+        } catch (e: any) {
+            PrettyPrinter.logToConsole({stack: e.stack})
         }
     }
 
@@ -89,6 +93,7 @@ export class PrettyPrinter {
     }
 
     private tile(context: string, value: any): Tile {
+        this.tilesCount++;
         if (PrettyPrinter.isMock(value)) {
             const mockName = value[PrettyPrinter.symbolForMockName]();
             return this.tileObject(context, {mock: mockName});
@@ -107,6 +112,9 @@ export class PrettyPrinter {
         }
         if (ofType.isArray(value)) {
             try {
+                if (value.length > this.maxTilesCount - this.tilesCount) {
+                    return new SimpleTile("... ********* this array has been truncated *********");
+                }
                 const items = this.selfReference.recurse(context, value, () =>
                     (value as Array<any>).map((v, i) => this.tile(context + "[" + i + "]", v)));
                 return new ArrayTile(items);
@@ -122,6 +130,9 @@ export class PrettyPrinter {
 
     private tileObject(context: string, value: object): Tile {
         try {
+            if (this.tilesCount > this.maxTilesCount) {
+                return new SimpleTile("... ********* this object has been truncated *********");
+            }
             const callName = (value as any)[PrettyPrinter.symbolForPseudoCall];
             let valueArgs = (value as any).args;
             if (callName && (ofType.isArray(valueArgs) || ofType.isUndefined(valueArgs))) {
@@ -133,9 +144,15 @@ export class PrettyPrinter {
                 return new SimpleTile('new Date(' + JSON.stringify(value) + ')');
             }
             if (value instanceof Set) {
+                if (value.size > this.maxTilesCount - this.tilesCount) {
+                    return new SimpleTile("... ********* this set has been truncated *********");
+                }
                 return new PseudoCallTile('new Set', Array.from(value).map(v => this.tile(context, v)), true);
             }
             if (value instanceof Map) {
+                if (value.size > this.maxTilesCount - this.tilesCount) {
+                    return new SimpleTile("... ********* this map has been truncated *********");
+                }
                 return new PseudoCallTile('new Map', Array.from(value.entries()).map(v => this.tile(context, v)), true);
             }
             if (value instanceof Error) {
@@ -147,11 +164,16 @@ export class PrettyPrinter {
             if (matcher) {
                 return new SimpleTile(PrettyPrinter.customPrettyPrinters.get(matcher)!(value));
             }
-            const fields = this.selfReference.recurse(context, value, () =>
-                Object.keys(value).map(key => {
-                    const renderedKey = PropertyName.render(key);
-                    return new FieldTile(renderedKey, this.tile(context + renderedKey, (value as any)[key]))
-                }));
+            const fields = this.selfReference.recurse(context, value, () => {
+                    if (Object.keys(value).length > this.maxTilesCount - this.tilesCount) {
+                        return [new FieldTile("note:", new SimpleTile("... ********* this object has been truncated *********"))];
+                    }
+                    return Object.keys(value).map(key => {
+                        const renderedKey = PropertyName.render(key);
+                        return new FieldTile(renderedKey, this.tile(context + renderedKey, (value as any)[key]))
+                    });
+                }
+            );
             return new ObjectTile(fields);
         } catch (e: any) {
             return new SimpleTile(exceptionMessage(e)); // todo Change this to an auto-coloured Tile
@@ -172,7 +194,7 @@ export function cleanString(value: string): string {
     return JSON.stringify(value);
 }
 
-export const exceptionMessage = (e:any) => {
+export const exceptionMessage = (e: any) => {
     if (e instanceof Error) return e.message
     if (ofType.isString(e)) return e
     if (ofType.isFunction(e)) return JSON.stringify(e)

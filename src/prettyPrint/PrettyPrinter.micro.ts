@@ -347,7 +347,7 @@ describe("PrettyPrinter():", () => {
 
     it("Uses mock name", () => {
         const sym = Symbol("test");
-        prettyPrinter = PrettyPrinter.make(80, 10, sym);
+        prettyPrinter = PrettyPrinter.make(80, 10, 100, sym);
         const obj = new Function();
         obj[sym] = () => "MOCK";
         assertThat(prettyPrinter.render(obj)).is(`{mock: "MOCK"}`);
@@ -407,6 +407,22 @@ describe("PrettyPrinter():", () => {
 
         it("Single-, back- and double-quotes", () => {
             assertThat(cleanString("\"`'a'`\"")).is("\"\\\"`'a'`\\\"\"");
+        });
+    });
+
+
+    describe("MaxTilesCount:", () => {
+        it("Tiles count equal to max", () => {
+            prettyPrinter = PrettyPrinter.make(80, 10, 1);
+            assertThat(prettyPrinter.render("string")).is(`"string"`);
+        });
+        it("Tiles count greater than max", () => {
+            prettyPrinter = PrettyPrinter.make(80, 10, 1);
+            assertThat(prettyPrinter.render([1, 2, [1,2]])).is("... ********* this array has been truncated *********");
+        });
+        it("Tiles count greater than max, one actual element shown", () => {
+            prettyPrinter = PrettyPrinter.make(80, 10, 4);
+            assertThat(prettyPrinter.render([1, 2, [1,2]])).is("[1, 2, ... ********* this array has been truncated *********]");
         });
     });
 });

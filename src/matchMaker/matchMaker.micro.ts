@@ -78,7 +78,7 @@ describe("matchMaker():", () => {
 
     it("mock", () => {
         const pseudoMockSymbol = Symbol("pseudoMock");
-        PrettyPrinter.make(80, 10, pseudoMockSymbol); // register it
+        PrettyPrinter.make(80, 10, 100, pseudoMockSymbol); // register it
         const mock = new Proxy(() => 3, {
             get: (target, propKey: symbol, receiver) => {
                 if (propKey === PrettyPrinter.symbolForMockName) {

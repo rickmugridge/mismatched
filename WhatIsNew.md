@@ -3,6 +3,7 @@
 ## 26 November 2021
 
 * Documented `assertThat().throwsError()` in [assertThat](./ASSERTTHAT.md) and [FAQ](./FAQ.md).
+* Added maximum size for objects etc. in PrettyPrinter to avoid heap overflow.
 
 ## 19 November 2021
 
