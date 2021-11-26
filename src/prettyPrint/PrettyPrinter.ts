@@ -113,7 +113,7 @@ export class PrettyPrinter {
         if (ofType.isArray(value)) {
             try {
                 if (value.length > this.maxTilesCount - this.tilesCount) {
-                    return new SimpleTile("... ********* this array has been truncated *********");
+                    return new SimpleTile("[... ********* this array has been truncated *********]");
                 }
                 const items = this.selfReference.recurse(context, value, () =>
                     (value as Array<any>).map((v, i) => this.tile(context + "[" + i + "]", v)));
@@ -166,7 +166,7 @@ export class PrettyPrinter {
             }
             const fields = this.selfReference.recurse(context, value, () => {
                     if (Object.keys(value).length > this.maxTilesCount - this.tilesCount) {
-                        return [new FieldTile("note:", new SimpleTile("... ********* this object has been truncated *********"))];
+                        return [new FieldTile("note", new SimpleTile("... ********* this object has been truncated *********"))];
                     }
                     return Object.keys(value).map(key => {
                         const renderedKey = PropertyName.render(key);

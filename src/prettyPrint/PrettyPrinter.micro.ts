@@ -418,11 +418,21 @@ describe("PrettyPrinter():", () => {
         });
         it("Tiles count greater than max", () => {
             prettyPrinter = PrettyPrinter.make(80, 10, 1);
-            assertThat(prettyPrinter.render([1, 2, [1,2]])).is("... ********* this array has been truncated *********");
+            assertThat(prettyPrinter.render([1, 2, [1, 2]])).is("[... ********* this array has been truncated *********]");
         });
         it("Tiles count greater than max, one actual element shown", () => {
             prettyPrinter = PrettyPrinter.make(80, 10, 4);
-            assertThat(prettyPrinter.render([1, 2, [1,2]])).is("[1, 2, ... ********* this array has been truncated *********]");
+            assertThat(prettyPrinter.render([1, 2, [1, 2]])).is("[1, 2, [... ********* this array has been truncated *********]]");
+        });
+        it("Tiles count greater than max, deeply nested", () => {
+            prettyPrinter = PrettyPrinter.make(80, 10, 7);
+            assertThat(prettyPrinter.render([1, 2, [1, 2, {
+                named: "thing",
+                array: ["1", 2, [3, 4, 5]]
+            }], [7, 6, 5, 4, 3]])).is(`[
+  1, 2, [1, 2, {note: ... ********* this object has been truncated *********}], 
+  [... ********* this array has been truncated *********]
+]`);
         });
     });
 });
