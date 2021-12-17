@@ -151,4 +151,14 @@ But this does:
             }).throwsError(match.string.startsWith("e"));
         });
 ```
-```
+
+# A field in a returned object contains JSON. 
+
+I want to match part of the object with that JSON, but it's tricky with string matching. What can I do?
+
+* See [MappedMatcher](./MappedMatcher.md) for a general solution.
+
+# How can I match objects that contain self-references?
+
+`mismatched` handles that automatically, both in matching and in displaying useful error messages when matching fails.
+

@@ -1,5 +1,9 @@
 # What is New (since Jan 2021)
 
+## 17 December 2021
+
+* Can now match JS objects with self-references (cycles).
+
 ## 26 November 2021
 
 * Documented `assertThat().throwsError()` in [assertThat](./ASSERTTHAT.md) and [FAQ](./FAQ.md).

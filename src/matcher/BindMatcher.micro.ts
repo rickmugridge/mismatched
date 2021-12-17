@@ -2,6 +2,7 @@ import {match} from "../match";
 import {assertThat} from "../assertThat";
 import {MatchResult} from "../MatchResult";
 import {validateThat} from "../validateThat";
+import {randomUUID} from "crypto";
 
 describe("BindMatcher:", () => {
     describe("assertThat():", () => {
@@ -20,36 +21,37 @@ describe("BindMatcher:", () => {
             });
 
             it("Multiple values in same object are bound together", () => {
+                const parentPartyId = '3d109f84-cbb3-4512-b26b-ace282d16183'
                 const value = {
                     id: '3d109f84-cbb3-4512-b26b-ace282d16183',
                     relationships: [
                         {
                             id: "615fa1d3-2c79-4f46-a06a-0d04cdc9c0eb",
-                            parentPartyId: '3d109f84-cbb3-4512-b26b-ace282d16183',
+                            parentPartyId,
                             childPartyId: 'd65650a0-4445-4aa9-80d9-1f1aa11ff1c6',
                             type: "Red"
                         },
                         {
                             id: "78e95615-0e08-4449-aad5-3644b37e36e1",
-                            parentPartyId: '3d109f84-cbb3-4512-b26b-ace282d16183',
+                            parentPartyId,
                             childPartyId: 'b7acb8a7-b077-4a89-abc9-7f263856726b',
                             type: "Red"
                         }
                     ]
                 };
-                const bindRootId = match.bind()
+                const bindParentPartyId = match.bind(match.uuid())
                 assertThat(value).is({
-                    id: bindRootId,
+                    id: bindParentPartyId,
                     relationships: [
                         {
                             id: "615fa1d3-2c79-4f46-a06a-0d04cdc9c0eb",
-                            parentPartyId: bindRootId,
+                            parentPartyId: bindParentPartyId,
                             childPartyId: match.any(),
                             type: "Red"
                         },
                         {
                             id: "78e95615-0e08-4449-aad5-3644b37e36e1",
-                            parentPartyId: bindRootId,
+                            parentPartyId: bindParentPartyId,
                             childPartyId: match.any(),
                             type: "Red"
                         }

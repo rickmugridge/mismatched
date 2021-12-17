@@ -59,7 +59,7 @@ describe("matchMaker():", () => {
         const matcher = (expected: Hide) => PredicateMatcher.make(value => expected.equals(value),
             {"Hide.equals": expected});
         CustomiseMismatcher.addCustomMatcher(match.instanceOf(Hide), matcher);
-        assertThat(matchMaker(new Hide(1,2,3))).is(match.instanceOf(PredicateMatcher));
+        assertThat(matchMaker(new Hide(1, 2, 3))).is(match.instanceOf(PredicateMatcher));
     });
 
     describe("object", () => {
@@ -90,4 +90,62 @@ describe("matchMaker():", () => {
         assertThat(matchMaker(mock)).is(match.instanceOf(IsEqualsMatcher));
         assertThat(mock).is(mock);
     });
+
+    describe('self-reference', () => {
+        it("self-reference to array at top level", () => {
+            const a: any = [2]
+            a[1] = a
+            // [2, <a>}]
+            const a2: any = [2]
+            a2[1] = a2
+            assertThat(a).is(a2)
+        });
+
+        it("self-references to array at top level", () => {
+            const a: any = [2]
+            a[1] = a
+            a[2] = a
+            // [2, <a>, <a>}]
+            const a2: any = [2]
+            a2[1] = a2
+            a2[2] = a2
+            assertThat(a).is(a2)
+        });
+        it("deeper self references", () => {
+            const a: any = [[1]]
+            a[1] = a[0]
+            a[2] = a[0]
+            // [[1], <a[0]>, <a[0]>]
+            const a2: any = [[1]]
+            a2[1] = a2[0]
+            a2[2] = a2[0]
+            assertThat(a).is(a2)
+        });
+        it("at top level", () => {
+            const a: any = {b: 2}
+            a.c = a
+            // {b: 2, c: <a>}
+            const a2: any = {b: 2}
+            a2.c = a2
+            assertThat(a).is(a2)
+        });
+        it("deeper level", () => {
+            const a: any = {b: {c: 4}}
+            a.b.d = a.b
+            // {b: {c: 4, d: <a.b>}}
+            assertThat(a).is(a)
+        });
+        it("deeper level, twice", () => {
+            const a: any = {b: {c: 4}}
+            a.b.d = a.b
+            a.e = {b: a.b}
+            // {b: {c: 4, d: <a.b>}, e: {b: <a.b>}}
+            assertThat(a).is(a)
+        });
+        it("is ok as is, but could use the same self-reference technique", () => {
+            const x = {f: 1}
+            const a: any = {b: {c: 4, x}, x}
+            assertThat(a).is(a)
+        });
+    })
 });

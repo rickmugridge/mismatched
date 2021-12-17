@@ -20,6 +20,13 @@ describe("set:", () => {
                     .is(match.aSet.match([[1, 1], [2, 2], match.ofType.array()]));
             });
 
+            it('matches with nested has', () => {
+                assertThat([{s: true, extra: 'junk'}, {s: undefined, extra: 'extra'}]).is(match.aSet.match([
+                    match.obj.has({s: true}),
+                    match.obj.has({s: undefined})
+                ]));
+            });
+
             it('does not match: too many', () => {
                 const actual = new Set([1, 2, 3]);
                 assertThat(actual).failsWith(match.aSet.match(new Set([1, 2])),

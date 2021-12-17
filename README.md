@@ -98,8 +98,3 @@ Here's a simple example of validations (see the micro tests for individual match
 ```
 
 See [validateThat()](./ValidateThat.md) for further details.
-
-## Things to do
-
-  - Match objects that includes self-references (ie, cycles).
-  - Document MappedMatcher

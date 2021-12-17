@@ -17,6 +17,7 @@ It walks over expected JS objects as follows:
  * For a `NaN`, `RegExp` or `Error`, it creates a specialised matcher.
  * For a function, it creates a `match.any()`
  * However, if `matchMaker` finds a mismatched matcher anywhere, it simply retains that.
+ * It handles self-references within objects
 
 For example:
 
@@ -79,4 +80,35 @@ The aim of this is to make it easy to:
   * See the actual results
   * Copy and paste the actual result into the test when it proves to be what we should've expected
 
+## Self References
 
+Consider the following code that builds an odd but correct object:
+
+```
+    const a: any = [2]
+    a[1] = a
+    // [2, <a>}]
+```
+
+This is a very simple array, but where the second element of the array holds a reference to the array as a whole.
+
+Such structures are tricky to deal with, and are not handled well by JSON.stringify() and the average matcher.
+
+mismatched deals with such self-referenced values in two ways:
+ * It can display them with PrettyPrinter
+ * It can match them
+
+Eg, consider:
+
+```
+    const a: any = [2]
+    a[1] = a
+    // [2, <a>}]
+    const a2: any = [2]
+    a2[1] = a2
+    assertThat(a).is(a2)  // Succeeds
+    assertThat(a).is([2]) // Fails
+```
+
+The first assertion succeeds because `a2` has the same values and equivalent self-references as `a`.
+However, the second assertion fails as the actual value ([2]) has no self-reference.

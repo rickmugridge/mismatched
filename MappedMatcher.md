@@ -12,9 +12,9 @@ What's a better way of doing that?
 ```  
         it("Handles a string mapped", () => {
             const actual = {
-                detail: JSON.stringify({f:[0]})
+                detail: JSON.stringify({f: [0]})
             }
-            assertThat(actual).is({detail: match.mapped(JSON.parse, {f:[0]},'json')})
+            assertThat(actual).is({detail: match.mapped(JSON.parse, {f: [0]},'json')})
         });
 ```
 * The arguments of `match.mapped()` are as follows:
