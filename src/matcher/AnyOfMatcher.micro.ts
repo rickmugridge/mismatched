@@ -14,6 +14,7 @@ describe("AnyOfMatcher:", () => {
         });
 
         it("Mismatches", () => {
+            assertThat({a: 2}).isNot(match.anyOf([])); // Base case of nothing matching
             assertThat("ab")
                 .failsWith(match.anyOf([match.instanceOf(Date)]),
                     {[MatchResult.was]: "ab", [MatchResult.expected]: {instanceOf: "Date"}});

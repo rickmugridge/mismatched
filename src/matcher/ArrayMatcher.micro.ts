@@ -12,6 +12,9 @@ describe("array.match:", () => {
             const actual = [2, undefined, null];
             assertThat(actual).is([2, undefined, null]);
         });
+        it('matches with an empty array', () => {
+            assertThat([]).is([]);
+        });
         describe("Primitive values only", () => {
             it('matches', () => {
                 const actual = [2, 2, 2];
@@ -155,6 +158,11 @@ describe("array.match:", () => {
     describe("validateThat():", () => {
         const isNumber = match.ofType.number();
         const expected = [isNumber, isNumber, [isNumber, [isNumber]]];
+
+        it("succeeds with an empty array", () => {
+            const validation = validateThat([]).satisfies([]);
+            assertThat(validation.passed()).is(true);
+        });
 
         it("succeeds", () => {
             const validation = validateThat([1, 2, [3, [4]]]).satisfies(expected);

@@ -58,15 +58,16 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
         });
         const unexpected: any = {};
         let wasUnexpected = false;
-        Object.keys(actual).forEach(key => {
-            // Careful, as a field may have an explicit value of undefined:
-            if (actual[key] !== undefined && results[key] === undefined) {
+        ObjectMatcher.allKeys(actual).forEach(key => {
+            // Careful, as an actual field may have an explicit value of undefined:
+            if (actual[key] !== undefined && !results.hasOwnProperty(key)) {
                 unexpected[key] = actual[key];
                 errors += 1;
                 compares += 1;
                 wasUnexpected = true;
             }
         });
+        compares = compares === 0 ? 1 : compares
         if (wasUnexpected) {
             mismatched.push(Mismatched.makeUnexpectedMessage(context, actual, unexpected));
             results[MatchResult.unexpected] = unexpected;
@@ -80,10 +81,15 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
     describe(): any {
         return concatObjects(this.matchers.map(e => e.describe()));
     }
+
+    static allKeys(actual: object): (string | symbol)[] {
+        return (Object.keys(actual) as (string | symbol)[])
+            .concat(Object.getOwnPropertySymbols(actual))
+    }
 }
 
 export function concatObjects(objects: Array<object>): object {
     const result = {};
-    objects.forEach(o => Object.keys(o).forEach(key => result[key] = o[key]));
+    objects.forEach(o => ObjectMatcher.allKeys(o).forEach(key => result[key] = o[key]));
     return result;
 }

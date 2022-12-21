@@ -20,6 +20,9 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
             mismatched.push(Mismatched.makeExpectedMessage(context, actual, "array expected"));
             return MatchResult.wasExpected(actual, this.describe(), 1, 0);
         }
+        if (actual.length ===0 && this.matchers.length === 0) {
+            return new MatchResult(undefined, 1, 1);
+        }
         const pairs = arrayDiff(this.matchers, actual)
         let compares = 0;
         let matches = 0;

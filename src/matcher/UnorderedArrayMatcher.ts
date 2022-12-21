@@ -23,6 +23,9 @@ export class UnorderedArrayMatcher<T> extends DiffMatcher<T[]> {
                mismatched: Array<Mismatched>,
                actuals: T[]): MatchResult {
         if (ofType.isArray(actuals)) {
+            if (actuals.length ===0 && this.matchers.length === 0) {
+                return new MatchResult(undefined, 1, 1);
+            }
             const matcherPerActual: { matcher?: DiffMatcher<T> } [] = actuals.map(a => ({matcher: undefined}))
             const matchedActual: boolean[] = actuals.map(a => false)
             const failingMatchers: DiffMatcher<T>[] = []

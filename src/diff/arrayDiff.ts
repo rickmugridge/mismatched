@@ -5,7 +5,7 @@ import {MatchResult} from "../MatchResult";
 import {Option, Some} from "prelude-ts";
 
 export const arrayDiff = <T>(matchers: DiffMatcher<T>[], actuals: any[]): PossibleMatch<T>[] => {
-    const doubleMap = new DoubleMap<T, DiffMatcher<T>, MatchResult>()
+    const doubleMap = new DoubleMap<T, DiffMatcher<T>, MatchResult>() // Assumes we don't share Matchers
     const compare = (value: T, matcher: DiffMatcher<T>) => {
         const matchResult = doubleMap.get(value, matcher);
         if (matchResult) {

@@ -6,6 +6,12 @@ import {validateThat} from "../validateThat";
 describe("set:", () => {
     describe("set.match:", () => {
         describe("assertThat():", () => {
+            it('matches when both empty', () => {
+                assertThat(new Set()).is(match.aSet.match(new Set()));
+                assertThat([]).is(match.aSet.match([]));
+                assertThat(new Set([])).is(match.aSet.match([]));
+            });
+
             it('matches', () => {
                 assertThat(new Set([1, 2, 3])).is(match.aSet.match(new Set([1, 2, 3])));
                 assertThat([1, 2, 3]).is(match.aSet.match([2, 1, 3]));

@@ -10,6 +10,11 @@ import {PredicateMatcher} from "./PredicateMatcher";
 import {CustomiseMismatcher} from "../matchMaker/CustomiseMismatcher";
 
 describe("obj.match:", () => {
+    it("hasProperty", () => {
+        const actual = {f: undefined}
+        assertThat(actual.hasOwnProperty('f')).is(true)
+        assertThat(actual.hasOwnProperty('g')).is(false)
+    });
     describe("assertThat():", () => {
         describe('matches', () => {
             it('with implicit matchers', () => {
@@ -31,6 +36,7 @@ describe("obj.match:", () => {
             it('literal object with a field that is undefined', () => {
                 assertThat({f: undefined}).is({f: undefined});
                 assertThat({f: undefined}).is({} as any);
+                assertThat({}).is({f: undefined});
             });
 
             it('with embedded matchers', () => {
@@ -43,6 +49,19 @@ describe("obj.match:", () => {
                     .is(match.obj.match({f: match.obj.key(2), g: 3}));
             });
 
+            it('with symbols', () => {
+                const expected = {[Symbol()]: Symbol()};
+                assertThat(expected).is(expected);
+                assertThat(expected).isNot({});
+                assertThat({}).isNot(expected);
+            });
+
+            it('mixed with symbols', () => {
+                const expected = {[Symbol()]: Symbol(), f:2};
+                assertThat(expected).is(expected);
+                assertThat(expected).isNot({});
+                assertThat({}).isNot(expected);
+            });
         });
 
         describe('does not match actual as:', () => {

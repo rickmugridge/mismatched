@@ -7,6 +7,11 @@ import {validateThat} from "../validateThat";
 
 describe("array.every:", () => {
     describe("assertThat():", () => {
+        it('empty array suceeds', () => {
+            const actual = [];
+            assertThat(actual).is(match.array.every(2));
+        });
+
         it('number', () => {
             const actual = [2, 2, 2];
             assertThat(actual).is(match.array.every(2));

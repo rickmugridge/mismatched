@@ -9,6 +9,7 @@ const isMatcher =(matcher:DiffMatcher<any>) =>  Option.of(match.itIs(matcher))
 describe("arrayDiff", () => {
     it("is empty", () => {
         const result = arrayDiff([], [])
+        assertThat([]).is([])
         assertThat(result).is([])
     });
 

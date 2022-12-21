@@ -98,3 +98,15 @@ Here's a simple example of validations (see the micro tests for individual match
 ```
 
 See [validateThat()](./ValidateThat.md) for further details.
+
+## Automated tests for mismatched itself
+
+There are many unit (micro) tests. To run:
+```
+  npm test
+```
+
+There are also property tests. To run:
+```
+   npm run prop-test
+```

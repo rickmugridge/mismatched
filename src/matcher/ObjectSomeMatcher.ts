@@ -20,6 +20,8 @@ export class ObjectSomeMatcher<T> extends DiffMatcher<T> {
             mismatched.push(Mismatched.makeExpectedMessage(context, actual, "object expected"));
             return MatchResult.wasExpected(actual, this.describe(), 1, 0);
         }
+        if (this.matchers.length === 0)// Succeeds as subset
+            return new MatchResult([], 1, 1, false);
         const results = {};
         let errors = 0;
         let compares = 0;

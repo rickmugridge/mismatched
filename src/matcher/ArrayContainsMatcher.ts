@@ -14,7 +14,6 @@ export class ArrayContainsMatcher<T> extends DiffMatcher<Array<T>> {
         if (ofType.isArray(actual)) {
             let compares = 0;
             let matches = 0;
-            let i = 0;
             for (let a of actual) {
                 const result = this.matcher.matches(a);
                 if (result.passed()) {
@@ -22,7 +21,6 @@ export class ArrayContainsMatcher<T> extends DiffMatcher<Array<T>> {
                 }
                 compares += result.compares;
                 matches += result.matchRate * result.compares;
-                i += 1;
             }
             mismatched.push(Mismatched.makeExpectedMessage(context, actual, this.describe()));
             return MatchResult.wasExpected(actual, this.describe(), compares, matches);

@@ -2,9 +2,23 @@ import {assertThat} from "./assertThat";
 import {match} from "./match";
 import {MatchResult} from "./MatchResult";
 import {fail} from "assert";
-import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 
 describe("assertThat():", () => {
+    it("Ensure that mismatched basically works, without using itself", () => {
+        if (!match.itIs(3).matches(3).passed())
+            fail("Mismatched did not match, but it should have")
+        if (match.itIs(3).matches(4).passed())
+            fail("Mismatched matched but should not have")
+        let exceptionThrown = false
+        try {
+            assertThat(3).is(4)
+        } catch (e) {
+            exceptionThrown = true
+        }
+        if (!exceptionThrown)
+            fail("assertThat did not pick up error")
+    });
+
     describe("is():", () => {
         it('matches', () => {
             const actual = 3.4;
@@ -109,7 +123,7 @@ describe("assertThat():", () => {
             const matcher = match.string.startsWith("e");
         });
 
-       it("Matches start", () => {
+        it("Matches start", () => {
             assertThat(() => {
                 throw new Error("error");
             }).throwsError("error");

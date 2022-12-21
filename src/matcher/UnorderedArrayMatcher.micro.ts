@@ -6,6 +6,10 @@ import {validateThat} from "../validateThat";
 describe("unorderedArray:", () => {
     describe("match.array.unordered:", () => {
         describe("assertThat():", () => {
+            it('matches when both empty', () => {
+                assertThat([]).is(match.array.unordered([]));
+            });
+
             it('matches', () => {
                 assertThat([1, 2, 3]).is(match.array.unordered([1, 2, 3]));
                 assertThat([1, 2, 3]).is(match.array.unordered([2, 1, 3]));

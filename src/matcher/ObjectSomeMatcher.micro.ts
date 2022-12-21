@@ -18,6 +18,12 @@ describe("obj.some:", () => {
                 const actual = {f: 2, g: 3, h: 4};
                 assertThat(actual).is(match.obj.has({f: 2, g: 3}));
             });
+
+            it('empty object', () => {
+                const actual = {f: 2, g: 3, h: 4};
+                assertThat(actual).is(match.obj.has({}));
+                assertThat({}).is(match.obj.has({}));
+            });
         });
 
         describe('does not match actual that is:', () => {

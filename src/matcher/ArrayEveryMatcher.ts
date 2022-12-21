@@ -26,7 +26,7 @@ export class ArrayEveryMatcher<T> extends DiffMatcher<Array<T>> {
                 i += 1;
             }
             if (corrects === actual.length) {
-                return MatchResult.good(compares);
+                return MatchResult.good(compares === 0 ? 1 : compares);
             }
             return MatchResult.wasExpected(actual, this.describe(), compares, matches);
         }

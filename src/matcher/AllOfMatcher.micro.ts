@@ -9,6 +9,7 @@ import {ContextOfValidationError} from "./DiffMatcher";
 describe("AllOfMatcher:", () => {
     describe("assertThat():", () => {
         it("Matches", () => {
+            assertThat({a: 2}).isAllOf([]);
             assertThat({a: 2}).isAllOf([match.instanceOf(Object)]);
             assertThat(new Date()).isAllOf([match.instanceOf(Object), match.instanceOf(Date)]);
         });

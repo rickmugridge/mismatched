@@ -68,7 +68,5 @@ export const stringMatcher = {
         "uuid"),
 };
 
-const compare = (a, b) => a === b;
-
 const matchRating = (length: number, totalLength: number) =>
     length > 0 ? (length - totalLength) / (length * 2) : 0

@@ -2,7 +2,7 @@ import {ofType} from "./ofType";
 import {match} from "./match";
 
 describe("ofType:", () => {
-    describe("undefined", () => {
+    describe("isUndefined", () => {
         it("is so", () => {
             expect(ofType.isUndefined(undefined), true);
         });
@@ -16,6 +16,23 @@ describe("ofType:", () => {
             expect(ofType.isUndefined({}), false);
             expect(ofType.isUndefined([]), false);
             expect(ofType.isUndefined(() => 4), false);
+        });
+    });
+
+    describe("isDefined", () => {
+        it("is not so", () => {
+            expect(ofType.isDefined(undefined), false);
+        });
+        it("is so", () => {
+            expect(ofType.isDefined(null), true);
+            expect(ofType.isDefined(1), true);
+            expect(ofType.isDefined(true), true);
+            expect(ofType.isDefined("a"), true);
+            expect(ofType.isDefined(/a/), true);
+            expect(ofType.isDefined(Symbol()), true);
+            expect(ofType.isDefined({}), true);
+            expect(ofType.isDefined([]), true);
+            expect(ofType.isDefined(() => 4), true);
         });
     });
 
@@ -111,6 +128,7 @@ describe("ofType:", () => {
         it("is so", () => {
             expect(ofType.isNumber(1), true);
             expect(ofType.isNumber(6.4159), true);
+            expect(ofType.isNumber(NaN), true);
         });
         it("is not so", () => {
             expect(ofType.isNumber(undefined), false);
@@ -121,6 +139,24 @@ describe("ofType:", () => {
             expect(ofType.isNumber(null), false);
             expect(ofType.isNumber({}), false);
             expect(ofType.isNumber([1, 2]), false);
+        });
+    });
+
+    describe("isNaN", () => {
+        it("is so", () => {
+            expect(ofType.isNaN(NaN), true);
+        });
+        it("is not so", () => {
+            expect(ofType.isNaN(0), false);
+            expect(ofType.isNaN(0.0), false);
+            expect(ofType.isNaN(undefined), false);
+            expect(ofType.isNaN("a"), false);
+            expect(ofType.isNaN(/a/), false);
+            expect(ofType.isNaN(true), false);
+            expect(ofType.isNaN(Symbol()), false);
+            expect(ofType.isNaN(null), false);
+            expect(ofType.isNaN({}), false);
+            expect(ofType.isNaN([1, 2]), false);
         });
     });
 

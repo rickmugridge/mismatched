@@ -14,6 +14,9 @@ describe("NumberMatcher:", () => {
             assertThat(2).is(match.number.lessEqual(3));
             assertThat(3).is(match.number.lessEqual(3));
             assertThat(4).is(match.not(match.number.lessEqual(3)));
+            assertThat(NaN).is(match.number.lessEqual(NaN));
+            assertThat(Infinity).is(match.number.lessEqual(Infinity));
+            assertThat(-Infinity).is(match.number.lessEqual(-Infinity));
         });
 
         it("greater", () => {
@@ -25,6 +28,9 @@ describe("NumberMatcher:", () => {
             assertThat(4).is(match.number.greaterEqual(3));
             assertThat(3).is(match.number.greaterEqual(3));
             assertThat(2).is(match.not(match.number.greaterEqual(3)));
+            assertThat(NaN).is(match.number.greaterEqual(NaN));
+            assertThat(Infinity).is(match.number.greaterEqual(Infinity));
+            assertThat(-Infinity).is(match.number.greaterEqual(-Infinity));
         });
 
         it("withinDelta", () => {
@@ -32,6 +38,9 @@ describe("NumberMatcher:", () => {
             assertThat(3.15).is(match.number.withinDelta(3, 0.2));
             assertThat(2.85).is(match.number.withinDelta(3, 0.2));
             assertThat(2).is(match.number.withinDelta(3, 1.0));
+            assertThat(NaN).is(match.number.withinDelta(NaN, 1.0));
+            assertThat(Infinity).is(match.number.withinDelta(Infinity, 1.0));
+            assertThat(-Infinity).is(match.number.withinDelta(-Infinity, 1.0));
         });
 
         describe("NaN:", () => {

@@ -2,7 +2,7 @@ import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
 
 export abstract class DiffMatcher<T> {
-    complexity: number = 1
+    complexity: number = 1 // This measures the specificity of the matcher. Higher is more specific.
 
     static andComplexity<T>(matchers: Array<DiffMatcher<T>>) {
         return matchers.reduceRight(

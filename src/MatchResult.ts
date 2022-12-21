@@ -12,7 +12,7 @@ export class MatchResult {
     public matchRate: number;
 
     constructor(public diff: any, public compares: number, public matches: number, public matchedObjectKey = false) {
-        this.matchRate = compares === 0 ? 1.0 : matches / compares;
+        this.matchRate = compares === 0 ? 0.0 : matches / compares;
     }
 
     static useConsoleLogging() {

@@ -23,6 +23,11 @@ describe("array.contains:", () => {
                 {[MatchResult.was]: ["a", "b"], [MatchResult.expected]: {"array.contains": "c"}});
         });
 
+        it('does not match with empty array', () => {
+            const actual = [];
+            assertThat(actual).isNot(match.array.contains("c"));
+        });
+
         it('does not match: errors', () => {
             const mismatched: Array<Mismatched> = [];
             const matcher = match.array.contains("c");

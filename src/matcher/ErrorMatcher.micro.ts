@@ -12,14 +12,13 @@ describe("ErrorMatcher()", () => {
     });
 
     it("mismatches", () => {
-        // The first of these fail, due to some weird mismatch of the value of the`was` part.
-        // To be tracked down.
-        // assertThat(new Error("A")).failsWith(ErrorMatcher.make("abc"),
-        //     {[MatchResult.was]: {errorMessage: "A"}, [MatchResult.expected]: {errorMessage: "abc"}});
-        assertThat(new Error("A")).failsWith(ErrorMatcher.make("abc"),
-            {[MatchResult.was]: {errorMessage: match.any()}, [MatchResult.expected]: {errorMessage: "abc"}});
-
-         assertThat(33).failsWith(ErrorMatcher.make("abc"),
+        const error = new Error("A");
+        assertThat(error).failsWith(ErrorMatcher.make("abc"),
+            {
+                [MatchResult.was]: match.predicate(v => v === error),
+                [MatchResult.expected]: {errorMessage: "abc"}
+            });
+        assertThat(33).failsWith(ErrorMatcher.make("abc"),
             {[MatchResult.was]: 33, [MatchResult.expected]: {instanceOf: "Error"}});
     });
 
