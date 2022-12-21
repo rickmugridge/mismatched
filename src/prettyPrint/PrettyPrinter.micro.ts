@@ -320,7 +320,7 @@ describe("PrettyPrinter():", () => {
             .is("{outer: {outer: {d: Hide(12), e: 3}}}");
     });
 
-    it("Ignores symbol-based properties", () => {
+    it("Handles symbol-based properties", () => {
         const sym = Symbol("sym");
         assertThat(prettyPrinter.render({a: 1, [sym]: 3})).is("{a: 1, Symbol(sym): 3}");
     });
