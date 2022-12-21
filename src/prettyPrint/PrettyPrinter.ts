@@ -9,6 +9,7 @@ import {ArrayTile} from "./tile/ArrayTile";
 import {PseudoCallTile} from "./tile/PseudoCallTile";
 import {FieldTile, ObjectTile} from "./tile/ObjectTile";
 import {DiffMatcher} from "../matcher/DiffMatcher";
+import {ObjectMatcher} from "../matcher/ObjectMatcher";
 
 export const defaultLineWidth = 80;
 export const defaultMaxComplexity = 30;
@@ -165,10 +166,11 @@ export class PrettyPrinter {
                 return new SimpleTile(PrettyPrinter.customPrettyPrinters.get(matcher)!(value));
             }
             const fields = this.selfReference.recurse(context, value, () => {
-                    if (Object.keys(value).length > this.maxTilesCount - this.tilesCount) {
+                    let keys = ObjectMatcher.allKeys(value);
+                    if (keys.length > this.maxTilesCount - this.tilesCount) {
                         return [new FieldTile("note", new SimpleTile("... ********* this object has been truncated *********"))];
                     }
-                    return Object.keys(value).map(key => {
+                    return keys.map(key => {
                         const renderedKey = PropertyName.render(key);
                         return new FieldTile(renderedKey, this.tile(context + renderedKey, (value as any)[key]))
                     });

@@ -1,11 +1,17 @@
+import {ofType} from "../ofType";
+
 export class PropertyName {
-    static render(propertyName: string) {
-        const isColouredMessage = propertyName.startsWith("\u001b[");
-        const isValidIdentifier = propertyName.match(identifierSupersetPattern) && propertyName.match(notKeywordPattern);
-        if (isColouredMessage || isValidIdentifier) {
-            return propertyName;
+    static render(propertyName: string | symbol) {
+        if (ofType.isString(propertyName)) {
+            const isColouredMessage = propertyName.startsWith("\u001b[");
+            const isValidIdentifier = propertyName.match(identifierSupersetPattern) && propertyName.match(notKeywordPattern);
+            if (isColouredMessage || isValidIdentifier) {
+                return propertyName;
+            }
+            return JSON.stringify(propertyName);
+        } else { // symbol
+            return propertyName.toString()
         }
-        return JSON.stringify(propertyName);
     }
 }
 

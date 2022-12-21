@@ -322,7 +322,7 @@ describe("PrettyPrinter():", () => {
 
     it("Ignores symbol-based properties", () => {
         const sym = Symbol("sym");
-        assertThat(prettyPrinter.render({a: 1, [sym]: 3})).is("{a: 1}");
+        assertThat(prettyPrinter.render({a: 1, [sym]: 3})).is("{a: 1, Symbol(sym): 3}");
     });
 
     it("Handles strings needing quotes as key", () => {
