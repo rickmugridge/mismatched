@@ -8,7 +8,7 @@ export class BindMatcher<T> extends DiffMatcher<T> {
 
     private constructor(private matcher?: DiffMatcher<T>) {
         super();
-        this.complexity = -5 // Delay matching this, all else being equal
+        this.specificity = -5 // Delay matching this, all else being equal
     }
 
     static make<T>(matcher?: DiffMatcher<T> | any): any {

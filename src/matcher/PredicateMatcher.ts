@@ -8,7 +8,7 @@ import {exceptionMessage} from "../prettyPrint/PrettyPrinter";
 export class PredicateMatcher extends DiffMatcher<any> {
     private constructor(private expected: (value: any) => boolean, private description: any) {
         super();
-        this.complexity = 2
+        this.specificity = 2
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: any): MatchResult {

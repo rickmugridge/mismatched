@@ -169,35 +169,35 @@ describe("array.match:", () => {
             assertThat(validation.passed()).is(true);
         });
 
-      it("fails as element missing", () => {
-        const expected = [isNumber];
-        const validation = validateThat([]).satisfies(expected);
-        assertThat(validation.passed()).is(false);
-        assertThat(validation.errors).is([
-          '{actual: [], missing: "ofType.number"}'
-        ]);
-      });
+        it("fails as element missing", () => {
+            const expected = [isNumber];
+            const validation = validateThat([]).satisfies(expected);
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                '{actual: [], missing: "ofType.number"}'
+            ]);
+        });
 
-      it("fails as element unexpectedly present", () => {
-        const expected = [];
-        const validation = validateThat([1]).satisfies(expected);
-        assertThat(validation.passed()).is(false);
-        assertThat(validation.errors).is([
-          '{actual: [1], unexpected: 1}'
-        ]);
-      });
+        it("fails as element unexpectedly present", () => {
+            const expected = [];
+            const validation = validateThat([1]).satisfies(expected);
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                '{actual: [1], unexpected: 1}'
+            ]);
+        });
 
-      it("fails as incorrect array, simple", () => {
-        const expected = [isNumber];
-        const validation = validateThat(["s"]).satisfies(expected);
-        assertThat(validation.passed()).is(false);
-        assertThat(validation.errors).is([
-          '{actual: ["s"], unexpected: "s"}',
-          '{actual: ["s"], missing: "ofType.number"}'
-        ]);
-      });
+        it("fails as incorrect array, simple", () => {
+            const expected = [isNumber];
+            const validation = validateThat(["s"]).satisfies(expected);
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                '{actual: ["s"], unexpected: "s"}',
+                '{actual: ["s"], missing: "ofType.number"}'
+            ]);
+        });
 
-      it("fails as incorrect array, less simple", () => {
+        it("fails as incorrect array, less simple", () => {
             const validation = validateThat([1, 2, [3, ["s"]]]).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([

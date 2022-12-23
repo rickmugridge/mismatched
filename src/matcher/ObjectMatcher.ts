@@ -8,7 +8,7 @@ import {allKeys} from "../allKeys";
 export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
     private constructor(private expectedObject: object, private fieldMatchers: Array<DiffFieldMatcher<T>>) {
         super();
-        this.complexity = DiffMatcher.andComplexity(fieldMatchers)
+        this.specificity = DiffMatcher.andSpecificity(fieldMatchers)
     }
 
     static make<T extends object>(obj: object): any {

@@ -14,19 +14,19 @@ We then evolve it as we add more sophisticated requirements:
 * Provide general matchers, such as match.any(), match.optional(), match.allOf(), match.anyOf()
 * Match arrays too, in a simple way
 * Measure the quality of partial matches
-* Avoid matching functions
+* Also provide for validating data
+* Improve the quality of matching in sets and unordered arrays (bags)
+
+The following are not covered here - see the code if you want more details:
+
 * Ensure we can test `mismatched` with itself by verifying results when a test fails
-* Provide a diff when strings are not as expected
-* Allow for insertions, deletions and changes in arrays, unordered arrays and sets
+* Allow for matching a set or unordered array (bag)
 * Allow for matching a subset of the properties of an array
 * Allow for matching a subset of the elements of an array or set
-* Allow for insertions, deletions and replacements when comparing arrays
-* Allow for unordered arrays (bags) and sets
 * Handle weirdo JS values such as NaN, Infinity, Symbols, and Error()
-* Refine matching criteria for unordered arrays and sets of objects with keys
+* Refine matching criteria for unordered arrays and sets of objects by specifying keys
 * Allow for binding a randomly-created value, such as an id, when it occurs in more than one place
 * Allow for self-referential values
-* Also handle validation
 
 ## Aim 1: `assertThat()` simply succeeds or fails when testing simple values
 
@@ -576,12 +576,120 @@ The standard diff algorithm doesn't allow for such partial matches.
 
 Eg, consider the following:
 ```typescript
-assertThat([{f:{g:1, h:2}}], [{f:{g:1}}]).is([{f:{g:2, h:2}}], [{f:{g:2}}])
+assertThat([{f:{g:1, h:2}}, [{f:{g:1}}]]).is([{f:{g:2, h:2}}, [{f:{g:2}}]])
 ```
 
 Here we get a better (partial) match of [{f:{g:1, h:2}}] with [{f:{g:2, h:2}}] over [{f:{g:2}}].
 
-To allow for partial matches, we need to extend MatchResult and the rest of the code to track the quality of 
+To allow for partial matches, we need to extend `MatchResult` and the rest of the code to track the quality of 
 matches when they fail.
 
+By the way, we also apply that diff algorithm to larger strings, to highlight the differences.
+
 ## Aim 8: Measure the quality of partial matches
+
+As mentioned in the previous aim, providing good diffs on matching arrays requires that we measure the quality of partial matches.
+This also applies to matching unordered arrays (bags) and sets, which we don't cover here.
+
+There are four main cases for computing the quality of a match, which is called `matchRate` in `MatchResult`:
+ * For a number, boolean, undefined, null, NaN the `matchRate` is either 0.0 or 1.0.
+ * For a string the `matchRate` depends on the "similarity" of the actual and expected strings.
+ * For an array, the `matchRate` depends on the accumulated `matchRates` of the associated elements (recursively)
+ * For an object, the `matchRate` depends on the accumulated `matchRates` of the associated object fields (recursively)
+
+Eg:
+```typescript
+assertThat(1).is(2); // matchRate of 0.0
+
+assertThat("abcdefg").is("ABCDEFG"); // matchRate of 0.0
+assertThat("abc").is("abcd"); // matchRate of 0.875
+assertThat("abcdefg").is("abcdefgh"); // matchRate of 0.9375
+
+assertThat([3]).is([2]); // matchRate of 0.0
+assertThat([3, 4, 5, 6]).is([2, 4, 5, 6]); // matchRate of 0.6
+
+assertThat({h: 3, i: 1}).is({h: 3, i: 222}); // matchRate of 0.5
+assertThat({f: 2, g: {h: 3, i: 1}}).is({f: 2, g: {h: 3, i: 222}}); // matchRate of 0.67
+```
+
+We expand the constructor `MatchResult` to take the number of `compares` and the accumulated `matches`, to
+compute the `matchRate`:
+
+```typescript
+export class MatchResult {
+
+  constructor(public diff: any, public compares: number, public matches: number, public matchedObjectKey = false) {
+    this.matchRate = compares === 0 ? 0.0 : matches / compares;
+  }
+}
+```
+
+The individual matchers then provide those values.
+
+## Aim 9: Also provide for validating data
+
+Much of the logic of `mismatched` so far is focussed on:
+ * asserting values in unit tests
+ * providing useful diff information when tests fail.
+
+This is now extended to also provide for validating data, using the same matchers.
+Validation differs in that we want a list of specific failures, indentified by context.
+
+Eg, the following micro-test shows validation in action:
+
+```typescript
+it("fails as incorrect array, less simple", () => {
+  const isNumber = match.ofType.number(); // matches if the actual value is a number
+  const expected = [isNumber, isNumber, [isNumber, [isNumber]]];
+  const validation = validateThat([1, 2, [3, ["s"]]]).satisfies(expected);
+  assertThat(validation.passed()).is(false);
+  assertThat(validation.errors).is([
+    '{"actual[2]": [3, ["s"]], unexpected: ["s"]}',
+    '{"actual[2]": [3, ["s"]], missing: ["ofType.number"]}'
+  ]);
+});
+```
+
+The result of the validateThat call, provides:
+ * a `passed()` boolean value
+ * a list if `errors`, each of which identify the position of the error within the `actual` value.
+
+This requires additional code in the matchers, to also provide for such errors. 
+This is managed with an extra method in `DiffMatcher`:
+
+```typescript
+export abstract class DiffMatcher<T> {
+
+    // ...
+    abstract mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult;
+
+    matches(actual: T): MatchResult {
+      return this.mismatches(new ContextOfValidationError(), [], actual);
+   }
+}
+```
+
+All the matchers are changed so that their `matches()` method is renamed as `mismatches`, with additional arguments:
+ * `context`: a full path to the point of an error, such as "actual[2]" or "actual.f[1].g"
+ * `mismatched`: an accumulating array of mismatch details
+
+
+## Aim 10: Improve the quality of matching in sets and unordered arrays (bags)
+
+We haven't covered matching sets and bags, which are complicated like matching arrays.
+One additional complication arises, illustrated by the following example:
+
+```typescript
+assertThat(new Set[1,2]).is(new Set[match.any(), 4, 1])
+```
+
+This fails to match, but what's the diff? The `match.any()` should match against the 2.
+But if that matcher is tried first, it would match against the 1.
+
+So the approach we take in this case is to apply more specific matchers before more general ones.
+Eg, [1,{f:2, g:{h:3}}] is more specific than [1,{f:2, g:{h:match.any()}}], and so the former whould be applied first.
+
+All matchers compute their _specificity_, with high values being more specific. 
+`match.any()` has a specificity of 0.0. 
+The specificity of an array or objects is the sum of the `specificity` of their elements.
+This `specificity` is then used to determine the order in which matchers are applied when matching sets and bags.

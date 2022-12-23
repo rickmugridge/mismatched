@@ -6,7 +6,7 @@ import {MatchResult} from "../MatchResult";
 export class ObjectKeyMatcher<T> extends DiffMatcher<T> {
     private constructor(private readonly expectedKey: DiffMatcher<T>) {
         super();
-        this.complexity = expectedKey.complexity + 5 // Encourage this
+        this.specificity = expectedKey.specificity + 5 // Encourage this
     }
 
     static make(expected: any): any {

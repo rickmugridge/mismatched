@@ -110,7 +110,7 @@ class SelfReferenceMatcher<T> extends DiffMatcher<T> {
 
     private constructor() {
         super();
-        this.complexity = 0 // todo
+        this.specificity = 0 // todo
     }
 
     static make<T>(): any {

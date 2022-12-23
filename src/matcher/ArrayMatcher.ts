@@ -8,7 +8,7 @@ import {ofType} from "../ofType";
 export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
     private constructor(private elementMatchers: Array<DiffMatcher<T>>) {
         super();
-        this.complexity = DiffMatcher.andComplexity(elementMatchers)
+        this.specificity = DiffMatcher.andSpecificity(elementMatchers)
     }
 
     static make<T>(expected: Array<DiffMatcher<T> | any>): any {

@@ -7,7 +7,7 @@ import {ofType} from "../ofType";
 export class ArrayContainsMatcher<T> extends DiffMatcher<Array<T>> {
     private constructor(private matcher: DiffMatcher<T>) {
         super();
-        this.complexity = matcher.complexity
+        this.specificity = matcher.specificity
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {

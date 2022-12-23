@@ -11,7 +11,7 @@ export class SetMatcher<T> extends DiffMatcher<Set<T>> {
     private constructor(private matchers: DiffMatcher<T>[], private subset: boolean) {
         super();
         this.unorderedArrayMatcher = new UnorderedArrayMatcher(matchers, subset)
-        this.complexity = this.unorderedArrayMatcher.complexity
+        this.specificity = this.unorderedArrayMatcher.specificity
     }
 
     static make<T>(expected: Set<DiffMatcher<T>> | Set<T> | Array<T> | Map<any, any>, subset = false): any {

@@ -6,7 +6,7 @@ import {Mismatched} from "./Mismatched";
 export class AnyOfMatcher<T> extends DiffMatcher<T> {
     private constructor(private matchers: Array<DiffMatcher<T>>) {
         super();
-        this.complexity = DiffMatcher.orComplexity(matchers)
+        this.specificity = DiffMatcher.orSpecificity(matchers)
     }
 
     static make<T>(matchers: Array<DiffMatcher<T> | any>): any {

@@ -7,7 +7,7 @@ import {Mismatched} from "./Mismatched";
 export class OptionalNullMatcher<T> extends DiffMatcher<T> {
     private constructor(private matcher: DiffMatcher<T>) {
         super();
-        this.complexity = matcher.complexity
+        this.specificity = matcher.specificity
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {

@@ -7,8 +7,8 @@ import {ofType} from "../ofType";
 export class UnorderedArrayMatcher<T> extends DiffMatcher<T[]> {
     constructor(private matchers: DiffMatcher<T>[], private subset: boolean) {
         super();
-        this.complexity = DiffMatcher.andComplexity(matchers)
-        matchers.sort((a, b) => b.complexity - a.complexity)
+        this.specificity = DiffMatcher.andSpecificity(matchers)
+        matchers.sort((a, b) => b.specificity - a.specificity)
     }
 
     static make<T>(expected: Set<DiffMatcher<T>> | Set<T> | Array<T> | Map<any, any>, subset = false): any {
@@ -26,8 +26,9 @@ export class UnorderedArrayMatcher<T> extends DiffMatcher<T[]> {
             if (actuals.length ===0 && this.matchers.length === 0) {
                 return new MatchResult(undefined, 1, 1);
             }
-            const matcherPerActual: { matcher?: DiffMatcher<T> } [] = actuals.map(a => ({matcher: undefined}))
-            const matchedActual: boolean[] = actuals.map(a => false)
+            const matcherPerActual: { matcher?: DiffMatcher<T> } [] =
+                actuals.map(() => ({matcher: undefined}))
+            const matchedActual: boolean[] = actuals.map(() => false)
             const failingMatchers: DiffMatcher<T>[] = []
             this.matchers.forEach(matcher =>
                 this.tryMatch(context, matcher, actuals, matcherPerActual, matchedActual, failingMatchers))

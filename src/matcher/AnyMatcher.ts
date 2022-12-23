@@ -3,7 +3,7 @@ import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
 
 export class AnyMatcher<T> extends DiffMatcher<T> {
-    complexity = 0
+    specificity = 0
 
     static make<T>(): any {
         return new AnyMatcher();

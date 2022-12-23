@@ -9,7 +9,7 @@ import {allKeys} from "../allKeys";
 export class DiffFieldMatcher<T> extends DiffMatcher<T> {
     private constructor(public fieldName: string | symbol, private matcher: DiffMatcher<T>) {
         super();
-        this.complexity = matcher.complexity
+        this.specificity = matcher.specificity
     }
 
     mismatches(context: ContextOfValidationError, errors: Array<Mismatched>, actual: T): MatchResult {
