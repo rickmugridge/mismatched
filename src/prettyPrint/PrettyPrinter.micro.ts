@@ -55,13 +55,16 @@ describe("PrettyPrinter():", () => {
                 1000001, 1000002, 1000003, 1000004,
                 1000001, 1000002, 1000003, 1000004,
                 1000001, 1000002, 1000003, 1000004,
-                1000001, 1000002, 1000003, 1000004
+                1000001, 1000002, 1000003, {was: 1000004, expected: 100005}
             ];
+            // console.log(JSON.stringify(value))
+            // console.log(JSON.stringify(value, undefined, 4))
             assertThat('\n' + prettyPrinter.render(value))
                 .is(`
 [
   1000001, 1000002, 1000003, 1000004, 1000001, 1000002, 1000003, 1000004, 
-  1000001, 1000002, 1000003, 1000004, 1000001, 1000002, 1000003, 1000004
+  1000001, 1000002, 1000003, 1000004, 1000001, 1000002, 1000003, 
+  {was: 1000004, expected: 100005}
 ]`);
         });
 
@@ -106,7 +109,7 @@ describe("PrettyPrinter():", () => {
 {a: [1, {z: 8}, {y: true}], b: "a"}`);
     });
 
-    describe("Real object", () => {
+    it("Real object", () => {
         const value = {
             calfId: 56,
             matches: [{
@@ -116,9 +119,9 @@ describe("PrettyPrinter():", () => {
                 selection_state: "open",
                 dam: {animalId: 561},
                 loci: {failures: []},
-                links: [{href: "www.example.com/animal-genome/parentage-matching/5/calf/56/match/1", rel: "self"},
+                links: [{href: "www.example.com/calf/56/match/1", rel: "self"},
                     {
-                        href: "www.example.com/animal-genome/parentage-matching/5/calf/56/match/1/confirm",
+                        href: "www.example.com/calf/56/match/1/confirm",
                         rel: "confirm-match"
                     }]
             }],
@@ -135,11 +138,11 @@ describe("PrettyPrinter():", () => {
       dam: {animalId: 561}, loci: {failures: []}, 
       links: [
         {
-          href: "www.example.com/animal-genome/parentage-matching/5/calf/56/match/1", 
+          href: "www.example.com/calf/56/match/1", 
           rel: "self"
         }, 
         {
-          href: "www.example.com/animal-genome/parentage-matching/5/calf/56/match/1/confirm", 
+          href: "www.example.com/calf/56/match/1/confirm", 
           rel: "confirm-match"
         }
       ]

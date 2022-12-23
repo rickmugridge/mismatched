@@ -15,6 +15,7 @@ describe("obj.match:", () => {
         assertThat(actual.hasOwnProperty('f')).is(true)
         assertThat(actual.hasOwnProperty('g')).is(false)
     });
+
     describe("assertThat():", () => {
         describe('matches', () => {
             it('with implicit matchers', () => {

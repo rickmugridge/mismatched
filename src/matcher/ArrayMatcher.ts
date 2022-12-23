@@ -6,9 +6,9 @@ import {arrayDiff} from "../diff/arrayDiff";
 import {ofType} from "../ofType";
 
 export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
-    private constructor(private matchers: Array<DiffMatcher<T>>) {
+    private constructor(private elementMatchers: Array<DiffMatcher<T>>) {
         super();
-        this.complexity = DiffMatcher.andComplexity(matchers)
+        this.complexity = DiffMatcher.andComplexity(elementMatchers)
     }
 
     static make<T>(expected: Array<DiffMatcher<T> | any>): any {
@@ -20,10 +20,10 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
             mismatched.push(Mismatched.makeExpectedMessage(context, actual, "array expected"));
             return MatchResult.wasExpected(actual, this.describe(), 1, 0);
         }
-        if (actual.length ===0 && this.matchers.length === 0) {
+        if (actual.length ===0 && this.elementMatchers.length === 0) {
             return new MatchResult(undefined, 1, 1);
         }
-        const pairs = arrayDiff(this.matchers, actual)
+        const pairs = arrayDiff(this.elementMatchers, actual)
         let compares = 0;
         let matches = 0;
         const results = pairs.map((pair) => {
@@ -52,6 +52,6 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
     }
 
     describe(): any {
-        return this.matchers.map(e => e.describe());
+        return this.elementMatchers.map(e => e.describe());
     }
 }

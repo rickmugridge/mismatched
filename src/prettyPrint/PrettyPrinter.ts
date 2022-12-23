@@ -2,14 +2,13 @@ import {ofType} from "../ofType";
 import {Appender} from "./Appender";
 import {SelfReferenceChecker} from "./SelfReferenceChecker";
 import {PropertyName} from "./PropertyName";
-import {isUndefined} from "util";
 import {Tile} from "./tile/Tile";
 import {SimpleTile} from "./tile/SimpleTile";
 import {ArrayTile} from "./tile/ArrayTile";
 import {PseudoCallTile} from "./tile/PseudoCallTile";
 import {FieldTile, ObjectTile} from "./tile/ObjectTile";
 import {DiffMatcher} from "../matcher/DiffMatcher";
-import {ObjectMatcher} from "../matcher/ObjectMatcher";
+import {allKeys} from "../allKeys";
 
 export const defaultLineWidth = 80;
 export const defaultMaxComplexity = 30;
@@ -44,7 +43,7 @@ export class PrettyPrinter {
     static isMock(value: any): boolean {
         return ofType.isFunction(value) &&
             PrettyPrinter.symbolForMockName &&
-            !isUndefined(value[PrettyPrinter.symbolForMockName]);
+            !ofType.isUndefined(value[PrettyPrinter.symbolForMockName]);
     }
 
     static logToConsole(value: any) {
@@ -166,7 +165,7 @@ export class PrettyPrinter {
                 return new SimpleTile(PrettyPrinter.customPrettyPrinters.get(matcher)!(value));
             }
             const fields = this.selfReference.recurse(context, value, () => {
-                    let keys = ObjectMatcher.allKeys(value);
+                    let keys = allKeys(value);
                     if (keys.length > this.maxTilesCount - this.tilesCount) {
                         return [new FieldTile("note", new SimpleTile("... ********* this object has been truncated *********"))];
                     }

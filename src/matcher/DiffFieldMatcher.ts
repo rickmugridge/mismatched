@@ -4,7 +4,7 @@ import {MatchResult} from "../MatchResult";
 import {matchMaker} from "../matchMaker/matchMaker";
 import {ObjectKeyMatcher} from "./ObjectKeyMatcher";
 import {BindMatcher} from "./BindMatcher";
-import {ObjectMatcher} from "./ObjectMatcher";
+import {allKeys} from "../allKeys";
 
 export class DiffFieldMatcher<T> extends DiffMatcher<T> {
     private constructor(public fieldName: string | symbol, private matcher: DiffMatcher<T>) {
@@ -33,6 +33,6 @@ export class DiffFieldMatcher<T> extends DiffMatcher<T> {
     }
 
     static makeAll<T>(obj: object): Array<DiffFieldMatcher<T>> {
-        return ObjectMatcher.allKeys(obj).map(key => new DiffFieldMatcher(key, matchMaker(obj[key])));
+        return allKeys(obj).map(key => new DiffFieldMatcher(key, matchMaker(obj[key])));
     }
 }

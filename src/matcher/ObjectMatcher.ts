@@ -3,11 +3,12 @@ import {ofType} from "../ofType";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
 import {DiffFieldMatcher} from "./DiffFieldMatcher";
+import {allKeys} from "../allKeys";
 
 export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
-    private constructor(private expectedObject: object, private matchers: Array<DiffFieldMatcher<T>>) {
+    private constructor(private expectedObject: object, private fieldMatchers: Array<DiffFieldMatcher<T>>) {
         super();
-        this.complexity = DiffMatcher.andComplexity(matchers)
+        this.complexity = DiffMatcher.andComplexity(fieldMatchers)
     }
 
     static make<T extends object>(obj: object): any {
@@ -22,19 +23,19 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
         if (this.expectedObject === actual) {
             return MatchResult.good(1, true);
         }
-        const results = {};
+        const diff = {};
         let errors = 0;
         let compares = 0;
         let matches = 0;
         let matchedObjectKey = false
-        const keyMatchers = this.matchers.filter(m => m.isKey());
+        const keyMatchers = this.fieldMatchers.filter(m => m.isKey());
         if (keyMatchers.length > 0) {
             keyMatchers.forEach(e => {
                 const result = e.mismatches(context, mismatched, actual);
                 if (result.passed()) {
-                    results[e.fieldName] = actual[e.fieldName];
+                    diff[e.fieldName] = actual[e.fieldName];
                 } else {
-                    results[e.fieldName] = result.diff;
+                    diff[e.fieldName] = result.diff;
                     errors += 10;
                 }
                 compares += result.compares;
@@ -44,13 +45,13 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
                 matchedObjectKey = true
             }
         }
-        const nonKeyMatchers = this.matchers.filter(m => !m.isKey());
+        const nonKeyMatchers = this.fieldMatchers.filter(m => !m.isKey());
         nonKeyMatchers.forEach(e => {
             const result = e.mismatches(context, mismatched, actual);
             if (result.passed()) {
-                results[e.fieldName] = actual[e.fieldName];
+                diff[e.fieldName] = actual[e.fieldName];
             } else {
-                results[e.fieldName] = result.diff;
+                diff[e.fieldName] = result.diff;
                 errors += 1;
             }
             compares += result.compares;
@@ -58,9 +59,9 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
         });
         const unexpected: any = {};
         let wasUnexpected = false;
-        ObjectMatcher.allKeys(actual).forEach(key => {
+        allKeys(actual).forEach(key => {
             // Careful, as an actual field may have an explicit value of undefined:
-            if (actual[key] !== undefined && !results.hasOwnProperty(key)) {
+            if (actual[key] !== undefined && !diff.hasOwnProperty(key)) {
                 unexpected[key] = actual[key];
                 errors += 1;
                 compares += 1;
@@ -70,16 +71,16 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
         compares = compares === 0 ? 1 : compares
         if (wasUnexpected) {
             mismatched.push(Mismatched.makeUnexpectedMessage(context, actual, unexpected));
-            results[MatchResult.unexpected] = unexpected;
+            diff[MatchResult.unexpected] = unexpected;
         }
         if (errors === 0) {
             return MatchResult.good(compares, matchedObjectKey);
         }
-        return new MatchResult(results, compares, matches, matchedObjectKey);
+        return new MatchResult(diff, compares, matches, matchedObjectKey);
     }
 
     describe(): any {
-        return concatObjects(this.matchers.map(e => e.describe()));
+        return concatObjects(this.fieldMatchers.map(e => e.describe()));
     }
 
     static allKeys(actual: object): (string | symbol)[] {
@@ -90,6 +91,6 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
 
 export function concatObjects(objects: Array<object>): object {
     const result = {};
-    objects.forEach(o => ObjectMatcher.allKeys(o).forEach(key => result[key] = o[key]));
+    objects.forEach(o => allKeys(o).forEach(key => result[key] = o[key]));
     return result;
 }
