@@ -294,7 +294,7 @@ export function concatObjects(objects: Array<object>): object {
 
 We also need to lay out the result nicely. But `JSON.stringify()`:
 
-* Doesn't handle symbol filed names, etc
+* Doesn't handle symbol field names, etc
 * Without formatting - is hard to read with non-trivial objects, etc.
 * With formatting - array and object layout can be too wide (too much detail) or too long (too much scrolling).
 

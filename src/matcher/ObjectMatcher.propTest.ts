@@ -1,8 +1,6 @@
 import * as fc from "fast-check";
 import {assertThat} from "../assertThat";
-import {match} from "../match";
 import {anyJavascriptValue} from "./AnyMatcher.propTest";
-import {PrettyPrinter} from "../prettyPrint/PrettyPrinter";
 
 describe("object.match property tests:", () => {
     it('always matches same structure', () => {
@@ -31,6 +29,7 @@ describe("object.match property tests:", () => {
                 let expected = {[Symbol()]: Symbol()};
                 assertThat(value).isNot(expected)
                 assertThat(value).isNot({...value, [Symbol()]: Symbol()})
+                assertThat({...value, [Symbol()]: Symbol()}).isNot(value)
                 }
             ))
     })

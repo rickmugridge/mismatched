@@ -10,8 +10,14 @@ This can be used:
 
 For latest changes, see [What is New](./WhatIsNew.md).
 
-Also see: [FAQ](./FAQ.md), [assertThat()](./ASSERTTHAT.md), [validateThat()](./ValidateThat.md), 
-[matchers](./MATCHERS.md), [PrettyPrinter](./PRETTYPRINTER.md), [Diff Tree](./DIFFTREE.md).
+Also see: 
+  * [FAQ](./FAQ.md)
+  * [assertThat()](./ASSERTTHAT.md)
+  * [validateThat()](./ValidateThat.md)
+  * [matchers](./MATCHERS.md)
+  * [PrettyPrinter](./PRETTYPRINTER.md)
+  * [Diff Tree](./DIFFTREE.md)
+  * [How Mismatch Works](./HowItWorks.md)
 
 ## Example Assertions
 
@@ -110,3 +116,5 @@ There are also property tests. To run:
 ```
    npm run prop-test
 ```
+
+See [Testing Mismatched with Property Tests](./TestingMismatchedWithPropertyTests.md) for further details.

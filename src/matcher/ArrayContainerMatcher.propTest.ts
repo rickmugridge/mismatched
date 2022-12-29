@@ -3,8 +3,8 @@ import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {anyJavascriptValue} from "./AnyMatcher.propTest";
 
-describe("array.contains property tests:", () => {
-    it('match.contains() always matches with any element of the array', () => {
+describe("match.array.contains property tests:", () => {
+    it('match.array.contains() always matches with any element of the array', () => {
         fc.assert(
             fc.property(fc.array(anyJavascriptValue()).filter(a => a.length > 0), value => {
                 const index = randomInt(0, value.length - 1)
@@ -12,7 +12,7 @@ describe("array.contains property tests:", () => {
             }))
     })
 
-    it('match.contains() never matches with a non-element', () => {
+    it('match.array.contains() never matches with a non-element', () => {
         fc.assert(
             fc.property(fc.array(anyJavascriptValue()), value =>
                 assertThat(value).isNot(match.array.contains(Symbol()))))
