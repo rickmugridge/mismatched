@@ -10,7 +10,7 @@ For example, we can use property tests to verify that:
   * A string created by concatenating strings A and B will have A at the start, B at the end, and A/B within it
   * Encoding a value, such as to JSON, and then decoding it will give the same result (with restrictions on the JS values - eg, symbols and functions are not allowed)
   * The result of an efficient algorithm is the same as the result of a equivalent simple but slow algorithm
-  * A validately-generated value of some type satisfies the validation code for that type, whereas an invalid value will not
+  * A validly-generated value of some type satisfies the validation code for that type, whereas an invalid value will not
 
 When a property test fails, the framework tries to simplify the example to make it easier to see what went wrong.
 
