@@ -19,7 +19,7 @@ Also see:
   * [Diff Tree](./DIFFTREE.md)
   * [How Mismatch Works](./HowItWorks.md)
 
-## Example Assertions
+## Example Assertions:
 
 Here's a few simple examples of assertions (all these examples are in the `examples` directory here:
 
