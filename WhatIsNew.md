@@ -1,4 +1,10 @@
-# What is New (since Jan 2021)
+# What is New (since Dec 2023)
+
+## 7 December 2023
+
+* Changes to match.mappedMatcher:
+  * Changed error message when fails - now shows the mapped value rather than the original
+  * Now catches any exceptions thrown in the provided map() function and gives suitable error
 
 ## 17 December 2021
 

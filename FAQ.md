@@ -76,9 +76,11 @@ Use one of the following:
  * `match.array.unorderedContains()`
  * `match.aSet.subset()`
 
-## How to check when a larger returned object contains a field that holds the JSON from some object?
+## How to check some fields of JSON, or when a larger returned object contains a field that holds the JSON from some object?
 
-It can't match the JSON directly, because the id of that object was auto-generated.
+It can't match the JSON directly, for reasons such as:
+ * The id of that object was auto-generated;
+ * The JSON ordering may change
 So it's difficult to match it within the JSON string without a messy regExp, which is confusing.
 What's a better way of doing that?
 

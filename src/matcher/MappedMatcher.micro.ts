@@ -14,9 +14,20 @@ describe("MappedMatcher()", () => {
         });
 
         it("mismatches", () => {
-            assertThat(3).failsWith(matcher,
+            assertThat({m: 3}).failsWith(matcher,
                 {
                     [MatchResult.was]: 3,
+                    [MatchResult.expected]: {mapped: {description: {extract: "m"}, matcher: 2}}
+                });
+        });
+
+        it("mismatches due to thrown exception in map()", () => {
+            const matcher = match.mapped(a => {
+                throw new Error('err')
+            }, 2, {extract: "m"});
+            assertThat({m: 3}).failsWith(matcher,
+                {
+                    [MatchResult.was]: "mapping failed: err",
                     [MatchResult.expected]: {mapped: {description: {extract: "m"}, matcher: 2}}
                 });
         });
@@ -31,9 +42,9 @@ describe("MappedMatcher()", () => {
 
         it("Handles a string mapped", () => {
             const actual = {
-                detail: JSON.stringify({f:[0]})
+                detail: JSON.stringify({f: [0]})
             }
-            assertThat(actual).is({detail: match.mapped(JSON.parse, {f:[0]},'json')})
+            assertThat(actual).is({detail: match.mapped(JSON.parse, {f: [0]}, 'json')})
         });
     });
 
