@@ -2,7 +2,7 @@
 
 ## 19 December 2023
 
- * Improved display when `match.array.every()` fails to match
+ * Improved error message when `match.array.every()` fails to match
 
 ## 18 December 2023
 
