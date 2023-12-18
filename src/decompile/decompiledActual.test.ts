@@ -32,7 +32,6 @@ describe("decompile()", () => {
         }
 
         const two = 2;
-        const a1 = 'A1';
         const a2 = [two];
         const aa = [1, a2]
         const dee = "d";

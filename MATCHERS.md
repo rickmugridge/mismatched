@@ -121,6 +121,11 @@ String matching:
 * `match.string.startsWith()` matches the start of a string
 * `match.string.endsWith()` matches the end of a string
 * `match.string.includes()` matches a substring
+* `match.asDate()` parses the string into a Data and matched against that
+* `match.asSplit()` splits a string based on a given separator and matches that
+* `match.asNumber()` parses a string as a number and matches that
+* `match.asDecimal()` parses a string as a number and matches that
+* `match.fromJson()` JSON parses a string as a value and matches that
 
 See [String Matchers](./StringMatchers.md) for further details.
 
@@ -158,6 +163,25 @@ For example:
         assertThat("ab").is(match.regEx.match(/a./));
         assertThat("ab").is(match.regEx.match(/ab/));
     });
+```
+
+### Date Matcher
+
+A matcher of Dates.
+
+ * `match.date.before` matches an actual Date if it is before an expected one
+ * `match.date.after` matches an actual Date if it is after an expected one
+
+These are based purely on the relative ordering of their Date.getTime() value.
+The usual caveats apply to Dates.
+
+Eg:
+```
+        it('matches', () => {
+            assertThat(date).is(date)
+            assertThat(date).is(match.date.before(later))
+            assertThat(later).is(match.date.after(date))
+         })
 ```
 
 ### Any Matcher

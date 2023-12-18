@@ -7,7 +7,7 @@ import {validateThat} from "../validateThat";
 
 describe("MappedMatcher()", () => {
     describe("assertThat():", () => {
-        const matcher = match.mapped(a => a.m, 2, {extract: "m"});
+        const matcher = match.mapped((a: { m: number }) => a.m, 2, {extract: "m"});
 
         it("matches", () => {
             assertThat({m: 2}).is(matcher);
@@ -22,7 +22,7 @@ describe("MappedMatcher()", () => {
         });
 
         it("mismatches due to thrown exception in map()", () => {
-            const matcher = match.mapped(a => {
+            const matcher = match.mapped(() => {
                 throw new Error('err')
             }, 2, {extract: "m"});
             assertThat({m: 3}).failsWith(matcher,
@@ -49,7 +49,7 @@ describe("MappedMatcher()", () => {
     });
 
     describe("validateThat():", () => {
-        const matcher = match.mapped(a => a.m, match.ofType.number(), {extract: "m"});
+        const matcher = match.mapped((a: {m:number}) => a.m, match.ofType.number(), {extract: "m"});
         it("succeeds", () => {
             const validation = validateThat({m: 2}).satisfies(matcher);
             assertThat(validation.passed()).is(true);

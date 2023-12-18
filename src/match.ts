@@ -28,6 +28,7 @@ import {DescribeContextMatcher} from "./matcher/DescribeContextMatcher";
 import {UnorderedArrayMatcher} from "./matcher/UnorderedArrayMatcher";
 import {decompiledActual} from "./decompile/decompileActual";
 import {ObjectKeyMatcher} from "./matcher/ObjectKeyMatcher";
+import {dateMatcher} from "./matcher/DateMatcher";
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -53,7 +54,12 @@ export const match = {
         match: (expected: string | RegExp) => stringMatcher.match(expected),
         startsWith: (expected: string) => stringMatcher.startsWith(expected),
         endsWith: (expected: string) => stringMatcher.endsWith(expected),
-        includes: (expected: string) => stringMatcher.includes(expected)
+        includes: (expected: string) => stringMatcher.includes(expected),
+        asDate: (matcher: Date | any) => stringMatcher.asDate(matcher),
+        asSplit: (separator: string, expected: string[] | any) => stringMatcher.asSplit(separator, expected),
+        asNumber: (expected: number | any) => stringMatcher.asNumber(expected),
+        asDecimal: (places: number, expected: number | any) => stringMatcher.asDecimal(places, expected),
+        fromJson: (expected: any) => stringMatcher.fromJson(expected),
     },
     uuid: () => stringMatcher.uuid(),
     number: {
@@ -66,6 +72,10 @@ export const match = {
     },
     regEx: {
         match: (expected: RegExp) => RegExpMatcher.make(expected)
+    },
+    date: {
+        before: (expected: Date) => dateMatcher.before(expected),
+        after: (expected: Date) => dateMatcher.after(expected),
     },
     any: () => AnyMatcher.make(),
     anyOf: (matchers: Array<DiffMatcher<any> | any>) => AnyOfMatcher.make(matchers),
@@ -83,12 +93,12 @@ export const match = {
         boolean: () => PredicateMatcher.make(ofType.isBoolean, "ofType.boolean"),
         regExp: () => PredicateMatcher.make(ofType.isRegExp, "ofType.regExp"),
         symbol: () => PredicateMatcher.make(ofType.isSymbol, "ofType.symbol"),
-        enum: (enumeration: any, enumName: string='enum') => match.predicate(v => !!Object.values(enumeration).find(e => e === v),enumName)
+        enum: (enumeration: any, enumName: string = 'enum') => match.predicate(v => !!Object.values(enumeration).find(e => e === v), enumName)
     },
     predicate: (predicate: (v: any) => boolean,
                 description: any = {predicateFailed: PrettyPrinter.functionDetails(predicate)}) =>
         PredicateMatcher.make(predicate, description),
-    mapped: (map: (t: any) => any, matcher: DiffMatcher<any> | any, description: any) =>
+    mapped: <T, U>(map: (t: T) => U, matcher: DiffMatcher<U> | any, description: any) =>
         MappedMatcher.make(map, matcher, description),
     bind: (matcher?: DiffMatcher<any> | any) => BindMatcher.make(matcher),
     describeContext: (describeContext: (outerContext: string, actual: any) => string, matcher: DiffMatcher<any> | any) =>

@@ -9,6 +9,7 @@ import {PrettyPrinter} from "../index";
 import {AnyMatcher} from "../matcher/AnyMatcher";
 import {PredicateMatcher} from "../matcher/PredicateMatcher";
 import {CustomiseMismatcher} from "./CustomiseMismatcher";
+import {DateMatcher} from "../matcher/DateMatcher";
 
 describe("matchMaker():", () => {
     const isEqualsMatcher = match.instanceOf(IsEqualsMatcher);
@@ -43,7 +44,7 @@ describe("matchMaker():", () => {
     });
 
     it("lambda", () => {
-        assertThat(matchMaker((a, b) => 3)).is(match.instanceOf((AnyMatcher)));
+        assertThat(matchMaker(() => 3)).is(match.instanceOf((AnyMatcher)));
     });
 
     it("registered matcher", () => {
@@ -62,13 +63,17 @@ describe("matchMaker():", () => {
         assertThat(matchMaker(new Hide(1, 2, 3))).is(match.instanceOf(PredicateMatcher));
     });
 
+    it("Date", () => {
+        assertThat(matchMaker(new Date())).is(match.instanceOf(DateMatcher));
+    });
+
     describe("object", () => {
         it("anonymous class", () => {
             assertThat(matchMaker({a: 3})).is(match.instanceOf(ObjectMatcher));
         });
 
         it("known class", () => {
-            assertThat(matchMaker(new Date())).is(match.instanceOf(ObjectMatcher));
+            assertThat(matchMaker({a: 1})).is(match.instanceOf(ObjectMatcher));
         });
     });
 
@@ -80,7 +85,7 @@ describe("matchMaker():", () => {
         const pseudoMockSymbol = Symbol("pseudoMock");
         PrettyPrinter.make(80, 10, 100, pseudoMockSymbol); // register it
         const mock = new Proxy(() => 3, {
-            get: (target, propKey: symbol, receiver) => {
+            get: (_target, propKey: symbol, _receiver) => {
                 if (propKey === PrettyPrinter.symbolForMockName) {
                     return () => ({mock: "mockName"});
                 }

@@ -3,14 +3,14 @@ import {MatchResult} from "../MatchResult";
 import {matchMaker} from "../matchMaker/matchMaker";
 import {Mismatched} from "./Mismatched";
 
-export class MappedMatcher<T> extends DiffMatcher<T> {
-    private constructor(private map: (t: any) => T,
-                        private matcher: DiffMatcher<T> | any,
+export class MappedMatcher<T, U> extends DiffMatcher<T> {
+    private constructor(private map: (t: T) => U,
+                        private matcher: DiffMatcher<U> | any,
                         private description: any) {
         super();
     }
 
-    static make<T>(map: (t: any) => T, matcher: DiffMatcher<T> | any, description: any): any {
+    static make<T, U>(map: (t: T) => U, matcher: DiffMatcher<U> | any, description: any): any {
         return new MappedMatcher(map, matchMaker(matcher), description);
     }
 

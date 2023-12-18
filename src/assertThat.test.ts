@@ -120,7 +120,6 @@ describe("assertThat():", () => {
             assertThat(() => {
                 throw new Error("error");
             }).throwsError(match.string.startsWith("e"));
-            const matcher = match.string.startsWith("e");
         });
 
         it("Matches start", () => {

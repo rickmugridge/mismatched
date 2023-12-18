@@ -1,10 +1,32 @@
 # What is New (since Dec 2023)
 
+## 18 December 2023
+
+* Date:
+    * Addition of DateMatcher, which matches Dates properly (given that Date, along with Error, is a weird object)
+    * Added `match.date.before()`, which checks that the actual Date is before the expected Date
+    * Added `match.date.after()`, which checks that the actual Date is after the expected Date
+
+* String
+    * Added `match.string.asDate()` that parses the actual string and checks it against the expected Date (or matcher)
+    * Added `match.string.asSplit()` that splits the actual string based on a separator, and checks the resulting
+      string[] against the expected array (or matcher)
+    * Added `match.string.asNumber()` that parses the actual string as a number, and checks the resulting number against
+      the expected number (or matcher)
+    * Added `match.string.asDecimal()` that parses the actual string as a number, requiring the specified decimal
+      places, and checks the resulting number against the expected number (or matcher)
+    * Added `match.string.fromJson()` that JSON.parses the actual string and checks it against the expected value (or
+      matcher)
+
+* Added a generic argument to `match.mapped()` for the result type from the mapping function
+
+* Renamed all tests as *.test.ts instead of *.micro.ts
+
 ## 7 December 2023
 
 * Changes to match.mappedMatcher:
-  * Changed error message when fails - now shows the mapped value rather than the original
-  * Now catches any exceptions thrown in the provided map() function and gives suitable error
+    * Changed error message when fails - now shows the mapped value rather than the original
+    * Now catches any exceptions thrown in the provided map() function and gives suitable error
 
 ## 17 December 2021
 
@@ -22,22 +44,25 @@
 
 ## 31 October 2021
 
-* Extended the [FAQ](./FAQ.md) considerably, including [Custom Matchers](./CustomMatchers.md)and [DecompiledActual](./DecompiledActual.md)
+* Extended the [FAQ](./FAQ.md) considerably, including [Custom Matchers](./CustomMatchers.md)
+  and [DecompiledActual](./DecompiledActual.md)
 * Added  [MismatchedAtWork](./MismatchedAtWork.md)
 * Revised the algorithms for matching arrays:
-  * Used fast-diff for all matching
+    * Used fast-diff for all matching
 * Revised the algorithms for matching sets and unordered arrays (bags):
-  * Used a new algorithm, based on the "complexity" of the matchers, which aims to measure how constrained a matcher is.
-  * The matchers are tried from most constrained to least, to try and find the best overall match
+    * Used a new algorithm, based on the "complexity" of the matchers, which aims to measure how constrained a matcher
+      is.
+    * The matchers are tried from most constrained to least, to try and find the best overall match
 * For both of these algorithm changes:
-  * Takes account of `match.object.keys()` in matching. If the key matches:
-    * The whole is considered to matched (even if there are other differences)
-    * Those differences are displayed in the final result
-  * Now a `match.bind()` only binds once the actual/expected have been matched up
+    * Takes account of `match.object.keys()` in matching. If the key matches:
+        * The whole is considered to matched (even if there are other differences)
+        * Those differences are displayed in the final result
+    * Now a `match.bind()` only binds once the actual/expected have been matched up
 
 ## 5 June 2021
 
-* Added `match.object.key()` to improve diffs and to narrow down `validateThat` errors when matching subtypes with `match.anyOf()`.
+* Added `match.object.key()` to improve diffs and to narrow down `validateThat` errors when matching subtypes
+  with `match.anyOf()`.
 * See `anyOf()` in [MATCHERS](./MATCHERS.md)
 
 ## 26 April 2021

@@ -13,6 +13,7 @@ import {CustomiseMismatcher} from "./CustomiseMismatcher";
 import {SetMatcher} from "../matcher/SetMatcher";
 import {Mismatched} from "../matcher/Mismatched";
 import {MatchResult} from "../MatchResult";
+import {DateMatcher} from "../matcher/DateMatcher";
 
 let level = 0
 const references: Set<any> = new Set()
@@ -71,6 +72,9 @@ export function matchMaker(expected: DiffMatcher<any> | any): DiffMatcher<any> {
         }
         if (ofType.isMap(expected)) {
             return SetMatcher.make(expected);
+        }
+       if (ofType.isDate(expected)) {
+            return DateMatcher.make(expected);
         }
         if (ofType.isObject(expected)) {
             const matcher = CustomiseMismatcher.customMatcherWhenToUses

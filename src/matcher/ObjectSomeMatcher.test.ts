@@ -1,7 +1,6 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
-import {DiffFieldMatcher} from "./DiffFieldMatcher";
 import {validateThat} from "../validateThat";
 
 describe("obj.some:", () => {
@@ -9,8 +8,6 @@ describe("obj.some:", () => {
         describe('matches', () => {
             it('with explicit field matchers', () => {
                 const actual = {f: 2, g: 3, h: 4};
-                let fieldMatcher1 = DiffFieldMatcher.make("f", 2);
-                let fieldMatcher2 = DiffFieldMatcher.make("g", 3);
                 assertThat(actual).is(match.obj.has({f: 2, g: 3}));
             });
 

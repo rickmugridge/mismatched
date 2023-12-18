@@ -1,82 +1,31 @@
-function isUndefined(v: any): v is undefined {
-    return typeof v === "undefined";
-}
+const isUndefined = (v: any): v is undefined => typeof v === "undefined"
 
-function isDefined<T>(v: T | undefined): v is T {
-    return !isUndefined(v)
-}
+const isObject = (v: any): v is object =>
+    v !== null && !isArray(v) && typeof v === "object" && !(v instanceof RegExp)
 
-function isNull(v: any): v is null {
-    return v === null;
-}
+const isArray = (v: any): v is any[] => Array.isArray(v)
 
-function isObject(v: any): v is object {
-    return v !== null && !isArray(v) && typeof v === "object" && !(v instanceof RegExp);
-}
+const isFunction = (v: any): boolean => typeof v === "function"
 
-function isArray(v: any): v is any[] {
-    return Array.isArray(v);
-}
-
-function isFunction(v: any): boolean {
-    return typeof v === "function";
-}
-
-function isSet(v: any): v is Set<any> {
-    return v instanceof Set;
-}
-
-function isMap(v: any): v is Map<any, any> {
-    return v instanceof Map;
-}
-
-function isString(v: any): v is string {
-    return typeof v === 'string' || v instanceof String;
-}
-
-function isNumber(v: any): v is number {
-    return typeof v === 'number'; // && isFinite(value);
-}
-
-function isNaN(v: any): boolean {
-    return v != v; // Avoid weird JS coercing that make isNaN() and Number.isNaN() unreliable
-}
-
-function isBoolean(v: any): v is boolean {
-    return typeof v === 'boolean';
-}
-
-function isRegExp(v: any): v is RegExp {
-    return v instanceof RegExp;
-}
-
-function isSymbol(v: any): v is symbol {
-    return typeof v === 'symbol';
-}
-
-function isMatcher(v: any): boolean {
-    return isObject(v) && !isUndefined((v as any).matches) && isFunction((v as any).matches);
-}
-
-function isError(v: any): v is Error {
-    return v instanceof Error;
-}
+let isNaN = (v: any): boolean => v != v // Avoid weird JS coercing that make isNaN() and Number.isNaN() unreliable
 
 export const ofType = {
     isArray,
-    isSet,
-    isMap,
-    isBoolean,
-    isError,
+    isSet: (v: any): v is Set<any> => v instanceof Set,
+    isMap: (v: any): v is Map<any, any> => v instanceof Map,
+    isBoolean: (v: any): v is boolean => typeof v === 'boolean',
+    isError: (v: any): v is Error => v instanceof Error,
     isFunction,
-    isMatcher,
-    isNaN,
-    isNumber,
-    isNull,
+    isMatcher: (v: any): boolean =>
+        isObject(v) && !isUndefined((v as any).matches) && isFunction((v as any).matches),
+    isNaN: isNaN,
+    isNumber: (v: any): v is number => typeof v === 'number',// && isFinite(value);
+    isNull: (v: any): v is null => v === null,
     isObject,
-    isRegExp,
-    isString,
-    isSymbol,
+    isRegExp: (v: any): v is RegExp => v instanceof RegExp,
+    isString: (v: any): v is string => typeof v === 'string' || v instanceof String,
+    isSymbol: (v: any): v is symbol => typeof v === 'symbol',
     isUndefined,
-    isDefined
-};
+    isDefined: <T>(v: T | undefined): v is T => !isUndefined(v),
+    isDate: (v: any): v is Date => v instanceof Date && !isNaN(v.getTime()),
+}

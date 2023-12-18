@@ -123,7 +123,7 @@ Yes, see [ValidateThat](./ValidateThat.md)
 
 There is a large, comprehensive set of tests. 
 These use `mismatched` itself (with care!). Many verify that failing tests produce the correct diffs.
-See `SetMatcher.micro.ts`, for example.
+See `SetMatcher.test.ts`, for example.
 
 # How does `mismatched` work?
 

@@ -1,6 +1,6 @@
 {
   "name": "mismatched",
-  "version": "2.12.0",
+  "version": "2.13.0",
   "description": "A composable matching/assertion/validation framework in Typescript that displays mismatches as diff trees",
   "author": {
     "name": "Rick Mugridge",
@@ -26,7 +26,7 @@
     "clean": "rimraf dist/**",
     "compile": "tsc -p .",
     "test": "npm run clean && npm run compile && npm run retest:micro",
-    "retest:micro": "mocha --exit \"./dist/src/**/*.micro.js\"",
+    "retest:micro": "mocha --exit \"./dist/src/**/*.test.js\"",
     "prop-test": "npm run clean && npm run compile && npm run retest:prop",
     "retest:prop": "mocha --exit \"./dist/src/**/*.propTest.js\"",
     "publishIt": "npm login && npm publish"

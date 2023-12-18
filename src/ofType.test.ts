@@ -92,7 +92,7 @@ describe("ofType:", () => {
     describe("isFunction", () => {
         it("is so", () => {
             expect(ofType.isFunction(() => 4), true);
-            expect(ofType.isFunction((i, j) => 1), true);
+            expect(ofType.isFunction(() => 1), true);
         });
         it("is not so", () => {
             expect(ofType.isFunction(undefined), false);

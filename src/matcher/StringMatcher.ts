@@ -6,6 +6,8 @@ import {Mismatched} from "./Mismatched";
 import {RegExpMatcher} from "./RegExpMatcher";
 import {stringDiff} from "../diff/StringDiff";
 import {PatchItem} from "fast-array-diff/dist/diff/patch";
+import {MappedMatcher} from "./MappedMatcher";
+import {matchMaker} from "../matchMaker/matchMaker";
 
 const minimum = 5
 
@@ -55,18 +57,44 @@ export const stringMatcher = {
     match: (expected: string | RegExp) =>
         ofType.isString(expected) ? StringMatcher.make(expected as string) : RegExpMatcher.make(expected as RegExp),
     startsWith: (expected: string) => PredicateMatcher.make(value =>
-        ofType.isString(value) && value.startsWith(expected),
-        {"string.startsWith": expected}),
+        ofType.isString(value) && value.startsWith(expected), {"match.string.startsWith": expected}),
     endsWith: (expected: string) => PredicateMatcher.make(value =>
-        ofType.isString(value) && value.endsWith(expected),
-        {"string.endsWith": expected}),
+        ofType.isString(value) && value.endsWith(expected), {"match.string.endsWith": expected}),
     includes: (expected: string) => PredicateMatcher.make(value =>
-        ofType.isString(value) && value.includes(expected),
-        {"string.includes": expected}),
+        ofType.isString(value) && value.includes(expected), {"match.string.includes": expected}),
     uuid: () => PredicateMatcher.make(value =>
-        ofType.isString(value) && value.match(uuidRegExp) !== null,
-        "uuid"),
-};
+        ofType.isString(value) && value.match(uuidRegExp) !== null, "match.uuid"),
+    asDate: (expected: Date | any) => {
+        const matcher = matchMaker(expected)
+        return MappedMatcher.make<string, Date>(
+            (actual: string): Date => new Date(actual), matcher,
+            "match.string.asDate")
+    },
+    asSplit: (separator: string, expected: string[] | any) => {
+        const matcher = matchMaker(expected)
+        return MappedMatcher.make<string, string[]>(
+            (actual: string): string[] => actual.split(separator), matcher,
+            `match.split('${separator}')`)
+    },
+    asNumber: (expected: number | any) => {
+        const matcher = matchMaker(expected)
+        return MappedMatcher.make<string, number>(
+            (actual: string): number => Number(actual),
+            matcher, "match.string.asNumber")
+    },
+    asDecimal: (places: number, expected: number | any) => {
+        const matcher = matchMaker(expected)
+        return MappedMatcher.make<string, number>(
+            (actual: string): number =>
+                actual.split(".").length == places ? Number(actual) : NaN,
+            matcher, `match.string.asDecimal(${places})`)
+    },
+    fromJson: (expected: any) => {
+        const matcher = matchMaker(expected)
+        return MappedMatcher.make<string, any>(
+            (actual: string): any => JSON.parse(actual), matcher, "fromJson")
+    },
+}
 
 const matchRating = (length: number, totalLength: number) =>
     length > 0 ? (length - totalLength) / (length * 2) : 0

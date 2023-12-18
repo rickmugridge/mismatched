@@ -21,3 +21,15 @@ What's a better way of doing that?
 1. A function that maps the actual value to some other, more convenient form. In this case JSON.parse().
 1. An object or a match matcher, which is used to match the result of the mapping function.
 1. A description of the overall match, used when it fails.
+
+* Note that this can be more easily expressed using `match.string.fromJson()`:
+
+```
+        it("fromJson()", () => {
+            assertThat('{"m":1}').is(match.string.fromJson({m: 1}))
+        })
+```
+
+* For other examples of the use of this approach, see the following function definitions in
+the `stringMatcher` const in `StringMatch.ts`:
+  * `asDate`, `asSplit`, `asNumber`, `asDecimal`.  
