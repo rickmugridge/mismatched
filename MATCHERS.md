@@ -165,14 +165,14 @@ For example:
     });
 ```
 
-### Date Matcher
+### Date Matchers
 
 A matcher of Dates.
 
  * `match.date.before` matches an actual Date if it is before an expected one
  * `match.date.after` matches an actual Date if it is after an expected one
 
-These are based purely on the relative ordering of their Date.getTime() value.
+These are based purely on the relative ordering of their `Date.getTime()` value.
 The usual caveats apply to Dates.
 
 Eg:

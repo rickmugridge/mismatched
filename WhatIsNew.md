@@ -6,12 +6,12 @@
 
 ## 18 December 2023
 
-* Date:
+* Date (see [Matchers](./MATCHERS.md)):
     * Addition of DateMatcher, which matches Dates properly (given that Date, along with Error, is a weird object)
     * Added `match.date.before()`, which checks that the actual Date is before the expected Date
     * Added `match.date.after()`, which checks that the actual Date is after the expected Date
 
-* String
+* String (see [String Matchers](./StringMatchers.md)):
     * Added `match.string.asDate()` that parses the actual string and checks it against the expected Date (or matcher)
     * Added `match.string.asSplit()` that splits the actual string based on a separator, and checks the resulting
       string[] against the expected array (or matcher)
