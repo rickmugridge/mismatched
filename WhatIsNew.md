@@ -1,5 +1,9 @@
 # What is New (since Dec 2023)
 
+## 19 December 2023
+
+ * Improved display when `match.array.every()` fails to match
+
 ## 18 December 2023
 
 * Date:

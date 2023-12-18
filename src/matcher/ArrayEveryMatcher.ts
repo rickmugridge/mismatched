@@ -1,8 +1,8 @@
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {Mismatched} from "./Mismatched";
 import {MatchResult} from "../MatchResult";
-import {isArray} from "util";
 import {matchMaker} from "../matchMaker/matchMaker";
+import {ofType} from "../ofType";
 
 export class ArrayEveryMatcher<T> extends DiffMatcher<Array<T>> {
     private constructor(private expected: DiffMatcher<T>) {
@@ -11,12 +11,41 @@ export class ArrayEveryMatcher<T> extends DiffMatcher<Array<T>> {
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
-        if (isArray(actual)) {
+        if (ofType.isArray(actual)) {
+            if (actual.length === 0) {
+                return new MatchResult(undefined, 1, 1);
+            }
             let corrects = 0;
             let compares = 0;
             let matches = 0;
             let i = 0;
-            for (let a of actual) {
+            const results: any[] = []
+            for (const a of actual) {
+                const result = this.expected.mismatches(context.add("[" + i + "]"), mismatched, a);
+                // console.log({result, resultDiff: result.diff})
+                if (result.passed()) {
+                    corrects += 1;
+                    results.push(a)
+                } else {
+                    results.push(result.diff)
+                }
+                compares += result.compares;
+                matches += result.matchRate * result.compares;
+                i += 1;
+            }
+            return new MatchResult(results, compares, matches);
+        }
+        mismatched.push(Mismatched.makeExpectedMessage(context, actual, "array expected"));
+        return MatchResult.wasExpected(actual, this.describe(), 1, 0);
+    }
+
+    mismatches22(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
+        if (ofType.isArray(actual)) {
+            let corrects = 0;
+            let compares = 0;
+            let matches = 0;
+            let i = 0;
+            for (const a of actual) {
                 const result = this.expected.mismatches(context.add("[" + i + "]"), mismatched, a);
                 if (result.passed()) {
                     corrects += 1;

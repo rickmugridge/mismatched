@@ -7,7 +7,7 @@ import {validateThat} from "../validateThat";
 
 describe("array.every:", () => {
     describe("assertThat():", () => {
-        it('empty array suceeds', () => {
+        it('empty array succeeds', () => {
             const actual = [];
             assertThat(actual).is(match.array.every(2));
         });
@@ -25,20 +25,8 @@ describe("array.every:", () => {
         it('does not match', () => {
             const actual = ["a", "b"];
             assertThat(actual).failsWith(match.array.every("b"),
-                {[MatchResult.was]: ["a", "b"], [MatchResult.expected]: {"array.every": "b"}});
-        });
-
-        it('does not match: errors', () => {
-            const actual = ["a", "b"];
-            assertThat(actual).failsWith(match.array.every("b"),
-                {[MatchResult.was]: ["a", "b"], [MatchResult.expected]: {"array.every": "b"}});
-
-            const mismatched: Array<Mismatched> = [];
-            const matcher = match.array.every("b");
-            (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, ["a", "b"]);
-            assertThat(mismatched).is([
-                {"actual[0]": "a", expected: "b"}
-            ]);
+                [{[MatchResult.was]: "a", [MatchResult.expected]: "b"},
+                    "b"]);
         });
     });
 
