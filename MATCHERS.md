@@ -4,7 +4,7 @@ There are a range of matchers provided, and a simple means of adding your own.
 
 Matchers are responsible for matching against an actual value, and providing suitable feedback when they fail to match.
 
-The built-in ones are assessed via the constant `match`, for easy auto-completion. 
+The built-in ones are assessed via the constant `match`, for easy auto-completion.
 
 ## Equal Matchers
 
@@ -26,11 +26,11 @@ See [Equal Matchers](./EqualMatchers.md) for further details of structural and i
 
 ## Array Matchers
 
-The `array` matchers allow for "exact" and partial matching on an array. 
+The `array` matchers allow for "exact" and partial matching on an array.
 Embedded matchers may used within the array elements.
 
 We can match a literal array, as shown in the examples below.
-This  expects that each of the elements of the actual array can be matched by a corresponding matcher/literal.
+This expects that each of the elements of the actual array can be matched by a corresponding matcher/literal.
 
 For example:
 
@@ -45,12 +45,14 @@ For example:
         });
     });
 ```
+
 Other array matching:
- * `match.array.contains()`: Check a subset of the elements
- * `match.array.every()`: Each of the elements of the array have to satisfy these properties
- * `match.array.length()`: Match the length of the array only
- * `match.array.unordered()`: Allow for the array to be unordered (allows for duplicate entries)
- * `match.array.unorderedContains()`: Check a subset of an unordered array (allows for duplicate entries)
+
+* `match.array.contains()`: Check a subset of the elements
+* `match.array.every()`: Each of the elements of the array have to satisfy these properties
+* `match.array.length()`: Match the length of the array only
+* `match.array.unordered()`: Allow for the array to be unordered (allows for duplicate entries)
+* `match.array.unorderedContains()`: Check a subset of an unordered array (allows for duplicate entries)
 
 See [Array Matchers](./ArrayMatchers.md) for further details.
 
@@ -69,14 +71,15 @@ For example:
 ```
 
 Set matching:
- * `match.aSet.match()` matches the whole set
- * `match.aSet.subset()` matches a subset
+
+* `match.aSet.match()` matches the whole set
+* `match.aSet.subset()` matches a subset
 
 See [Set Matchers](./SetMatchers.md) for further details.
 
 ## Object Matchers
 
-The `obj` matchers allow for "exact" and partial matching on an object. 
+The `obj` matchers allow for "exact" and partial matching on an object.
 Embedded matchers may used within the fields of the object.
 
 For example:
@@ -96,8 +99,9 @@ For example:
 ```
 
 Object matching:
- * `match.obj.match()` matches the whole object
- * `match.obj.has()` matches some fields of the object
+
+* `match.obj.match()` matches the whole object
+* `match.obj.has()` matches some fields of the object
 
 See [Object Matchers](./ObjectMatchers.md) for further details.
 
@@ -116,7 +120,9 @@ it("string matchers", () => {
       assertThat(actual).is(match.string.includes("abc"));
 });
 ```
+
 String matching:
+
 * `match.string.match()` matches the whole string
 * `match.string.startsWith()` matches the start of a string
 * `match.string.endsWith()` matches the end of a string
@@ -135,20 +141,27 @@ For examples:
 
 ```
 it("NumberMatcher:", () => {
-        assertThat(2).is(2);
-        assertThat(2).is(match.number.less(3));
-        assertThat(3).is(match.number.lessEqual(3));
-        assertThat(2).is(match.number.greater(1));
-        assertThat(4).is(match.number.greaterEqual(3));
+        assertThat(2).is(2)
+        assertThat(2).is(match.number.less(3))
+        assertThat(3).is(match.number.lessEqual(3))
+        assertThat(2).is(match.number.greater(1))
+        assertThat(4).is(match.number.greaterEqual(3))
+        assertThat(4.1).is(match.number.withinDelta(4, 0.1))
+        assertThat(4.4).is(match.number.inRange(4.0, 5.0))
+        assertThat(NaN).is(match.number.nan())
 });
 
 ```
 
 Number matchers:
- * `match.number.less()`
- * `match.number.lessEqual()`
- * `match.number.greater()`
- * `match.number.greaterEqual()`
+
+* `match.number.less()`
+* `match.number.lessEqual()`
+* `match.number.greater()`
+* `match.number.greaterEqual()`
+* `match.number.withinDelta({}`
+* `match.number.inRange()`
+* `match.number.nan()`
 
 See [Number Matchers](./NumberMatchers.md) for further details.
 
@@ -169,13 +182,14 @@ For example:
 
 A matcher of Dates.
 
- * `match.date.before` matches an actual Date if it is before an expected one
- * `match.date.after` matches an actual Date if it is after an expected one
+* `match.date.before` matches an actual Date if it is before an expected one
+* `match.date.after` matches an actual Date if it is after an expected one
 
 These are based purely on the relative ordering of their `Date.getTime()` value.
 The usual caveats apply to Dates.
 
 Eg:
+
 ```
         it('matches', () => {
             assertThat(date).is(date)
@@ -313,14 +327,16 @@ For examples:
             assertThat(false).is(match.ofType.boolean());
             assertThat(/a.*/).is(match.ofType.regExp());
             assertThat(Symbol("")).is(match.ofType.symbol());
+            assertThat(new Date()).is(match.ofType.date());
     });
 ```
+
 See [Number Matchers](./NumberMatchers.md) for further examples.
 
 ### Predicate Matcher
 
 This is general-purpose. It takes a function that takes the actual value and returns a true if the match succeeds.
-Many of the built-in matchers use this matcher. 
+Many of the built-in matchers use this matcher.
 
 For example:
 
@@ -334,9 +350,10 @@ For example:
 
 Sometimes a generated value, such as an ID, may occur at multiple points in a nested object or between objects.
 
-In matching, we want to ensure that those values are all the same, but we dont know ahead of time what the value will be.
+In matching, we want to ensure that those values are all the same, but we dont know ahead of time what the value will
+be.
 
-So we can use a binding matcher. 
+So we can use a binding matcher.
 
 See [Binding Matcher](./BindingMatcher.md) for an example and further details.
 
@@ -346,7 +363,6 @@ Sometimes, it's difficult to match directly on an object or a part of it.
 This matcher allows the actual value to be mapped and the matcher is applied to the result.
 
 See [MappedMatcher](./MappedMatcher.md) for an example and further details.
-
 
 ## Writing Custom Matchers
 

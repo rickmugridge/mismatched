@@ -51,6 +51,16 @@ Matches a string containing a UUID, eg:
     });
 ```
 
+## `match.string.nonEmpty()`
+Matches a string that has at least one character (ie, length > 0):
+
+```
+       it("nonEmpty()", () => {
+            assertThat('cafe').is(match.string.nonEmpty())
+            assertThat('').isNot(match.string.nonEmpty())
+        })
+```
+
 # The following parse/map a string to another type, which is then matched against
 
 ## `match.asDate()`

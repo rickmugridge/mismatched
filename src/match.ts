@@ -56,6 +56,7 @@ export const match = {
         endsWith: (expected: string) => stringMatcher.endsWith(expected),
         includes: (expected: string) => stringMatcher.includes(expected),
         asDate: (matcher: Date | any) => stringMatcher.asDate(matcher),
+        nonEmpty: () => stringMatcher.nonEmpty(),
         asSplit: (separator: string, expected: string[] | any) => stringMatcher.asSplit(separator, expected),
         asNumber: (expected: number | any) => stringMatcher.asNumber(expected),
         asDecimal: (places: number, expected: number | any) => stringMatcher.asDecimal(places, expected),
@@ -68,7 +69,8 @@ export const match = {
         lessEqual: (expected: number) => numberMatcher.lessEqual(expected),
         greater: (expected: number) => numberMatcher.greater(expected),
         greaterEqual: (expected: number) => numberMatcher.greaterEqual(expected),
-        withinDelta: (expected: number, delta: number) => numberMatcher.withinDelta(expected, delta)
+        withinDelta: (expected: number, delta: number) => numberMatcher.withinDelta(expected, delta),
+        inRange: (lower: number, upper: number) => numberMatcher.inRange(lower, upper),
     },
     regEx: {
         match: (expected: RegExp) => RegExpMatcher.make(expected)
@@ -93,6 +95,7 @@ export const match = {
         boolean: () => PredicateMatcher.make(ofType.isBoolean, "ofType.boolean"),
         regExp: () => PredicateMatcher.make(ofType.isRegExp, "ofType.regExp"),
         symbol: () => PredicateMatcher.make(ofType.isSymbol, "ofType.symbol"),
+        date: () => PredicateMatcher.make(ofType.isDate, "ofType.date"),
         enum: (enumeration: any, enumName: string = 'enum') => match.predicate(v => !!Object.values(enumeration).find(e => e === v), enumName)
     },
     predicate: (predicate: (v: any) => boolean,

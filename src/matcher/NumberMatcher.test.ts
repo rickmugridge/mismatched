@@ -43,6 +43,13 @@ describe("NumberMatcher:", () => {
             assertThat(-Infinity).is(match.number.withinDelta(-Infinity, 1.0));
         });
 
+        it("inRange", () => {
+            assertThat(4.4).is(match.number.inRange(4.0, 5.0));
+            assertThat(4.4).isNot(match.number.inRange(1, 4.3));
+            assertThat(4).is(match.number.inRange(1, 5));
+            assertThat(4).isNot(match.number.inRange(1, 2));
+        });
+
         describe("NaN:", () => {
             it("Matches", () => {
                 assertThat(NaN).is(match.number.nan());

@@ -23,4 +23,6 @@ export const numberMatcher = {
                 (value === -Infinity && expected === -Infinity)
             ),
         {"number.nearWithDelta": expected}),
-};
+    inRange: (lower: number, upper: number) => PredicateMatcher.make(value =>
+        lower <= value && value <= upper, `number.inRange(${lower}, ${upper})`)
+}

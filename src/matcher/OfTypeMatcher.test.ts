@@ -46,11 +46,18 @@ describe("OfTypeMatcher:", () => {
             assertThat(1).is(match.not(match.ofType.symbol()));
         });
 
+        it("ofType.date()", () => {
+            assertThat(new Date()).is(match.ofType.date());
+            assertThat(new Date("garbage")).isNot(match.ofType.date());
+            assertThat(1).isNot(match.ofType.date());
+        });
+
         it('ofType.enum()', () => {
             enum E {
-                First='First',
-                Second='Second'
+                First = 'First',
+                Second = 'Second'
             }
+
             assertThat(E.First).is(match.ofType.enum(E, "E"));
             assertThat(E.Second).is(match.ofType.enum(E, "E"));
             assertThat("junk").isNot(match.ofType.enum(E, "E"));

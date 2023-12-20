@@ -1,8 +1,14 @@
 # What is New (since Dec 2023)
 
+## 20 December 2023
+
+* Added `match.number.inRange()`
+* Added `match.ofType.date()`
+* Added `match.string.nonEmpty()`
+
 ## 19 December 2023
 
- * Improved error message when `match.array.every()` fails to match
+* Improved error message when `match.array.every()` fails to match
 
 ## 18 December 2023
 

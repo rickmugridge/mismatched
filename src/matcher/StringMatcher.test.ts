@@ -40,6 +40,11 @@ describe("StringMatcher:", () => {
             assertThat('077495dd00').isNot(match.uuid())
         })
 
+        it("nonEmpty()", () => {
+            assertThat('cafe').is(match.string.nonEmpty())
+            assertThat('').isNot(match.string.nonEmpty())
+        })
+
         it("asDate()", () => {
             const date = new Date()
             assertThat(date.toISOString()).is(match.string.asDate(date))

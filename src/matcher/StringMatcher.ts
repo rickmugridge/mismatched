@@ -64,6 +64,8 @@ export const stringMatcher = {
         ofType.isString(value) && value.includes(expected), {"match.string.includes": expected}),
     uuid: () => PredicateMatcher.make(value =>
         ofType.isString(value) && value.match(uuidRegExp) !== null, "match.uuid"),
+    nonEmpty: () => PredicateMatcher.make(value =>
+        ofType.isString(value) && value.length > 0, "match.string.nonEmpty"),
     asDate: (expected: Date | any) => {
         const matcher = matchMaker(expected)
         return MappedMatcher.make<string, Date>(
