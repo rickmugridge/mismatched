@@ -26,6 +26,7 @@ export const ofType = {
     isString: (v: any): v is string => typeof v === 'string' || v instanceof String,
     isSymbol: (v: any): v is symbol => typeof v === 'symbol',
     isUndefined,
+    isUndefinedOrNull: <T>(v: T | undefined): v is undefined => isUndefined(v) || v === null,
     isDefined: <T>(v: T | undefined): v is T => !isUndefined(v),
     isDate: (v: any): v is Date => v instanceof Date && !isNaN(v.getTime()),
 }

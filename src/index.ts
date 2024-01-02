@@ -5,5 +5,6 @@ export {MatchResult} from "./MatchResult";
 export {DiffMatcher, ContextOfValidationError} from "./matcher/DiffMatcher";
 export {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 export {matchMaker} from "./matchMaker/matchMaker";
-export {Mismatched} from "./matcher/Mismatched"
-export {ObjectMatcher} from "./matcher/ObjectMatcher"
+export {Mismatched} from "./matcher/Mismatched";
+export {ObjectMatcher} from "./matcher/ObjectMatcher";
+export {primitiveBuilder, TimeUnit} from "./builder/primitiveBuilder";

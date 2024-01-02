@@ -8,6 +8,7 @@ import {stringDiff} from "../diff/StringDiff";
 import {PatchItem} from "fast-array-diff/dist/diff/patch";
 import {MappedMatcher} from "./MappedMatcher";
 import {matchMaker} from "../matchMaker/matchMaker";
+import {AnyMatcher} from "./AnyMatcher";
 
 const minimum = 5
 
@@ -78,20 +79,20 @@ export const stringMatcher = {
             (actual: string): string[] => actual.split(separator), matcher,
             `match.split('${separator}')`)
     },
-    asNumber: (expected: number | any) => {
+    asNumber: (expected: number = new AnyMatcher() as any) => {
         const matcher = matchMaker(expected)
         return MappedMatcher.make<string, number>(
             (actual: string): number => Number(actual),
             matcher, "match.string.asNumber")
     },
-    asDecimal: (places: number, expected: number | any) => {
+    asDecimal: (places: number, expected: number = new AnyMatcher() as any) => {
         const matcher = matchMaker(expected)
         return MappedMatcher.make<string, number>(
             (actual: string): number =>
                 actual.split(".").length == places ? Number(actual) : NaN,
             matcher, `match.string.asDecimal(${places})`)
     },
-    fromJson: (expected: any) => {
+    fromJson: (expected: any = new AnyMatcher()) => {
         const matcher = matchMaker(expected)
         return MappedMatcher.make<string, any>(
             (actual: string): any => JSON.parse(actual), matcher, "fromJson")

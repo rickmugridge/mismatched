@@ -26,9 +26,10 @@ import {BindMatcher} from "./matcher/BindMatcher";
 import {DescribeMatcher} from "./matcher/DescribeMatcher";
 import {DescribeContextMatcher} from "./matcher/DescribeContextMatcher";
 import {UnorderedArrayMatcher} from "./matcher/UnorderedArrayMatcher";
-import {decompiledActual} from "./decompile/decompileActual";
+import {identifySources} from "./identifySources/identifySources";
 import {ObjectKeyMatcher} from "./matcher/ObjectKeyMatcher";
 import {dateMatcher} from "./matcher/DateMatcher";
+import {enumFixer} from "./identifySources/enumFixer";
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -46,8 +47,8 @@ export const match = {
         subset: (expected: Set<DiffMatcher<any>> | Set<any> | Array<any> | Map<any, any>) => SetMatcher.make(expected, true),
     },
     obj: {
-        match: (obj: object) => ObjectMatcher.make(obj),
-        has: (expected: Array<DiffMatcher<any>> | object) => ObjectSomeMatcher.make(expected),
+        match: (expected: object) => ObjectMatcher.make(expected),
+        has: (expected: object) => ObjectSomeMatcher.make(expected),
         key: (expected: any) => ObjectKeyMatcher.make(expected)
     },
     string: {
@@ -96,7 +97,8 @@ export const match = {
         regExp: () => PredicateMatcher.make(ofType.isRegExp, "ofType.regExp"),
         symbol: () => PredicateMatcher.make(ofType.isSymbol, "ofType.symbol"),
         date: () => PredicateMatcher.make(ofType.isDate, "ofType.date"),
-        enum: (enumeration: any, enumName: string = 'enum') => match.predicate(v => !!Object.values(enumeration).find(e => e === v), enumName)
+        enum: (enumeration: any, enumName: string = 'enum') => match.predicate(v =>
+            !!enumFixer.valuesOf(enumeration).find(e => e === v), enumName)
     },
     predicate: (predicate: (v: any) => boolean,
                 description: any = {predicateFailed: PrettyPrinter.functionDetails(predicate)}) =>
@@ -108,6 +110,6 @@ export const match = {
         DescribeContextMatcher.make(describeContext, matcher),
     describe: (matcher: DiffMatcher<any> | any, description: (actual: any, context: string) => string) =>
         DescribeMatcher.make(matcher, description),
-    decompiledActual: (actual: any, contributors: object, enums: object = {}): any =>
-        decompiledActual(actual, contributors, enums)
+    identifySources: (actual: any, contributors: object, enums: object = {}): any =>
+        identifySources(actual, contributors, enums)
 };

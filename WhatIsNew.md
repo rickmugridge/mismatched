@@ -1,6 +1,10 @@
-# What is New (since Dec 2023)
+# What is New
 
-## 20 December 2023
+## 2 Jan 2024
+
+* Added [`primitiveBuilder`](./PrimitiveBuilder.md)
+
+*## 20 December 2023
 
 * Added `match.number.inRange()`
 * Added `match.ofType.date()`
