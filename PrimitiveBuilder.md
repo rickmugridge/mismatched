@@ -1,6 +1,8 @@
-# Primitive Builder
+# Primitive Builder for test data generation
 
-It's often handy to use the Builder design approach for creating data for tests.
+It can be tedious to "manually" create test data for multiple non-trivial objects
+with multiple nested fields.
+The Builder design approach can work well here.
 Builders can incorporate standard field values in an object,
 and allow the user to alter or add to them.
 
@@ -56,26 +58,26 @@ export class DeliveryBuilder {
 }
 ```
 
-(Or equivalent when not using classes.)
+(Or equivalent without classes.)
 
 ## Limitations of the above builder
 
 If we have several `Delivery` objects used in a test:
 
 * We have to make them distinct, eg:
-    * They may need unique ids, requiring an extra `withId()` call (not shown)
+    * They may need unique ids, requiring an extra `withId()` call (not shown) for each one
     * Because they're so similar, it's harder and more confusing to make assertions where
       `Delivery` objects are the result of some processing
 * We're reducing the value of a test by always using the same, simple values
 
 Another, smaller issue is that it encourages assertions in our tests to check against
 simple values. That's fine for tests with narrowly sized data.
-But once the data gets wider and deeper, it makes it harder to read the intent of the test details.
+But once the data gets wider and deeper, it makes it harder to read the intent from the test details.
 
 ## Using Primitive Builder (and other builders)
 
 `PrimitiveBuilder` is a builder for simple values like numbers, strings, etc.
-It uses randomness to create values.
+It uses randomness to create values of various types.
 
 We can replace the initial value for our builder's `Delivery` as follows:
 
@@ -109,20 +111,24 @@ and creates a new object that contains data from each of them.
 This consists of the following functions (including their default arguments):
 
 * stringInSequence = (label: string = "string"): string
-  * Each time this is called it generates a new string with subsequent integers, starting at 1
+    * Each time this is called it generates a new string with subsequent integers, starting at 1
 * aString = (label: string = "string"): string
 * int = (lowerBound: number = -10000, upperBound: number = 10000): number
 * bigInt = (lowerBound: number = -10000, upperBound: number = 10000): BigInt
 * float = (lowerBound: number = -10000, upperBound: number = 10000): number
 * decimal = (significantDigits: number = 2, lowerBound: number = -10000, upperBound: number = 10000):number
 * bool = (): boolean
-* anyOf = (possibles: Array<any>): any
-* anyEnum = (enumerator: any): any
 * date = (timeUnits: TimeUnit = TimeUnit.Days, lowerBoundBefore: number = -1000, upperBoundAfter: number = 1000): Date
 * error = (message: string = aString("error")): Error
 * symbol = (message: string = aString("sym")): Symbol
+* anyOf = <T>(possibles: Array<T>): T
+* anyEnum = (enumerator: any): any
+* arrayOf = <T>(elementGenerator: (index:number) => T, lowerBound: number = 0, upperBound: number = 10): T[]
+* setOf = setOf = <T>(elementGenerator: (index:number) => T, lowerBound: number = 0, upperBound: number = 10): Set<T>
+* mapOf = <S, T>(elementGenerator: (index:number) => [S, T], lowerBound: number = 0, upperBound: number = 10): Map<S, T>
 
 For example, when I ran the following:
+
 ```
     it("example uses", () => {
         enum Eg {One, Two, Three}
@@ -135,12 +141,18 @@ For example, when I ran the following:
             float: primitiveBuilder.float(0.5, 0.6),
             decimal: primitiveBuilder.decimal(2, 0, 100),
             bool: primitiveBuilder.bool(),
-            anyOf: primitiveBuilder.anyOf(["A", "B", "C"]),
-            anyEnum: primitiveBuilder.anyEnum(Eg),
             date: primitiveBuilder.date(TimeUnit.Hours, 0, 24),
             error: primitiveBuilder.error("whoops"),
             symbol: primitiveBuilder.symbol("hidden"),
-        })
+             anyOf: primitiveBuilder.anyOf(["A", "B", "C"]),
+            anyEnum: primitiveBuilder.anyEnum(Eg),
+            arrayOf: [17, 9, 6, 1, 11], 
+            arrayOf: primitiveBuilder.arrayOf(
+                () => primitiveBuilder.int(0, 20), 5,6),
+            setOf: primitiveBuilder.setOf(
+                () => primitiveBuilder.aString(), 1,3),
+            mapOf: primitiveBuilder.setOf(
+                () => [primitiveBuilder.bool(),primitiveBuilder.decimal()], 2,3),
     })
 ```
 
@@ -155,11 +167,14 @@ I got:
         float: 0.5, 
         decimal: 43.59, 
         bool: true, 
-        anyOf: "B", 
-        anyEnum: 1,
         date: new Date("2024-01-02T14:30:51.166Z"), 
         error: {errorMessage: "whoops"},
-        symbol: Symbol(hidden)
+        symbol: Symbol(hidden),
+        anyOf: "B", 
+        anyEnum: 1,
+        arrayOf: [18, 19, 9, 4, 6],
+        setOf: new Set(["string-3172", "string-4098", "string-2320"]), 
+        mapOf: new Map([["key#0", -5908.74], ["key#1", 6883.11]])
     }
 ```
 

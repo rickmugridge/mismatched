@@ -1,5 +1,9 @@
 # What is New
 
+## 3 Jan 2024 (version "2.13.4")
+
+* Extended [`primitiveBuilder`](./PrimitiveBuilder.md) with arrayOf(), setOf(), mapOf()
+
 ## 2 Jan 2024
 
 * Added [`primitiveBuilder`](./PrimitiveBuilder.md)

@@ -1,13 +1,19 @@
 import {primitiveBuilder, TimeUnit} from "./primitiveBuilder";
 import {PrettyPrinter} from "../prettyPrint/PrettyPrinter";
+import {assertThat} from "../assertThat";
 
 describe("primitiveBuilder", () => {
     it("number", () => {
+        assertThat(primitiveBuilder.int(4, 4)).is(4)
         sample("int", () => primitiveBuilder.int())
         sample("bigInt", () => primitiveBuilder.bigInt())
         sample("float", () => primitiveBuilder.float())
         sample("decimal, 2", () => primitiveBuilder.decimal(2))
         sample("decimal, 4", () => primitiveBuilder.decimal(4))
+    })
+
+    it("other error types", () => {
+        throw new ReferenceError()
     })
 
     it("strings", () => {
@@ -58,6 +64,12 @@ describe("primitiveBuilder", () => {
             date: primitiveBuilder.date(TimeUnit.Hours, 0, 24),
             error: primitiveBuilder.error("whoops"),
             symbol: primitiveBuilder.symbol("hidden"),
+            arrayOf: primitiveBuilder.arrayOf(
+                () => primitiveBuilder.int(0, 20), 5, 6),
+            setOf: primitiveBuilder.setOf(
+                () => primitiveBuilder.aString(), 1, 3),
+            mapOf: primitiveBuilder.mapOf(
+                (i) => [`key#${i}`, primitiveBuilder.decimal()], 2, 3),
         })
     })
 })

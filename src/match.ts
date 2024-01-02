@@ -59,9 +59,9 @@ export const match = {
         asDate: (matcher: Date | any) => stringMatcher.asDate(matcher),
         nonEmpty: () => stringMatcher.nonEmpty(),
         asSplit: (separator: string, expected: string[] | any) => stringMatcher.asSplit(separator, expected),
-        asNumber: (expected: number | any) => stringMatcher.asNumber(expected),
-        asDecimal: (places: number, expected: number | any) => stringMatcher.asDecimal(places, expected),
-        fromJson: (expected: any) => stringMatcher.fromJson(expected),
+        asNumber: (expected: number = AnyMatcher.make()) => stringMatcher.asNumber(expected),
+        asDecimal: (places: number, expected: number = AnyMatcher.make()) => stringMatcher.asDecimal(places, expected),
+        fromJson: (expected: any = AnyMatcher.make()) => stringMatcher.fromJson(expected),
     },
     uuid: () => stringMatcher.uuid(),
     number: {
