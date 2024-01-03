@@ -13,18 +13,18 @@ export const identifySources = (actual: any, contributors: object, enums: object
 
 
 export const identify = (actual: any, contributors: object, enums: object = {}): any => {
-    return mapToName(actual, buildMap(contributors, enums))
+    return mapToName(actual, buildMap(contributors, enums, []))
 }
 
-
-export const buildMap = (contributors: object, enums: object): FilteringMap => {
+// The visitStack allows us to (correctly) handle self-referential objects.
+export const buildMap = (contributors: object, enums: object, visitStack: any[]): FilteringMap => {
     // For any type of value we build a map from that value (as key) to a set of contributor path strings.
     // eg, "3" -> ["source.a"]
     // Values include arrays and objects
     const mapToContributorPaths = new FilteringMap()
     // We don't want the object that holds the set of contributors to be considered in paths
     Object.keys(contributors).forEach(keyAsPath => {
-        walk(keyAsPath, contributors[keyAsPath], mapToContributorPaths)
+        walk(keyAsPath, contributors[keyAsPath], mapToContributorPaths, visitStack)
     })
     buildMapForEnums(enums, mapToContributorPaths)
     return mapToContributorPaths
@@ -52,16 +52,23 @@ const buildMapForEnums = (enums: object, mapToContributorPaths: FilteringMap) =>
 const acceptEnum = (key: string, enumValue: any) =>
     isNaN(Number(key)) && (ofType.isString(enumValue) || enumValue > 10)
 
-const walk = (path: string, contributor: any, mapToContributorNames: FilteringMap) => {
+const walk = (path: string, contributor: any, mapToContributorNames: FilteringMap, visitStack: any[]) => {
+    if (visitStack.includes(contributor)) {
+        return
+    }
     addReference(path, contributor, mapToContributorNames);
     if (ofType.isArray(contributor)) {
+        visitStack.push(contributor)
         for (let i = 0; i < contributor.length; i++) {
-            walk(`${path}[${i}]`, contributor[i], mapToContributorNames)
+            walk(`${path}[${i}]`, contributor[i], mapToContributorNames, visitStack)
         }
+        visitStack.pop()
     } else if (ofType.isObject(contributor)) {
+        visitStack.push(contributor)
         Object.keys(contributor).forEach(key => {
-            walk(`${path}.${key}`, contributor[key], mapToContributorNames)
+            walk(`${path}.${key}`, contributor[key], mapToContributorNames, visitStack)
         })
+        visitStack.pop()
     }
 }
 
