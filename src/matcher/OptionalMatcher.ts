@@ -1,8 +1,8 @@
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
-import {isUndefined} from "util";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "..";
 import {Mismatched} from "./Mismatched";
+import {ofType} from "../ofType";
 
 export class OptionalMatcher<T> extends DiffMatcher<T> {
     private constructor(private matcher: DiffMatcher<T>) {
@@ -11,7 +11,7 @@ export class OptionalMatcher<T> extends DiffMatcher<T> {
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
-        if (isUndefined(actual)) {
+        if (ofType.isUndefined(actual)) {
             return MatchResult.good(1);
         }
         return this.matcher.mismatches(context, mismatched, actual);

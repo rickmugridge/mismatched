@@ -30,6 +30,7 @@ import {identifySources} from "./identifySources/identifySources";
 import {ObjectKeyMatcher} from "./matcher/ObjectKeyMatcher";
 import {dateMatcher} from "./matcher/DateMatcher";
 import {enumFixer} from "./identifySources/enumFixer";
+import {SelectMatcher} from "./matcher/SelectMatch";
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -111,5 +112,6 @@ export const match = {
     describe: (matcher: DiffMatcher<any> | any, description: (actual: any, context: string) => string) =>
         DescribeMatcher.make(matcher, description),
     identifySources: (actual: any, contributors: object, enums: object = {}): any =>
-        identifySources(actual, contributors, enums)
-};
+        identifySources(actual, contributors, enums),
+    selectMatch: <T>(selector: (t: T) => T): T => SelectMatcher.make(selector)
+}
