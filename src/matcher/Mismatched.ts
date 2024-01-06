@@ -1,4 +1,5 @@
 import {ContextOfValidationError} from "./DiffMatcher";
+import {handleSymbol, MatchResult} from "../MatchResult";
 
 export class Mismatched {
     static makeExpectedMessage(context: ContextOfValidationError, actual: any, expected: any) {
@@ -20,5 +21,13 @@ export class Mismatched {
         (mismatch as any)[context.context] = actual;
         (mismatch as any).unexpected = unexpected;
         return mismatch;
+    }
+
+    // Used for testing the result when matching fails
+    static failingWasExpected(was: any, expected: any) {
+        return {
+            [MatchResult.was]: handleSymbol(was),
+            [MatchResult.expected]: handleSymbol(expected)
+        }
     }
 }
