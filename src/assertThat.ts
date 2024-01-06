@@ -40,7 +40,7 @@ class Assertion<T> {
         return this.is(match.itIs(expected));
     }
 
-    isNot<T=any>(expected: T) {
+    isNot<T = any>(expected: T) {
         this.checkForFunction();
         return this.is(match.not(matchMaker(expected)));
     }
@@ -61,14 +61,15 @@ class Assertion<T> {
         }
     }
 
-    // This is used internally for testing error messages:
+    // This is used internally for testing error messages when Mismatched fails to match:
     failsWith(expected: any, message: object) {
         const result = this.match(expected);
-        if(result.passed()) {throw new Error('Did not expect it to pass')
+        if (result.passed()) {
+            throw new Error('Did not expect it to pass')
         }
         const matchResult = assertThat(result.diff).match(message);
         if (!matchResult.passed()) {
-            throw new Error(`Incorrect message: 
+            throw new Error(`Incorrect error message: 
 actual:   '${printer.render(result.diff)}' 
 expected: '${printer.render(message)}'`);
         }

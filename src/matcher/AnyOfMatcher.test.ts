@@ -1,8 +1,6 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
-import {MatchResult} from "../MatchResult";
-import {Mismatched} from "./Mismatched";
-import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
+import {wasExpected} from "./Mismatched";
 import {validateThat} from "../validateThat";
 
 describe("AnyOfMatcher:", () => {
@@ -17,25 +15,25 @@ describe("AnyOfMatcher:", () => {
             assertThat({a: 2}).isNot(match.anyOf([])); // Base case of nothing matching
             assertThat("ab")
                 .failsWith(match.anyOf([match.instanceOf(Date)]),
-                    {[MatchResult.was]: "ab", [MatchResult.expected]: {instanceOf: "Date"}});
+                    wasExpected("ab", {instanceOf: "Date"}))
         });
 
-        it("Mismatches with multiple anyOf", () => {
-            assertThat("ab").failsWith(
-                match.anyOf([match.instanceOf(Date), match.instanceOf(Date)]), match.any())
+        it("Mismatches with multiple anyOf() with at least one partially matching", () => {
+            let matcher: any = match.anyOf([match.instanceOf(Date), {f: "a", g: 3}])
             assertThat({f: "ab", g: 3})
-                .failsWith(match.anyOf([match.instanceOf(Date), {f: "a", g: 3}]),
-                    {[MatchResult.was]: {f: "ab", g: 3}, [MatchResult.expected]: {f: "a", g: 3}})
+                .failsWith(matcher,
+                    {f: wasExpected("ab", "a"), g: 3})
         });
 
-        it("Mismatches: errors", () => {
-            const mismatched: Array<Mismatched> = [];
-            const matcher = match.anyOf([match.instanceOf(Date), match.instanceOf(Error)]);
-            (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, "ab");
-            assertThat(mismatched).is([
-                {actual: "ab", expected: {anyOf: [{instanceOf: "Date"}, {instanceOf: "Error"}]}}
-            ]);
-        });
+        it("Mismatches: as no matches at all", () => {
+            const matcher = match.anyOf([match.instanceOf(Date), match.instanceOf(Error)])
+            assertThat("ab")
+                .failsWith(matcher,
+                    wasExpected(
+                        "ab",
+                        {anyOf: [{instanceOf: "Date"}, {instanceOf: "Error"}]}
+                    ))
+        })
 
         it("Optimise away with a single matcher inside", () => {
             const whatever = match.ofType.array();
@@ -46,20 +44,21 @@ describe("AnyOfMatcher:", () => {
     describe("validateThat():", () => {
         const expected = match.anyOf([
             match.instanceOf(Date),
-            match.ofType.number()]);
+            match.ofType.number()
+        ])
 
         it("succeeds", () => {
             const validation = validateThat(3).satisfies(expected);
             assertThat(validation.passed()).is(true);
-        });
+        })
 
         it("fails", () => {
             const validation = validateThat(false).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
                 `{actual: false, expected: {anyOf: [{instanceOf: "Date"}, "ofType.number"]}}`
-            ]);
-        });
+            ])
+        })
 
         it("fails and just mentions the single match that was close", () => {
             const expected = match.anyOf([
@@ -112,16 +111,16 @@ describe("AnyOfMatcher:", () => {
             ]);
         });
 
-        it("fails with no key", () => {
+        it("fails with 2 failed matches with the same matchRate of 0.5, so choose the earliest", () => {
             const expected = match.anyOf([
                 {type: 'a', f: 3},
                 {type: 'b', f: 4}]);
             const validation = validateThat({type: 'a', f: 4}).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '{actual: {type: "a", f: 4}, expected: {anyOf: [{type: "a", f: 3}, {type: "b", f: 4}]}}'
-            ]);
-        });
+                '[{"actual.f": 4, expected: 3}]'
+            ])
+        })
 
-    });
-});
+    })
+})

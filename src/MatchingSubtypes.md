@@ -87,5 +87,30 @@ actual `object` supplied to determine its subtype.
 
 ## Minor Limitation of `match.selectMatch()`
 
-* It's not sufficient when the (subtype) selection depends on data not held by the `actual` object.
-  Eg, maybe it's determined by data in an owning object within a large nested structure.
+`match.selectMatch()` is not sufficient when the (subtype) selection depends on discriminator 
+data not held by the `actual` object.
+(Although you could argue that that's not good type design.)
+
+Eg, where the discriminator is determined by data in an owning object:
+
+```
+        it("An example where we can't use match.selectMatch() due to discriminator location", () => {
+            enum Discriminator {A, B, C}
+
+            type A = { a: number }
+            type B = { a: string }
+            type C = { a: boolean }
+            type UnionType = A | B | C
+            const matchHolds = match.anyOf([
+                {discriminator: Discriminator.A, sub: {a: 1}, otherDetails: {}},
+                {discriminator: Discriminator.A, sub: {a: "1"}, otherDetails: {}},
+                {discriminator: Discriminator.C, sub: {a: true}, otherDetails: {}},
+            ])
+
+            let actual: any = {discriminator: Discriminator.A, sub: {a: 1}, otherDetails: {}}
+            assertThat(actual).is(matchHolds)
+        })
+ ```
+
+That test passes fine. But consider when our test has data that's far from simple, and the test fails, 
+The reported differences may be tricky to interpret. 

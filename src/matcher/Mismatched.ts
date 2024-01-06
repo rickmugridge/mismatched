@@ -22,12 +22,12 @@ export class Mismatched {
         (mismatch as any).unexpected = unexpected;
         return mismatch;
     }
-
-    // Used for testing the result when matching fails
-    static failingWasExpected(was: any, expected: any) {
-        return {
-            [MatchResult.was]: handleSymbol(was),
-            [MatchResult.expected]: handleSymbol(expected)
-        }
-    }
 }
+
+// Used for testing the result when matching fails
+export const wasExpected = (was: any, expected: any) =>
+    ({
+        [MatchResult.was]: handleSymbol(was),
+        [MatchResult.expected]: handleSymbol(expected)
+    })
+

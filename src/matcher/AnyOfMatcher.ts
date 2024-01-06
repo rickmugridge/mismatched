@@ -1,6 +1,6 @@
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {matchMaker} from "..";
-import {MatchResult} from "../MatchResult";
+import {bestMatchResultIndex, MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
 
 export class AnyOfMatcher<T> extends DiffMatcher<T> {
@@ -17,12 +17,10 @@ export class AnyOfMatcher<T> extends DiffMatcher<T> {
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
-        const keyPartialMatchers: DiffMatcher<T>[] = []
         const keyPartialMatchResults: Array<MatchResult> = [];
         const keyPartialMismatched: Array<Mismatched> = [];
-        const nonZeroMatchers: Array<DiffMatcher<T>> = [];
-        const nonZeroMatcherResults: Array<MatchResult> = [];
-        const nonZeroMismatched: Array<Mismatched> = [];
+        const partialMatchResults: Array<MatchResult> = [];
+        const partialMismatched: Array<Mismatched> = [];
         let compares = 1;
         let matches = 0;
         for (let m of this.matchers) {
@@ -31,32 +29,27 @@ export class AnyOfMatcher<T> extends DiffMatcher<T> {
             if (matchResult.passed()) {
                 return MatchResult.good(matchResult.compares);
             }
-            if (matchResult.matchedObjectKey) {
-                keyPartialMatchers.push(m)
-                keyPartialMatchResults.push(matchResult)
-                keyPartialMismatched.push(nestedMismatched)
-            }
             if (matchResult.matches > 0) {
-                nonZeroMatchers.push(m)
-                nonZeroMatcherResults.push(matchResult)
-                nonZeroMismatched.push(nestedMismatched)
+                if (matchResult.matchedObjectKey) {
+                    keyPartialMatchResults.push(matchResult)
+                    keyPartialMismatched.push(nestedMismatched)
+                } else {
+                    partialMatchResults.push(matchResult)
+                    partialMismatched.push(nestedMismatched)
+                }
             }
-            compares += matchResult.compares;
-            matches += matchResult.matchRate * matchResult.compares;
+            compares += matchResult.compares
+            matches += matchResult.matches
         }
-        if (keyPartialMatchers.length === 1) {
-            const keyPartialMatcher = keyPartialMatchers[0];
-            const keyPartialMatchResult = keyPartialMatchResults[0];
-            mismatched.push(keyPartialMismatched[0]);
-            return MatchResult.wasExpected(actual, keyPartialMatcher.describe(), keyPartialMatchResult.compares,
-                keyPartialMatchResult.matches);
+        if (keyPartialMatchResults.length > 0) {
+            const index: number = bestMatchResultIndex(keyPartialMatchResults)
+            mismatched.push(keyPartialMismatched[index])
+            return keyPartialMatchResults[index]
         }
-        if (nonZeroMatchers.length === 1) {
-            const nonZeroMatcher = nonZeroMatchers[0];
-            const nonZeroMatcherResult = nonZeroMatcherResults[0];
-            mismatched.push(nonZeroMismatched[0]);
-            return MatchResult.wasExpected(actual, nonZeroMatcher.describe(), nonZeroMatcherResult.compares,
-                nonZeroMatcherResult.matches);
+        if (partialMatchResults.length > 0) {
+            const index: number = bestMatchResultIndex(partialMatchResults)
+            mismatched.push(partialMismatched[index])
+            return partialMatchResults[index]
         }
         mismatched.push(Mismatched.makeExpectedMessage(context, actual, this.describe()));
         return MatchResult.wasExpected(actual, this.describe(), compares, matches);

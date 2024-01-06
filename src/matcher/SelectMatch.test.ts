@@ -1,8 +1,6 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
-import {Mismatched} from "./Mismatched";
-
-const wasExpected = Mismatched.failingWasExpected
+import {wasExpected} from "./Mismatched";
 
 describe("SelectMatch", () => {
     describe("Simple selection", () => {
@@ -21,6 +19,10 @@ describe("SelectMatch", () => {
         it("works", () => {
             assertThat({a: 1, b: 2}).is(matcherWithError)
             assertThat({a: 2, b: 3}).is(matcherWithError)
+            assertThat([{a: 1, b: 2}, {
+                a: 2,
+                b: 3
+            }]).is([matcherWithError, matcherWithError])
         })
 
         it("fails correctly when the selected matcher fails", () => {
@@ -50,7 +52,7 @@ describe("SelectMatch", () => {
         type A = { discriminator: Discriminator.A, a: number }
         type B = { discriminator: Discriminator.B, a: string }
         type C = { discriminator: Discriminator.C, a: boolean }
-        type unionType = A | B | C
+        type UnionType = A | B | C
 
         it("uses match.anyOf()", () => {
             const matcher = match.anyOf([
@@ -64,7 +66,7 @@ describe("SelectMatch", () => {
         })
 
         it("uses match.selectMatch()", () => {
-            const matcher = match.selectMatch((actual: unionType): any => {
+            const matcher = match.selectMatch((actual: UnionType): any => {
                 switch (actual.discriminator) {
                     case Discriminator.A:
                         return {discriminator: Discriminator.A, a: match.ofType.number()}
@@ -78,9 +80,32 @@ describe("SelectMatch", () => {
             assertThat({discriminator: Discriminator.B, a: "1"}).is(matcher)
             assertThat({discriminator: Discriminator.C, a: true}).is(matcher)
 
+            let actualArrayOfSubtype = [
+                {discriminator: Discriminator.A, a: 1},
+                {discriminator: Discriminator.B, a: "1"}
+            ]
+            assertThat(actualArrayOfSubtype).is([matcher, matcher])
+
             assertThat({discriminator: Discriminator.A, a: "1"}).isNot(matcher)
             assertThat({discriminator: Discriminator.A, a: true}).isNot(matcher)
             assertThat({discriminator: Discriminator.B, a: 1}).isNot(matcher)
+        })
+
+        it("An example where we can't use match.selectMatch() due to discriminator location", () => {
+            enum Discriminator {A = "A", B = "B", C = "C"}
+
+            type A = { a: number }
+            type B = { a: string }
+            type C = { a: boolean }
+            type UnionType = A | B | C
+            const matchHolds = match.anyOf([
+                {discriminator: Discriminator.A, sub: {a: 1}, otherDetails: {}},
+                {discriminator: Discriminator.B, sub: {a: "1"}, otherDetails: {}},
+                {discriminator: Discriminator.C, sub: {a: true}, otherDetails: {}},
+            ])
+
+            let actual: any = {discriminator: Discriminator.A, sub: {a: 1}, otherDetails: {}}
+            assertThat(actual).is(matchHolds)
         })
     })
 

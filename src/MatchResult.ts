@@ -74,7 +74,23 @@ export class MatchResult {
 
 export function handleSymbol(v: any): any {
     if (ofType.isSymbol(v)) {
-        return v.toString();
+        return v.toString()
     }
-    return v;
+    return v
+}
+
+// Has to be at least one element in MatchResult[]
+export const bestMatchResultIndex = (results: MatchResult[]): number => {
+    if (results.length === 0) {
+        throw new Error("Cannot get bastMatchResult() from empty array")
+    }
+    let best: MatchResult = results[0]
+    let bestIndex = 0
+    results.forEach((result, index) => {
+        if (result.matchRate > best.matchRate) {
+            best = result
+            bestIndex = index
+        }
+    })
+    return bestIndex
 }
