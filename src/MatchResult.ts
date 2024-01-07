@@ -82,7 +82,7 @@ export function handleSymbol(v: any): any {
 // Has to be at least one element in MatchResult[]
 export const bestMatchResultIndex = (results: MatchResult[]): number => {
     if (results.length === 0) {
-        throw new Error("Cannot get bastMatchResult() from empty array")
+        throw new Error("Cannot get bestMatchResult() from empty array")
     }
     let best: MatchResult = results[0]
     let bestIndex = 0

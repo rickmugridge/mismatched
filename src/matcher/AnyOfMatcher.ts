@@ -1,7 +1,8 @@
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {matchMaker} from "..";
-import {bestMatchResultIndex, MatchResult} from "../MatchResult";
+import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
+import {matchBestOf} from "../matchBestOf"
 
 export class AnyOfMatcher<T> extends DiffMatcher<T> {
     private constructor(private matchers: Array<DiffMatcher<T>>) {
@@ -17,42 +18,17 @@ export class AnyOfMatcher<T> extends DiffMatcher<T> {
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
-        const keyPartialMatchResults: Array<MatchResult> = [];
-        const keyPartialMismatched: Array<Mismatched> = [];
-        const partialMatchResults: Array<MatchResult> = [];
-        const partialMismatched: Array<Mismatched> = [];
-        let compares = 1;
-        let matches = 0;
-        for (let m of this.matchers) {
-            const nestedMismatched: Array<Mismatched> = []
-            let matchResult = m.mismatches(context, nestedMismatched, actual); // Don't register any mismatches
-            if (matchResult.passed()) {
-                return MatchResult.good(matchResult.compares);
+        const matchers = this.matchers
+
+        function* anyOfGenerator(): Generator<[ContextOfValidationError, MatchResult, Array<Mismatched>]> {
+            for (const matcher of matchers) {
+                const nestedMismatched: Array<Mismatched> = []
+                const matchResult = matcher.mismatches(context, nestedMismatched, actual)
+                yield [context, matchResult, nestedMismatched]
             }
-            if (matchResult.matches > 0) {
-                if (matchResult.matchedObjectKey) {
-                    keyPartialMatchResults.push(matchResult)
-                    keyPartialMismatched.push(nestedMismatched)
-                } else {
-                    partialMatchResults.push(matchResult)
-                    partialMismatched.push(nestedMismatched)
-                }
-            }
-            compares += matchResult.compares
-            matches += matchResult.matches
         }
-        if (keyPartialMatchResults.length > 0) {
-            const index: number = bestMatchResultIndex(keyPartialMatchResults)
-            mismatched.push(keyPartialMismatched[index])
-            return keyPartialMatchResults[index]
-        }
-        if (partialMatchResults.length > 0) {
-            const index: number = bestMatchResultIndex(partialMatchResults)
-            mismatched.push(partialMismatched[index])
-            return partialMatchResults[index]
-        }
-        mismatched.push(Mismatched.makeExpectedMessage(context, actual, this.describe()));
-        return MatchResult.wasExpected(actual, this.describe(), compares, matches);
+
+        return matchBestOf(context, mismatched, actual, this, anyOfGenerator())
     }
 
     describe(): any {

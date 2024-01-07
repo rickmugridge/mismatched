@@ -1,23 +1,23 @@
 import {match} from "../match";
 import {assertThat} from "../assertThat";
-import {MatchResult} from "../MatchResult";
 import {validateThat} from "../validateThat";
+import {wasExpected} from "./Mismatched"
 
 describe("BindMatcher:", () => {
     describe("assertThat():", () => {
         describe("No nested matcher:", () => {
             it('matches exact same value:', () => {
                 const bind = match.bind()
-                assertThat(2).is(bind);
-                assertThat(2).is(bind);
-            });
+                assertThat(2).is(bind)
+                assertThat(2).is(bind)
+            })
 
             it('fails to match on something different', () => {
                 const bind = match.bind()
                 assertThat(2).is(bind);
                 assertThat(3).failsWith(bind,
-                    {[MatchResult.was]: 3, [MatchResult.expected]: 2});
-            });
+                    wasExpected(3, 2));
+            })
 
             it("Multiple values in same object are bound together", () => {
                 const parentPartyId = '3d109f84-cbb3-4512-b26b-ace282d16183'
@@ -37,7 +37,7 @@ describe("BindMatcher:", () => {
                             type: "Red"
                         }
                     ]
-                };
+                }
                 const bindParentPartyId = match.bind(match.uuid())
                 assertThat(value).is({
                     id: bindParentPartyId,
@@ -56,7 +56,7 @@ describe("BindMatcher:", () => {
                         }
                     ]
                 })
-            });
+            })
 
             it("First bind builds a matcher", () => {
                 const value = {
@@ -109,33 +109,33 @@ describe("BindMatcher:", () => {
                         {id: "615fa1d3-2c79-4f46-a06a-0d04cdc9c0eb", type: "Red"},
                         {
                             id: "615fa1d3-2c79-4f46-a06a-0d04cdc9c0eb",
-                            type: {[MatchResult.was]: "Green", [MatchResult.expected]: "Red"}
+                            type: wasExpected("Green", "Red")
                         },
                         {id: "615fa1d3-2c79-4f46-a06a-0d04cdc9c0eb", type: "Red"}
                     ]
                 })
-            });
-        });
+            })
+        })
 
         describe("Nested matcher:", () => {
             it('Nested matcher fails', () => {
                 const bind = match.bind(match.ofType.string())
                 assertThat(2).failsWith(bind,
-                    {[MatchResult.was]: 2, [MatchResult.expected]: "ofType.string"});
-            });
+                    wasExpected(2, "ofType.string"))
+            })
 
             it('matches exact same value:', () => {
                 const bind = match.bind(match.ofType.number())
-                assertThat(2).is(bind);
-                assertThat(2).is(bind);
+                assertThat(2).is(bind)
+                assertThat(2).is(bind)
             });
 
             it('fails to match on something different', () => {
                 const bind = match.bind(match.ofType.number())
                 assertThat(2).is(bind);
                 assertThat(3).failsWith(bind,
-                    {[MatchResult.was]: 3, [MatchResult.expected]: 2});
-            });
+                    wasExpected(3, 2))
+            })
 
             it("Multiple values in same object are bound together", () => {
                 const value = {
@@ -203,8 +203,8 @@ describe("BindMatcher:", () => {
         it("succeeds", () => {
             const bind = match.bind()
             const validation = validateThat(2).satisfies(bind);
-            assertThat(validation.passed()).is(true);
-        });
+            assertThat(validation.passed()).is(true)
+        })
 
         it("fails", () => {
             const bind = match.bind()
@@ -213,10 +213,10 @@ describe("BindMatcher:", () => {
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
                 `{actual: 3, expected: false}`
-            ]);
-        });
-    });
-});
+            ])
+        })
+    })
+})
 
 
 

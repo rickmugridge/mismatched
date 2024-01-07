@@ -7,7 +7,7 @@ export class BindMatcher<T> extends DiffMatcher<T> {
     boundValueMatcher: DiffMatcher<T> | undefined = undefined
 
     private constructor(private matcher?: DiffMatcher<T>) {
-        super();
+        super()
         this.specificity = -5 // Delay matching this, all else being equal
     }
 
@@ -21,14 +21,14 @@ export class BindMatcher<T> extends DiffMatcher<T> {
             if (this.matcher) {
                 const result = this.matcher.mismatches(context, mismatched, actual)
                 if (!context.trialMatch && result.passed()) {
-                    this.boundValueMatcher = matchMaker(actual);
+                    this.boundValueMatcher = matchMaker(actual)
                 }
                 return result
             } else {
                 if (!context.trialMatch) {
                     this.boundValueMatcher = matchMaker(actual);
                 }
-                return MatchResult.good(1);
+                return MatchResult.good(1)
             }
         }
         return this.boundValueMatcher.mismatches(context, mismatched, actual)
@@ -36,11 +36,11 @@ export class BindMatcher<T> extends DiffMatcher<T> {
 
     describe(): any {
         if (this.boundValueMatcher) {
-            return {boundTo: this.boundValueMatcher.describe()};
+            return {boundTo: this.boundValueMatcher.describe()}
         }
         if (this.matcher) {
-            return {boundTo: this.matcher.describe()};
+            return {boundTo: this.matcher.describe()}
         }
-        return {boundTo: undefined};
+        return {boundTo: undefined}
     }
 }

@@ -6,12 +6,14 @@ import {AnyMatcher} from "./AnyMatcher";
 
 export class AllOfMatcher<T> extends DiffMatcher<T> {
     private constructor(private matchers: Array<DiffMatcher<T>>) {
-        super();
+        super()
         this.specificity = DiffMatcher.andSpecificity(matchers)
     }
 
     static make<T>(matchers: Array<DiffMatcher<T> | any>): any {
-        const subMatchers = matchers.map(m => matchMaker(m)).filter(m => !(m instanceof AnyMatcher));
+        const subMatchers = matchers
+            .map(m => matchMaker(m))
+            .filter(m => !(m instanceof AnyMatcher));
         switch (subMatchers.length) {
             case 0:
                 return new AnyMatcher();
@@ -23,28 +25,28 @@ export class AllOfMatcher<T> extends DiffMatcher<T> {
     }
 
     mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
-        const incorrectMatchers: Array<DiffMatcher<T>> = [];
-        let compares = 0;
-        let matches = 0;
+        const incorrectMatchers: Array<DiffMatcher<T>> = []
+        let compares = 0
+        let matches = 0
         const localMismatched: Array<Mismatched> = []
         this.matchers.forEach(m => {
-            let matchResult = m.mismatches(context, localMismatched, actual);
+            let matchResult = m.mismatches(context, localMismatched, actual)
             if (!matchResult.passed()) {
-                incorrectMatchers.push(m);
+                incorrectMatchers.push(m)
             }
-            compares += matchResult.compares;
-            matches += matchResult.matchRate * matchResult.compares;
-        });
+            compares += matchResult.compares
+            matches += matchResult.matches
+        })
         if (incorrectMatchers.length === 0) {
-            return MatchResult.good(compares);
+            return MatchResult.good(compares)
         }
-        mismatched.push(...localMismatched);
+        mismatched.push(...localMismatched)
         if (incorrectMatchers.length === 1) {
-            // Just describe that specific one as an error
-            const incorrect = incorrectMatchers[0];
-            return MatchResult.wasExpected(actual, incorrect.describe(), compares, matches);
+            // Just describe the first one as an error
+            const incorrect = incorrectMatchers[0]
+            return MatchResult.wasExpected(actual, incorrect.describe(), compares, matches)
         }
-        return MatchResult.wasExpected(actual, this.describe(), compares, matches);
+        return MatchResult.wasExpected(actual, this.describe(), compares, matches)
     }
 
     describe(): any {

@@ -1,8 +1,6 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
-import {MatchResult} from "../MatchResult";
-import {Mismatched} from "./Mismatched";
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {wasExpected} from "./Mismatched";
 import {validateThat} from "../validateThat";
 
 describe("array.contains:", () => {
@@ -20,21 +18,18 @@ describe("array.contains:", () => {
         it('does not match', () => {
             const actual = ["a", "b"];
             assertThat(actual).failsWith(match.array.contains("c"),
-                {[MatchResult.was]: ["a", "b"], [MatchResult.expected]: {"array.contains": "c"}});
+                wasExpected(actual, {"array.contains": "c"}))
+        });
+
+        it('partially matched', () => {
+            const actual = [{a:1, c: "e"}, "b"];
+            assertThat(actual).failsWith(match.array.contains({a:1, c: "f"}),
+                 {a:1, c: wasExpected("e","f")})
         });
 
         it('does not match with empty array', () => {
-            const actual = [];
-            assertThat(actual).isNot(match.array.contains("c"));
-        });
-
-        it('does not match: errors', () => {
-            const mismatched: Array<Mismatched> = [];
-            const matcher = match.array.contains("c");
-            (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, ["a", "b"]);
-            assertThat(mismatched).is([
-                {actual: ["a", "b"], expected: {"array.contains": "c"}}
-            ]);
+            assertThat([]).failsWith(match.array.contains("c"),
+                wasExpected([], {"array.contains": "c"}));
         });
     });
 

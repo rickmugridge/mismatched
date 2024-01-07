@@ -113,4 +113,5 @@ Eg, where the discriminator is determined by data in an owning object:
  ```
 
 That test passes fine. But consider when our test has data that's far from simple, and the test fails, 
-The reported differences may be tricky to interpret. 
+The reported differences may be tricky to interpret, because of the heuristics used when selecting the best partial 
+match to report errors with. I may write a blog on this in future.
