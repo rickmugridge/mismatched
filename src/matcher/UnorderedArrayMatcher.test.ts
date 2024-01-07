@@ -9,7 +9,7 @@ describe("unorderedArray:", () => {
         describe("assertThat():", () => {
             it('matches when both empty', () => {
                 assertThat([]).is(match.array.unordered([]))
-            });
+            })
 
             it('matches', () => {
                 assertThat([1, 2, 3]).is(match.array.unordered([1, 2, 3]))
@@ -17,10 +17,10 @@ describe("unorderedArray:", () => {
                 assertThat([1, 2, 3]).is(match.array.unordered([3, 2, 1]))
                 assertThat([1, 1, 1]).is(match.array.unordered([1, 1, 1]))
                 assertThat([[1, 1], [2, 2], [3, 3]]).is(
-                    match.array.unordered([[1, 1], [2, 2], [3, 3]]));
+                    match.array.unordered([[1, 1], [2, 2], [3, 3]]))
                 assertThat([[3, 3], [1, 1], [2, 2], [1, 1]]).is(
-                    match.array.unordered([[1, 1], [1, 1], [2, 2], [3, 3]]));
-            });
+                    match.array.unordered([[1, 1], [1, 1], [2, 2], [3, 3]]))
+            })
 
             it('matches match.any() last as lowest complexity', () => {
                 assertThat([1, 2, 3]).is(match.array.unordered([1, 2, match.any()]))
@@ -33,14 +33,16 @@ describe("unorderedArray:", () => {
 
             it('does not match: too many', () => {
                 const actual = [1, 2, 3];
-                assertThat(actual).failsWith(match.array.unordered([1, 2]),
-                    [1, 2, {[MatchResult.unexpected]: 3}])
+                assertThat(actual).failsWith(
+                    match.array.unordered([1, 2]),
+                    [1, 2, unexpected(3)])
             })
 
             it('does not match: too few', () => {
                 const actual = [1, 2];
-                assertThat(actual).failsWith(match.array.unordered([1, 2, 3]),
-                    [1, 2, {[MatchResult.expected]: 3}])
+                assertThat(actual).failsWith(
+                    match.array.unordered([1, 2, 3]),
+                    [1, 2, expected(3)])
             })
 
             it('does not match: values mismatch', () => {
@@ -51,26 +53,29 @@ describe("unorderedArray:", () => {
             })
 
             it("does not match: no duplicated values", () => {
-                assertThat([1, 1, 1]).failsWith(match.array.unordered([1]),
-                    [1, {[MatchResult.unexpected]: 1}, {[MatchResult.unexpected]: 1}])
+                assertThat([1, 1, 1]).failsWith(
+                    match.array.unordered([1]),
+                    [1, unexpected(1), unexpected(1)])
             })
 
             it('matches the best first', () => {
                 const actual = [{a: 1, b: [0]}, {a: 11, b: [0]}];
-                const expected = [{a: 11, b: [1]}]
-                assertThat(actual).failsWith(match.array.unordered(expected), [
-                    {[MatchResult.unexpected]: {a: 1, b: [0]}},
-                    {a: 11, b: [{[MatchResult.unexpected]: 0}, {[MatchResult.expected]: 1}]}
-                ])
+                assertThat(actual).failsWith(
+                    match.array.unordered([{a: 11, b: [1]}]),
+                    [
+                        {[MatchResult.unexpected]: {a: 1, b: [0]}},
+                        {a: 11, b: [unexpected(0), expected(1)]}
+                    ])
             })
 
             it('matches the best first deeply nested', () => {
                 const actual = [{a: 1, b: {c: [1]}}, {a: 11, b: {c: [2]}}]
-                const expected = [{a: 11, b: {c: [3]}}]
-                assertThat(actual).failsWith(match.array.unordered(expected), [
-                    {[MatchResult.unexpected]: {a: 1, b: {c: [1]}}},
-                    {a: 11, b: {c: [{[MatchResult.unexpected]: 2}, {[MatchResult.expected]: 3}]}}
-                ])
+                assertThat(actual).failsWith
+                (match.array.unordered([{a: 11, b: {c: [3]}}]),
+                    [
+                        {[MatchResult.unexpected]: {a: 1, b: {c: [1]}}},
+                        {a: 11, b: {c: [unexpected(2), expected(3)]}}
+                    ])
             })
         })
 
@@ -96,7 +101,8 @@ describe("unorderedArray:", () => {
 
             it("fails as incorrect set", () => {
                 const actual = [1, ["s"]]
-                const validation = validateThat(actual).satisfies(match.array.unordered(expected))
+                const validation = validateThat(actual)
+                    .satisfies(match.array.unordered(expected))
                 assertThat(validation.passed()).is(false)
                 assertThat(validation.errors).is([
                     '{"actual[1]": ["s"], unexpected: "s"}',
@@ -105,7 +111,8 @@ describe("unorderedArray:", () => {
             })
 
             it("fails as not an array", () => {
-                const validation = validateThat(false).satisfies(match.array.unordered(expected))
+                const validation = validateThat(false)
+                    .satisfies(match.array.unordered(expected))
                 assertThat(validation.passed()).is(false)
                 assertThat(validation.errors).is([
                     `{actual: false, expected: "array expected"}`
@@ -130,9 +137,9 @@ describe("unorderedArray:", () => {
 
             it('does not match: too many values expected', () => {
                 const actual = [1, 2, 3]
-                const expected = [1, 2, 3, 4]
-                assertThat(actual).failsWith(match.array.unorderedContains(expected),
-                    [1, 2, 3, {[MatchResult.expected]: 4}])
+                assertThat(actual).failsWith(
+                    match.array.unorderedContains([1, 2, 3, 4]),
+                    [1, 2, 3, expected(4)])
             })
         })
 
@@ -161,3 +168,10 @@ describe("unorderedArray:", () => {
         })
     })
 })
+
+const unexpected = (value: any): any => {
+    return {[MatchResult.unexpected]: value}
+}
+const expected = (value: any): any => {
+    return {[MatchResult.expected]: value}
+}

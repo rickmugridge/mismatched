@@ -65,7 +65,7 @@ export class MatchResult {
             if (items.length === 1) {
                 this.diff[MatchResult.unexpected] = items[0]
             } else {
-                this.diff[MatchResult.unexpected] = items;
+                this.diff[MatchResult.unexpected] = items
             }
         }
         return this

@@ -2,7 +2,7 @@ import {matchMaker} from "../matchMaker/matchMaker";
 import {MatchResult} from "../MatchResult";
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {Mismatched} from "./Mismatched";
-import {arrayDiff} from "../diff/arrayDiff";
+import {arrayDiff, PossibleMatch} from "../diff/arrayDiff";
 import {ofType} from "../ofType";
 
 export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
@@ -20,35 +20,53 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
             mismatched.push(Mismatched.makeExpectedMessage(context, actual, "array expected"));
             return MatchResult.wasExpected(actual, this.describe(), 1, 0);
         }
-        if (actual.length ===0 && this.elementMatchers.length === 0) {
-            return new MatchResult(undefined, 1, 1);
+        if (actual.length === 0 && this.elementMatchers.length === 0) {
+            return MatchResult.good(1)
         }
-        const pairs = arrayDiff(this.elementMatchers, actual)
-        let compares = 0;
-        let matches = 0;
-        const results = pairs.map((pair) => {
-            if (pair.matcher.isSome() && pair.actual.isNone()) {
+        const pairs: PossibleMatch<T>[] = arrayDiff(this.elementMatchers, actual)
+        /* Each pair consists of
+               o actual element + best matcher (where matching worked), ir passed or partially matched
+               o actual element                (element wasn't matched), ie unexpected
+               o no element + matcher          (matcher matched no elements), ie expected
+         */
+        // const pairsDescribe = pairs.map(pair => ({
+        //     actual: pair.actual,
+        //     matcher: pair.matcher.isSome() ? pair.matcher.get().describe() : undefined
+        // }))
+        // PrettyPrinter.logToConsole({actual, pairsDescribe, at: "ArrayMatcher.ts:28"}) // todo RM Remove
+
+        let compares = 0
+        let matches = 0
+        const diffResults = pairs.map((pair) => {
+            if (pair.matcher.isSome() && pair.actual.isNone()) { // expected
                 compares += 1
                 mismatched.push(Mismatched.makeMissing(context, actual, pair.matcher.get().describe()))
                 return {[MatchResult.expected]: pair.matcher.get().describe()}
             }
-            if (pair.matcher.isNone() && pair.actual.isSome()) {
+            if (pair.matcher.isNone() && pair.actual.isSome()) { // unexpected
                 compares += 1
                 mismatched.push(Mismatched.makeUnexpectedMessage(context, actual, pair.actual.get()))
                 return {[MatchResult.unexpected]: pair.actual.get()}
             }
-            if (pair.matcher.isSome() && pair.actual.isSome()) {
-                const result = pair.matcher.get().mismatches(context.add("[" + pair.actualIndex + "]"), mismatched, pair.actual.get())
-                compares += result.compares;
-                matches += result.matchRate * result.compares;
+            if (pair.matcher.isSome() && pair.actual.isSome()) { // (partial) match
+                // Rerun the match with the right context, and to update mismatched array
+                const matcher: DiffMatcher<any> = pair.matcher.get()
+                const actualElement: any = pair.actual.get()
+                const elementContext: ContextOfValidationError = context.add("[" + pair.actualIndex! + "]")
+                const result = matcher.mismatches(elementContext, mismatched, actualElement)
+                compares += result.compares
+                matches += result.matches
                 if (result.passed()) {
-                    return pair.actual.get();
-                } else {
-                    return result.diff;
+                    return actualElement
                 }
+                return result.diff
             }
         })
-        return new MatchResult(results, compares, matches);
+        if (matches == 0) {
+            matches += 0.1
+            compares += 1
+        }
+        return new MatchResult(diffResults, compares, matches)
     }
 
     describe(): any {

@@ -59,7 +59,8 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
         });
         const unexpected: any = {};
         let wasUnexpected = false;
-        allKeys(actual).forEach(key => {
+        const actualKeys: (string | symbol)[] = allKeys(actual)
+        actualKeys.forEach(key => {
             // Careful, as an actual field may have an explicit value of undefined:
             if (actual[key] !== undefined && !diff.hasOwnProperty(key)) {
                 unexpected[key] = actual[key];
@@ -67,14 +68,18 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
                 compares += 1;
                 wasUnexpected = true;
             }
-        });
-        compares = compares === 0 ? 1 : compares
+        })
+        // compares = compares === 0 ? 1 : compares
         if (wasUnexpected) {
             mismatched.push(Mismatched.makeUnexpectedMessage(context, actual, unexpected));
             diff[MatchResult.unexpected] = unexpected;
         }
         if (errors === 0) {
             return MatchResult.good(compares, matchedObjectKey);
+        }
+        if (matches == 0 && (actualKeys.length == 0 || this.fieldMatchers.length === 0)) {
+            matches += 0.1
+            compares += 1
         }
         return new MatchResult(diff, compares, matches, matchedObjectKey);
     }

@@ -82,7 +82,7 @@ export const arrayDiff = <T>(matchers: DiffMatcher<T>[], actuals: any[]): Possib
 export interface PossibleMatch<T> {
     actual: Option<T>
     matcher: Option<DiffMatcher<T>>
-    actualIndex?: number
+    actualIndex?: number // This is always set on return from arrayDiff()
 }
 
 const unexpected = <T>(possible: PossibleMatch<T>) => possible.actual.isSome() && possible.matcher.isNone()

@@ -146,9 +146,9 @@ describe("arrayDiff", () => {
         const matcher = match.array.match([0]);
         const actual = [2];
         const result = arrayDiff([matcher], [actual])
-        assertThat(result).is([{actual: Option.of(actual), actualIndex: 0, matcher: Option.none()},
-            {actual: Option.none(), matcher: isMatcher(matcher)}])
-    });
+        assertThat(result).is([
+            {actual: Option.of(actual), actualIndex: 0, matcher: isMatcher(matcher)}])
+    })
 
     it("expected a [0, 1] but there was a [0, 2]", () => {
         const matcher = match.array.match([0, 1]);

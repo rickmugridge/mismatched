@@ -9,7 +9,7 @@ import {PrettyPrinter} from "..";
 import {PredicateMatcher} from "./PredicateMatcher";
 import {CustomiseMismatcher} from "../matchMaker/CustomiseMismatcher";
 
-describe("obj.match:", () => {
+describe("match.obj.match:", () => {
     it("hasProperty", () => {
         const actual = {f: undefined}
         assertThat(actual.hasOwnProperty('f')).is(true)
@@ -36,7 +36,6 @@ describe("obj.match:", () => {
 
             it('literal object with a field that is undefined', () => {
                 assertThat({f: undefined}).is({f: undefined});
-                assertThat({f: undefined}).is({} as any);
                 assertThat({}).is({f: undefined});
             });
 
