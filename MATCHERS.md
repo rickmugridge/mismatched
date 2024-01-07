@@ -26,7 +26,7 @@ See [Equal Matchers](./EqualMatchers.md) for further details of structural and i
 
 ## Array Matchers
 
-The `array` matchers allow for "exact" and partial matching on an array.
+The `array` matchers allow for "exact" and partial matching of an array.
 Embedded matchers may used within the array elements.
 
 We can match a literal array, as shown in the examples below.
@@ -35,9 +35,9 @@ This expects that each of the elements of the actual array can be matched by a c
 For example:
 
 ```
-    describe("array.match", () => {
+    describe("match.array.match()", () => {
         it("literal", () => {
-            assertThat([1, 2]).is<number[]>([1, 2]); // The generic type here is optional, giving compile-time feedback
+            assertThat([1, 2]).is([1, 2])
         });
 
         it("Embedded matcher", () => {
@@ -364,6 +364,13 @@ This matcher allows the actual value to be mapped and the matcher is applied to 
 
 See [MappedMatcher](./MappedMatcher.md) for an example and further details.
 
+### Select Matcher
+
+This is only needed when tests with complex objects/array fail to match and lead to messy details.
+This is used to specify which matcher to use with an object, based on its subtype or id, etc.
+
+See [`Matching Subtypes](./MatchingSubtypes.md).
+
 ## Writing Custom Matchers
 
 Simple matchers can use `match.predicate`. For examples:
@@ -394,31 +401,47 @@ export const match = {
         match: (expected: Array<DiffMatcher<any> | any>) => ArrayMatcher.make(expected),
         contains: (expected: DiffMatcher<any> | any) => ArrayContainsMatcher.make(expected),
         every: (expected: DiffMatcher<any> | any) => ArrayEveryMatcher.make(expected),
-        length: (expected: number) => ArrayLengthMatcher.make(expected)
+        length: (expected: number) => ArrayLengthMatcher.make(expected),
+        unordered: (expected: Array<DiffMatcher<any> | any>) => UnorderedArrayMatcher.make(expected),
+        unorderedContains: (expected: Array<DiffMatcher<any> | any>) => UnorderedArrayMatcher.make(expected, true),
     },
     aSet: {
-        match: (expected: Set<DiffMatcher<any> | any>) => SetMatcher.make(expected),
-        subset: (expected: Set<DiffMatcher<any> | any>) => SetMatcher.make(expected, true),
+        match: (expected: Set<DiffMatcher<any>> | Set<any> | Array<any> | Map<any, any>) => SetMatcher.make(expected),
+        subset: (expected: Set<DiffMatcher<any>> | Set<any> | Array<any> | Map<any, any>) => SetMatcher.make(expected, true),
     },
     obj: {
-        match: (obj: object) => ObjectMatcher.make(obj),
-        has: (expected: Array<DiffMatcher<any>> | object) => ObjectSomeMatcher.make(expected),
+        match: (expected: object) => ObjectMatcher.make(expected),
+        has: (expected: object) => ObjectSomeMatcher.make(expected),
+        key: (expected: any) => ObjectKeyMatcher.make(expected)
     },
     string: {
-        match: (expected: string) => StringMatcher.make(expected),
+        match: (expected: string | RegExp) => stringMatcher.match(expected),
         startsWith: (expected: string) => stringMatcher.startsWith(expected),
         endsWith: (expected: string) => stringMatcher.endsWith(expected),
-        includes: (expected: string) => stringMatcher.includes(expected)
+        includes: (expected: string) => stringMatcher.includes(expected),
+        asDate: (matcher: Date | any) => stringMatcher.asDate(matcher),
+        nonEmpty: () => stringMatcher.nonEmpty(),
+        asSplit: (separator: string, expected: string[] | any) => stringMatcher.asSplit(separator, expected),
+        asNumber: (expected: number = AnyMatcher.make()) => stringMatcher.asNumber(expected),
+        asDecimal: (places: number, expected: number = AnyMatcher.make()) => stringMatcher.asDecimal(places, expected),
+        fromJson: (expected: any = AnyMatcher.make()) => stringMatcher.fromJson(expected),
     },
+    uuid: () => stringMatcher.uuid(),
     number: {
         nan: () => numberMatcher.nan(),
         less: (expected: number) => numberMatcher.less(expected),
         lessEqual: (expected: number) => numberMatcher.lessEqual(expected),
         greater: (expected: number) => numberMatcher.greater(expected),
-        greaterEqual: (expected: number) => numberMatcher.greaterEqual(expected)
+        greaterEqual: (expected: number) => numberMatcher.greaterEqual(expected),
+        withinDelta: (expected: number, delta: number) => numberMatcher.withinDelta(expected, delta),
+        inRange: (lower: number, upper: number) => numberMatcher.inRange(lower, upper),
     },
     regEx: {
         match: (expected: RegExp) => RegExpMatcher.make(expected)
+    },
+    date: {
+        before: (expected: Date) => dateMatcher.before(expected),
+        after: (expected: Date) => dateMatcher.after(expected),
     },
     any: () => AnyMatcher.make(),
     anyOf: (matchers: Array<DiffMatcher<any> | any>) => AnyOfMatcher.make(matchers),
@@ -435,17 +458,23 @@ export const match = {
         number: () => PredicateMatcher.make(ofType.isNumber, "ofType.number"),
         boolean: () => PredicateMatcher.make(ofType.isBoolean, "ofType.boolean"),
         regExp: () => PredicateMatcher.make(ofType.isRegExp, "ofType.regExp"),
-        symbol: () => PredicateMatcher.make(ofType.isSymbol, "ofType.symbol")
+        symbol: () => PredicateMatcher.make(ofType.isSymbol, "ofType.symbol"),
+        date: () => PredicateMatcher.make(ofType.isDate, "ofType.date"),
+        enum: (enumeration: any, enumName: string = 'enum') => match.predicate(v =>
+            !!enumFixer.valuesOf(enumeration).find(e => e === v), enumName)
     },
     predicate: (predicate: (v: any) => boolean,
-                description: any = {predicateFailed:PrettyPrinter.functionDetails(predicate)}) =>
+                description: any = {predicateFailed: PrettyPrinter.functionDetails(predicate)}) =>
         PredicateMatcher.make(predicate, description),
-    mapped: (map: (t: any) => any, matcher: DiffMatcher<any> | any, description: any) =>
+    mapped: <T, U>(map: (t: T) => U, matcher: DiffMatcher<U> | any, description: any) =>
         MappedMatcher.make(map, matcher, description),
     bind: (matcher?: DiffMatcher<any> | any) => BindMatcher.make(matcher),
     describeContext: (describeContext: (outerContext: string, actual: any) => string, matcher: DiffMatcher<any> | any) =>
         DescribeContextMatcher.make(describeContext, matcher),
-    describe: (matcher: DiffMatcher<any> | any, description: (actual: any, context:string) => string) =>
-        DescribeMatcher.make(matcher, description)
-};
+    describe: (matcher: DiffMatcher<any> | any, description: (actual: any, context: string) => string) =>
+        DescribeMatcher.make(matcher, description),
+    identifySources: (actual: any, contributors: object, enums: object = {}): any =>
+        identifySources(actual, contributors, enums),
+    selectMatch: <T>(selector: (t: T) => T): T => SelectMatcher.make(selector)
+}
 ```

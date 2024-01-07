@@ -1,5 +1,10 @@
 # What is New
 
+## 8 Jan 2024 (version "2.13.4")
+
+* Added `match.selectMatch()` which can be used to improve error messages when matching complex subtypes, etc.
+  See [`Matching Subtypes](./MatchingSubtypes.md)
+
 ## 3 Jan 2024 (version "2.13.4")
 
 * Extended [`primitiveBuilder`](./PrimitiveBuilder.md) with arrayOf(), setOf(), mapOf()
