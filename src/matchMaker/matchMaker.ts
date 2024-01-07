@@ -118,7 +118,7 @@ class SelfReferenceMatcher<T> extends DiffMatcher<T> {
 
     private constructor() {
         super();
-        this.specificity = 0 // todo
+        this.specificity = 1000 // Want if high so that we apply it as early as possible
     }
 
     static make<T>(): any {

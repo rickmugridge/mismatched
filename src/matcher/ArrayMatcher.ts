@@ -29,11 +29,6 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
                o actual element                (element wasn't matched), ie unexpected
                o no element + matcher          (matcher matched no elements), ie expected
          */
-        // const pairsDescribe = pairs.map(pair => ({
-        //     actual: pair.actual,
-        //     matcher: pair.matcher.isSome() ? pair.matcher.get().describe() : undefined
-        // }))
-        // PrettyPrinter.logToConsole({actual, pairsDescribe, at: "ArrayMatcher.ts:28"}) // todo RM Remove
 
         let compares = 0
         let matches = 0

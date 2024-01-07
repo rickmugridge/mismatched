@@ -177,7 +177,7 @@ export class PrettyPrinter {
             );
             return new ObjectTile(fields);
         } catch (e: any) {
-            return new SimpleTile(exceptionMessage(e)); // todo Change this to an auto-coloured Tile
+            return new SimpleTile(exceptionMessage(e))
         }
     }
 }

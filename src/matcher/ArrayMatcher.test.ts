@@ -116,16 +116,10 @@ describe("array.match:", () => {
         })
 
         it('does not match literally nested with objects #2', () => {
-            // todo try directly the bits that should mismatch more finely, to see they do work directly
-            // todo It looks like the results are not propagated up properly when nested
             assertThat([1, {a: 2}, [3, [{c: 5}]]])
                 .failsWith([1, [3, [6]]],
                     [1, unexpected({a: 2}),
                         [3, [unexpected({c: 5}), expected(6)]]])
-            // assertThat([1, {a: 2}, [3, [{c: 5}]]])
-            //     .failsWith([1, 2, [3, [6]]],
-            //         [1, unexpected({a: 2}),  expected(2),
-            //             [3, unexpected([{c: 5}]), expected([6])]])
         })
 
         it('does not match literally nested: errors', () => {
