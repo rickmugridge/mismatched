@@ -63,7 +63,9 @@ export class UnorderedArrayMatcher<T> extends DiffMatcher<T[]> {
                 }
             })
             compares += failingMatchers.length
-            failingMatchers.forEach(matcher => results.push({[MatchResult.expected]: matcher.describe()}))
+            failingMatchers.forEach(matcher => {
+                results.push({[MatchResult.expected]: matcher.describe()})
+            })
             if (matches == 0 && (actualArray.length === 0 || this.matchers.length === 0)) {
                 matches += 0.1
                 compares += 1

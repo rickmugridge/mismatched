@@ -2,7 +2,7 @@ import {matchMaker} from "../matchMaker/matchMaker";
 import {MatchResult} from "../MatchResult";
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {Mismatched} from "./Mismatched";
-import {arrayDiff, PossibleMatch} from "../diff/arrayDiff";
+import {arrayDiff22, PossibleMatch} from "../diff/arrayDiff";
 import {ofType} from "../ofType";
 
 export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
@@ -23,7 +23,7 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
         if (actual.length === 0 && this.elementMatchers.length === 0) {
             return MatchResult.good(1)
         }
-        const pairs: PossibleMatch<T>[] = arrayDiff(this.elementMatchers, actual)
+        const pairs: PossibleMatch<T>[] = arrayDiff22(this.elementMatchers, actual)
         /* Each pair consists of
                o actual element + best matcher (where matching worked), ir passed or partially matched
                o actual element                (element wasn't matched), ie unexpected

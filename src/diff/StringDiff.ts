@@ -1,4 +1,4 @@
-import {Colour} from "../Colour";
+import {Colour} from "../utility/Colour";
 import {PatchItem} from "fast-array-diff/dist/diff/patch";
 import * as diff from "fast-array-diff";
 

@@ -1,4 +1,4 @@
-import {Colour} from "../Colour";
+import {Colour} from "../utility/Colour";
 
 export class SelfReferenceChecker {
     seen: Array<ContextValue> = [];

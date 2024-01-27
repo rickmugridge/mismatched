@@ -4,7 +4,7 @@ import {MatchResult} from "../MatchResult";
 import {matchMaker} from "../matchMaker/matchMaker";
 import {ObjectKeyMatcher} from "./ObjectKeyMatcher";
 import {BindMatcher} from "./BindMatcher";
-import {allKeys} from "../allKeys";
+import {allKeys} from "../utility/allKeys";
 
 export class DiffFieldMatcher<T> extends DiffMatcher<T> {
     private constructor(public fieldName: string | symbol, private matcher: DiffMatcher<T>) {

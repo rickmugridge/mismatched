@@ -1,6 +1,7 @@
 import {ofType} from "./ofType";
 import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
-import {Colour} from "./Colour";
+import {Colour} from "./utility/Colour";
+import {DiffMatcher} from "./matcher/DiffMatcher"
 
 
 export class MatchResult {
@@ -8,6 +9,7 @@ export class MatchResult {
     static was = Colour.bg_cyan("     was");
     static expected = Colour.bg_cyan("expected");
     static unexpected = Colour.bg_cyan("unexpected");
+    static wrongOrder = Colour.bg_cyan("out of order");
     static differ = Colour.bg_cyan("  differ");
     public matchRate: number;
 
@@ -17,6 +19,18 @@ export class MatchResult {
 
     static useConsoleLogging() {
         MatchResult.consoleLogging = true
+    }
+
+    static extraMatcher(matcher: DiffMatcher<any>): any {
+        return {[MatchResult.expected]: matcher.describe()}
+    }
+
+    static extraActual(actual: any): any {
+        return {[MatchResult.unexpected]: actual}
+    }
+
+   static outOfOrder(actual: any): any {
+        return {[MatchResult.wrongOrder]: actual}
     }
 
     static wasExpected(was: any, expected: any, compares: any, matches: any): MatchResult {

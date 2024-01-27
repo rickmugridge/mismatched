@@ -1,6 +1,6 @@
 import {assertThat} from "../assertThat";
 import {cleanString, PrettyPrinter} from "./PrettyPrinter";
-import {Colour} from "../Colour";
+import {Colour} from "../utility/Colour";
 import {match} from "../match";
 
 describe("PrettyPrinter():", () => {

@@ -8,7 +8,7 @@ import {ArrayTile} from "./tile/ArrayTile";
 import {PseudoCallTile} from "./tile/PseudoCallTile";
 import {FieldTile, ObjectTile} from "./tile/ObjectTile";
 import {DiffMatcher} from "../matcher/DiffMatcher";
-import {allKeys} from "../allKeys";
+import {allKeys} from "../utility/allKeys";
 
 export const defaultLineWidth = 80;
 export const defaultMaxComplexity = 30;

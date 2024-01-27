@@ -31,6 +31,7 @@ import {ObjectKeyMatcher} from "./matcher/ObjectKeyMatcher";
 import {dateMatcher} from "./matcher/DateMatcher";
 import {enumFixer} from "./identifySources/enumFixer";
 import {SelectMatcher} from "./matcher/SelectMatch";
+import {ExactlyOneOfMatcher} from "./matcher/ExactlyOneOfMatcher"
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -83,6 +84,7 @@ export const match = {
     },
     any: () => AnyMatcher.make(),
     anyOf: (matchers: Array<DiffMatcher<any> | any>) => AnyOfMatcher.make(matchers),
+    exactlyOneOf: (matchers: Array<DiffMatcher<any> | any>) => ExactlyOneOfMatcher.make(matchers),
     allOf: (matchers: Array<DiffMatcher<any> | any>) => AllOfMatcher.make(matchers),
     optional: (matcher: DiffMatcher<any> | any) => OptionalMatcher.make(matcher),
     optionalNull: (matcher: DiffMatcher<any> | any) => OptionalNullMatcher.make(matcher),
