@@ -3,46 +3,26 @@ import {Mismatched} from "../matcher/Mismatched"
 import {MatchResult} from "../MatchResult"
 import {ofType} from "../ofType"
 
-const findBestMatchForMatcher = <T>(context: ContextOfValidationError,
-                                    matcher: DiffMatcher<T>,
-                                    originalMatcherIndex: number,
-                                    actualElements: T[],
-                                    unassignedActualElements: Set<number>,
-                                    unassignedMatchers: Set<number>,
-                                    assignments: Assignment<T>[]) => {
-    let bestAssignedActualIndex = -1
-    let bestMatchResult: MatchResult | undefined = undefined
-    let bestMismatches: Mismatched[] = []
-    for (let actualIndex = 0; actualIndex < actualElements.length; actualIndex++) {
-        const actualElement = actualElements[actualIndex]
-        if (unassignedActualElements.has(actualIndex)) {
-            const mismatches: Mismatched[] = []
-            const matchResult = matcher.mismatches(context, mismatches, actualElement)
-            if (matchResult.matchRate > 0) {
-                if (matchResult.passed() || ofType.isUndefined(bestMatchResult) || matchResult.matchRate > bestMatchResult.matchRate) {
-                    bestMatchResult = matchResult
-                    bestAssignedActualIndex = actualIndex
-                    bestMismatches = mismatches
-                    unassignedMatchers.delete(originalMatcherIndex)
-                    unassignedActualElements.delete(actualIndex)
-                }
-                if (matchResult.passed()) {
-                    break
-                }
-            }
-        }
-    }
-    if (ofType.isDefined(bestMatchResult)) {
-        assignments.push({
-            actualElementIndex: bestAssignedActualIndex,
-            matcherIndex: originalMatcherIndex,
-            matchResult: bestMatchResult,
-            mismatches: bestMismatches
-        })
-    }
-}
-
 export module bestMatcherAssignments {
+    /*
+            Determine the best (based on specificity heuristic) assignment of matchers to actual elements, as follows:
+            Given a set of matchers, and an array of actualElements:
+              + Sort the matchers by specificity, with more specific earlier
+                 + Retain the original position with those reordered matchers
+              + Go through the matchers in that order, looking for full matches. For each one:
+                 + Try the matcher against all the actualElements that have not been assigned to a matcher yet
+                 + If there is a full match, assign that matcher to that element, and mark the element and
+                   matcher as no longer available.
+              + Go through the matchers in that order, looking for partial matches. For each one:
+                 + Try the matcher against all the actualElements that have not been assigned to a matcher yet
+                 + Track which element it matches against best (including completely)
+                     + And hold the MatchResult and mismatches resulting from that match
+                 + Assignment the best matching element to that matcher, if any, and mark the element and
+                   matcher as no longer available.
+               + return:
+                  + The assignments of elements and matchers
+                  + Any elements or matchers that are unassigned at the end
+     */
     export const determine = <T>(context: ContextOfValidationError,
                                  unorderedMatchers: DiffMatcher<T>[],
                                  actualElements: T[]): Assignations<T> => {
@@ -50,19 +30,69 @@ export module bestMatcherAssignments {
         const matchers: [DiffMatcher<T>, number][] = [...unorderedMatchers]
             .map((m, i) => [m, i])
         matchers.sort((m1: [DiffMatcher<T>, number], m2: [DiffMatcher<T>, number]) =>
-            m2[0].specificity - m1[0].specificity) // todo check ordering here
+            m2[0].specificity - m1[0].specificity)
 
         const unassignedMatchers: Set<number> = new Set([...Array(matchers.length).keys()])
         const unassignedActualElements: Set<number> = new Set([...Array(actualElements.length).keys()])
+        // Try for full match first
         for (let matcherIndex = 0; matcherIndex < matchers.length; matcherIndex++) {
             const [matcher, originalMatcherIndex] = matchers[matcherIndex]
-            findBestMatchForMatcher(context, matcher, originalMatcherIndex, actualElements,
+            findBestMatchForMatcher(true, context, matcher, originalMatcherIndex, actualElements,
+                unassignedActualElements, unassignedMatchers, assignments)
+        }
+        // Try for partial matches with the rest
+        for (let matcherIndex = 0; matcherIndex < matchers.length; matcherIndex++) {
+            const [matcher, originalMatcherIndex] = matchers[matcherIndex]
+            findBestMatchForMatcher(false, context, matcher, originalMatcherIndex, actualElements,
                 unassignedActualElements, unassignedMatchers, assignments)
         }
         return {
             assignments,
             unassignedActualElements: Array.from(unassignedActualElements),
             unassignedMatchers: Array.from(unassignedMatchers)
+        }
+    }
+
+    // See doc above for the details of this
+    const findBestMatchForMatcher = <T>(fullMatchOnly: boolean,
+                                        context: ContextOfValidationError,
+                                        matcher: DiffMatcher<T>,
+                                        originalMatcherIndex: number,
+                                        actualElements: T[],
+                                        unassignedActualElements: Set<number>,
+                                        unassignedMatchers: Set<number>,
+                                        assignments: Assignment<T>[]) => {
+        let bestAssignedActualIndex = -1
+        let bestMatchResult: MatchResult | undefined = undefined
+        let bestMismatches: Mismatched[] = []
+        for (let actualIndex = 0; actualIndex < actualElements.length; actualIndex++) {
+            const actualElement = actualElements[actualIndex]
+            if (unassignedActualElements.has(actualIndex)) {
+                const mismatches: Mismatched[] = []
+                const matchResult = matcher.mismatches(context, mismatches, actualElement)
+                if (matchResult.matchRate > 0) {
+                    const partialMatchAllowed = !fullMatchOnly &&
+                        (ofType.isUndefined(bestMatchResult) || matchResult.matchRate > bestMatchResult.matchRate)
+                    if (matchResult.passed() || partialMatchAllowed) {
+                        bestMatchResult = matchResult
+                        bestAssignedActualIndex = actualIndex
+                        bestMismatches = mismatches
+                        unassignedMatchers.delete(originalMatcherIndex)
+                        unassignedActualElements.delete(actualIndex)
+                    }
+                    if (matchResult.passed()) {
+                        break
+                    }
+                }
+            }
+        }
+        if (ofType.isDefined(bestMatchResult)) {
+            assignments.push({
+                actualElementIndex: bestAssignedActualIndex,
+                matcherIndex: originalMatcherIndex,
+                matchResult: bestMatchResult,
+                mismatches: bestMismatches
+            })
         }
     }
 }
