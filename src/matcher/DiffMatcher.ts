@@ -38,7 +38,10 @@ export class ContextOfValidationError {
     }
 
     outerContext() {
-        return this.isUserDefined ? this.context : ''
+        if (this.isUserDefined) {
+            return ''
+        }
+        return this.context
     }
 
     inTrial(trialMatch: boolean = true): this {

@@ -10,6 +10,7 @@ import {AnyMatcher} from "../matcher/AnyMatcher";
 import {PredicateMatcher} from "../matcher/PredicateMatcher";
 import {CustomiseMismatcher} from "./CustomiseMismatcher";
 import {DateMatcher} from "../matcher/DateMatcher";
+import {ItIsMatcher} from "../matcher/ItIsMatcher"
 
 describe("matchMaker():", () => {
     const isEqualsMatcher = match.instanceOf(IsEqualsMatcher);
@@ -81,20 +82,23 @@ describe("matchMaker():", () => {
         assertThat(matchMaker(/ab/)).is(match.instanceOf(RegExpMatcher));
     });
 
-    it("mock", () => {
-        const pseudoMockSymbol = Symbol("pseudoMock");
-        PrettyPrinter.make(80, 10, 100, pseudoMockSymbol); // register it
+    it("An expected mock object can only match itself", () => {
         const mock = new Proxy(() => 3, {
             get: (_target, propKey: symbol, _receiver) => {
                 if (propKey === PrettyPrinter.symbolForMockName) {
-                    return () => ({mock: "mockName"});
+                    return () => "mockName"
                 }
                 return undefined;
             }
         });
-        assertThat(matchMaker(mock)).is(match.instanceOf(IsEqualsMatcher));
-        assertThat(mock).is(mock);
-    });
+        assertThat(PrettyPrinter.isMock(mock)).is(true)
+        assertThat(matchMaker(mock)).is(match.instanceOf(ItIsMatcher))
+        assertThat(mock).is(mock)
+        assertThat(1).isNot(mock as any)
+        assertThat(mock).isNot(1)
+        assertThat(mock).isNot([1] as any)
+        assertThat(mock).isNot({a: 1} as any)
+    })
 
     describe('self-reference', () => {
         it("self-reference to array at top level", () => {

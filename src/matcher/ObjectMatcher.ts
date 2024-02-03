@@ -23,6 +23,9 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
         if (this.expectedObject === actual) {
             return MatchResult.good(1, true)
         }
+        if (allKeys(actual).length === 0 && this.fieldMatchers.length === 0) {
+            return MatchResult.good(1, false)
+        }
         const diff = {}
         let errors = 0
         let compares = 0

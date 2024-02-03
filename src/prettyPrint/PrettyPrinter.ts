@@ -16,7 +16,7 @@ export const defaultMaxTilesCount = 10000;
 
 export class PrettyPrinter {
     static symbolForPseudoCall = Symbol("pseudoCall");
-    static symbolForMockName: any | undefined;
+    static symbolForMockName = Symbol("mockName");
     private static customPrettyPrinters = new Map<DiffMatcher<any>, (t: any) => string>();
     selfReference = new SelfReferenceChecker();
     tilesCount = 0;
@@ -32,18 +32,18 @@ export class PrettyPrinter {
 
     static make(lineWidth = defaultLineWidth,
                 maxComplexity = defaultMaxComplexity,
-                maxTilesCount = defaultMaxTilesCount,
-                symbolForMockName?: any): PrettyPrinter {
-        if (symbolForMockName) {
-            PrettyPrinter.symbolForMockName = symbolForMockName; // Just use the latest one
-        }
+                maxTilesCount = defaultMaxTilesCount): PrettyPrinter {
         return new PrettyPrinter(lineWidth, maxComplexity, maxTilesCount);
     }
 
     static isMock(value: any): boolean {
-        return ofType.isFunction(value) &&
-            PrettyPrinter.symbolForMockName &&
-            !ofType.isUndefined(value[PrettyPrinter.symbolForMockName]);
+        try {
+            // Succeeds if that symbol is defined. Only for a mock object Proxy
+            const v = value[PrettyPrinter.symbolForMockName]
+            return ofType.isDefined(v)
+        } catch (e) {
+            return false
+        }
     }
 
     static logToConsole(value: any) {

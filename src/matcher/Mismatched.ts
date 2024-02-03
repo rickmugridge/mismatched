@@ -1,5 +1,6 @@
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {handleSymbol, MatchResult} from "../MatchResult";
+import {PrettyPrinter} from "../prettyPrint/PrettyPrinter"
 
 export class Mismatched {
     static makeExpectedMessage(context: ContextOfValidationError, actual: any, expected: any) {
@@ -10,10 +11,7 @@ export class Mismatched {
     }
 
     static wasExpected(context: ContextOfValidationError, actual: any, matcher: DiffMatcher<any>) {
-        const mismatch = new Mismatched();
-        (mismatch as any)[context.context] = actual
-        (mismatch as any).wasExpected = matcher.describe()
-        return mismatch
+        return `${context.outerContext()}, was: ${actual}, expected ${matcher.describe()}`
     }
 
     static makeMissing(context: ContextOfValidationError, actual: any, expected: any) {
@@ -24,21 +22,15 @@ export class Mismatched {
     }
 
     static extraMatcher(context: ContextOfValidationError, matcher: DiffMatcher<any>) {
-        const mismatch = new Mismatched();
-        (mismatch as any)[`${context.context}: Missing`] = matcher.describe()
-        return mismatch
+        return `${context.outerContext()}: expected: ${render(matcher.describe())}`
     }
 
     static extraActual(context: ContextOfValidationError, actual: any) {
-        const mismatch = new Mismatched();
-        (mismatch as any)[`${context.context}: Extra`] = actual
-        return mismatch
+        return `${context.outerContext()}: unexpected: ${render(actual)}`
     }
 
     static outOfOrder(context: ContextOfValidationError, actual: any) {
-        const mismatch = new Mismatched();
-        (mismatch as any)[`${context.context}: Out of order`] = actual
-        return mismatch
+        return `${context.outerContext()}: out of order: ${render(actual)}`
     }
 
     static makeUnexpectedMessage(context: ContextOfValidationError, actual: any, unexpected: any) {
@@ -61,3 +53,4 @@ export const unexpected = (expected: any) =>
         [MatchResult.unexpected]: handleSymbol(expected)
     })
 
+const render = (actual:any) => PrettyPrinter.make().render(actual)

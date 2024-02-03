@@ -1,18 +1,26 @@
 import {assertThat} from "../assertThat"
-import {Assignations, bestMatcherAssignments} from "./bestMatcherAssignments"
+import {BestMatcherAssignments} from "./BestMatcherAssignments"
 import {ContextOfValidationError} from "../matcher/DiffMatcher"
 import {match} from "../match"
 import {matchMaker} from "../matchMaker/matchMaker"
 import {MatchResult} from "../MatchResult"
 
+const m0 = matchMaker(0)
+const m1 = matchMaker(1)
+const m2 = matchMaker(2)
+const m3 = matchMaker(3)
+const m4 = matchMaker(4)
+
 describe("bestMatcherAssignments", () => {
     const context = new ContextOfValidationError("test")
+    const determine = (actuals: any[], matchers: any[]) =>
+        BestMatcherAssignments.determine(context, actuals, matchers.map(matchMaker))
     const mapMatchResultToMatchRate = (expectedRate: number) =>
         match.mapped((mr: MatchResult) => mr.matchRate,
             expectedRate, `MatchResult with a matchRate of ${expectedRate}`)
 
-    it("Has none of each", () => {
-        assertThat(bestMatcherAssignments.determine(context, [], []))
+    it("[] matched by []", () => {
+        assertThat(determine([], []))
             .is({
                 assignments: [],
                 unassignedActualElements: [],
@@ -20,11 +28,21 @@ describe("bestMatcherAssignments", () => {
             })
     })
 
-    it("2 matchers but no actual elements", () => {
-        const matcher1 = match.ofType.string()
-        const matcher2 = match.any()
-        let unorderedMatchers = [matcher1, matcher2]
-        assertThat(bestMatcherAssignments.determine(context, unorderedMatchers, []))
+    it("[1] matched by [1]", () => {
+        assertThat(determine([1], [1]))
+            .is({
+                assignments: [{
+                    actualElementIndex: 0, matcherIndex: 0,
+                    matchResult: mapMatchResultToMatchRate(1),
+                    mismatches: []
+                }],
+                unassignedActualElements: [],
+                unassignedMatchers: []
+            })
+    })
+
+    it("[] matched by [1, 2]", () => {
+        assertThat(determine([], [1, 2]))
             .is({
                 assignments: [],
                 unassignedActualElements: [],
@@ -32,12 +50,26 @@ describe("bestMatcherAssignments", () => {
             })
     })
 
-    it("2 matchers and 2 actual elements, but none matching", () => {
-        const matcher1 = match.ofType.string()
-        const matcher2 = match.ofType.date()
-        let unorderedMatchers = [matcher1, matcher2]
-        let actualElements: any[] = [1, 2]
-        assertThat(bestMatcherAssignments.determine(context, unorderedMatchers, actualElements))
+    it("[1, 2] matched by []", () => {
+        assertThat(determine([1, 2], []))
+            .is({
+                assignments: [],
+                unassignedActualElements: [0, 1],
+                unassignedMatchers: []
+            })
+    })
+
+    it("[2] matched by [1]", () => {
+        assertThat(determine([2], [1]))
+            .is({
+                assignments: [],
+                unassignedActualElements: [0],
+                unassignedMatchers: [0]
+            })
+    })
+
+    it("[1, 2] matched by [3, 4]", () => {
+        assertThat(determine([1, 2], [3, 4]))
             .is({
                 assignments: [],
                 unassignedActualElements: [0, 1],
@@ -45,15 +77,8 @@ describe("bestMatcherAssignments", () => {
             })
     })
 
-    it("2 matchers and 2 actual elements, one matching", () => {
-        const matcher0 = match.ofType.string()
-        const matcher1 = matchMaker(2)
-        let unorderedMatchers = [matcher0, matcher1]
-        let actualElements: any[] = [1, 2]
-        let result: Assignations<any> = bestMatcherAssignments.determine(
-            context, unorderedMatchers, actualElements)
-
-        assertThat(result)
+    it("[1, 2] matched by [0, 2]", () => {
+        assertThat(determine([1, 2], [0, 2]))
             .is({
                 assignments: [{
                     actualElementIndex: 1, matcherIndex: 1,
@@ -65,15 +90,8 @@ describe("bestMatcherAssignments", () => {
             })
     })
 
-    it("2 matchers and 2 actual elements, and both matching", () => {
-        const matcher1 = matchMaker(2)
-        const matcher2 = matchMaker(1)
-        let unorderedMatchers = [matcher1, matcher2]
-        let actualElements: any[] = [1, 2]
-        let result: Assignations<any> = bestMatcherAssignments.determine(
-            context, unorderedMatchers, actualElements)
-
-        assertThat(result)
+    it("[1, 2] matched by [2, 1]", () => {
+        assertThat(determine([1, 2], [2, 1]))
             .is({
                 assignments: [
                     {
@@ -92,19 +110,14 @@ describe("bestMatcherAssignments", () => {
             })
     })
 
-    it("1 matchers and 1 actual elements, which partially match", () => {
-        const matcher1 = matchMaker({a: 1, b: 3})
-        let unorderedMatchers = [matcher1]
-        let actualElements: any[] = [{a: 1, b: 2}]
-        let result: Assignations<any> = bestMatcherAssignments.determine(
-            context, unorderedMatchers, actualElements)
-
-        assertThat(result)
+    it("[{a: 1, b: 2}] matched by [{a: 1, b: 3}]", () => {
+        assertThat(determine(
+            [{a: 1, b: 2}], [{a: 1, b: 3}]))
             .is({
                 assignments: [
                     {
                         actualElementIndex: 0, matcherIndex: 0,
-                        matchResult: mapMatchResultToMatchRate(0.6666666666666666),
+                        matchResult: mapMatchResultToMatchRate(4 / 6),
                         mismatches: [{"test.b": 2, expected: 3}]
                     }
                 ],
@@ -113,15 +126,10 @@ describe("bestMatcherAssignments", () => {
             })
     })
 
-    it("All assigned, fully matching, matchers in specificity order", () => {
-        let actual0 = {a: 1, b: 2} // should match with matcher1
-        let actual1 = {a: 2, b: 3}
-        const matcher0 = matchMaker(actual0)
-        const matcher1 = match.any()
-        let result: Assignations<any> = bestMatcherAssignments.determine(
-            context, [matcher0, matcher1], [actual0, actual1])
-
-        assertThat(result)
+    it("[{a: 1, b: 2}, {a: 2, b: 3}] matched by [{a: 1, b: 2}, *]", () => {
+        assertThat(determine(
+            [{a: 1, b: 2}, {a: 2, b: 3}],
+            [{a: 1, b: 2}, match.any()]))
             .is({
                 assignments: [
                     {
@@ -140,15 +148,11 @@ describe("bestMatcherAssignments", () => {
             })
     })
 
-    it("All assigned, fully matching, matchers out of specificity order", () => {
-        let actual0 = {a: 1, b: 2} // should match with matcher1
-        let actual1 = {a: 2, b: 3}
-        const matcher0 = match.any()
-        const matcher1 = matchMaker(actual0)
-        let result: Assignations<any> = bestMatcherAssignments.determine(
-            context, [matcher0, matcher1], [actual0, actual1])
-
-        assertThat(result)
+    it("[{a: 1, b: 2}, {a: 2, b: 3}] matched by [*, {a: 1, b: 2}]", () => {
+        // should match with matcher1
+        assertThat(determine(
+            [{a: 1, b: 2}, {a: 2, b: 3}],
+            [match.any(), {a: 1, b: 2}]))
             .is({
                 assignments: [
                     {
@@ -165,14 +169,10 @@ describe("bestMatcherAssignments", () => {
             })
     })
 
-    it("One assigned, partially matching", () => {
-        let actual0 = {a: 1, b: 2}
-        let actual1 = {a: 2, b: 3}
-        const matcher0 = matchMaker({a: 1, b: 22})
-        const matcher1 = matchMaker({...actual1, c: 4, d: 5})
-        let result: Assignations<any> = bestMatcherAssignments.determine(
-            context, [matcher0, matcher1], [actual0, actual1])
-        assertThat(result)
+    it("[{a: 1, b: 2}, {a: 2, b: 3}] matched by [{a: 1, b: 22}, {a: 2, b: 3, c: 4, d: 5}]", () => {
+        assertThat(determine(
+            [{a: 1, b: 2}, {a: 2, b: 3}],
+            [{a: 1, b: 22}, {a: 2, b: 3, c: 4, d: 5}]))
             .is({
                 assignments: [
                     {
@@ -190,18 +190,9 @@ describe("bestMatcherAssignments", () => {
     })
 
     it("Low specificity matcher is matched first if it's the only complete match", () => {
-        let actual0 = {a: 1, b: 2}
-        let actual1 = {a: 222, b: 3}
-        let actual2 = {a: 3, b: 2}
-        let actual3 = "s"
-        const matcher0 = matchMaker({a: 1, b: 2}) // Full match, so matches [0]
-        const matcher1 = matchMaker({...actual1, c: 4, d: 5}) // Most specific, so assigned first to [1]
-        const matcher2 = matchMaker({...actual0, c: 3}) // Next specific, so assigned to [2]
-        const matcher3 = matchMaker("t") // Doesn't match at all
-        let result: Assignations<any> = bestMatcherAssignments.determine(
-            context, [matcher0, matcher1, matcher2, matcher3], [actual0, actual1, actual2, actual3])
-
-        assertThat(result)
+        assertThat(determine(
+            [{a: 1, b: 2}, {a: 222, b: 3}, {a: 3, b: 2}, "s"],
+            [{a: 1, b: 2}, {a: 222, b: 3, c: 4, d: 5}, {a: 1, b: 2, c: 3}, "t"]))
             .is({
                 assignments: [
                     {

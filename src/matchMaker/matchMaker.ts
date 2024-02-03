@@ -15,6 +15,8 @@ import {Mismatched} from "../matcher/Mismatched";
 import {MatchResult} from "../MatchResult";
 import {DateMatcher} from "../matcher/DateMatcher";
 import {ToBeUnquotedMatcher} from "../matcher/ToBeUnquotedMatcher";
+import {ItIsMatcher} from "../matcher/ItIsMatcher"
+import * as util from "util"
 
 let level = 0
 const references: Set<any> = new Set()
@@ -60,7 +62,7 @@ export function matchMaker(expected: DiffMatcher<any> | any): DiffMatcher<any> {
             }
         }
         if (PrettyPrinter.isMock(expected)) {
-            return IsEqualsMatcher.make(expected);
+            return ItIsMatcher.make(expected);
         }
         if (ofType.isFunction(expected)) {
             return AnyMatcher.make();

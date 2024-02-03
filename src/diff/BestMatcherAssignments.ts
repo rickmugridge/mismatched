@@ -2,8 +2,9 @@ import {ContextOfValidationError, DiffMatcher} from "../matcher/DiffMatcher"
 import {Mismatched} from "../matcher/Mismatched"
 import {MatchResult} from "../MatchResult"
 import {ofType} from "../ofType"
+import {AnyMatcher} from "../matcher/AnyMatcher"
 
-export module bestMatcherAssignments {
+export module BestMatcherAssignments {
     /*
             Determine the best (based on specificity heuristic) assignment of matchers to actual elements, as follows:
             Given a set of matchers, and an array of actualElements:
@@ -24,26 +25,26 @@ export module bestMatcherAssignments {
                   + Any elements or matchers that are unassigned at the end
      */
     export const determine = <T>(context: ContextOfValidationError,
-                                 unorderedMatchers: DiffMatcher<T>[],
-                                 actualElements: T[]): Assignations<T> => {
+                                 actualElements: T[],
+                                 matchers: DiffMatcher<T>[]): Assignations<T> => {
         const assignments: Assignment<T>[] = []
-        const matchers: [DiffMatcher<T>, number][] = [...unorderedMatchers]
+        const orderedMatchers: [DiffMatcher<T>, number][] = [...matchers]
             .map((m, i) => [m, i])
-        matchers.sort((m1: [DiffMatcher<T>, number], m2: [DiffMatcher<T>, number]) =>
+        orderedMatchers.sort((m1: [DiffMatcher<T>, number], m2: [DiffMatcher<T>, number]) =>
             m2[0].specificity - m1[0].specificity)
 
-        const unassignedMatchers: Set<number> = new Set([...Array(matchers.length).keys()])
+        const unassignedMatchers: Set<number> = new Set([...Array(orderedMatchers.length).keys()])
         const unassignedActualElements: Set<number> = new Set([...Array(actualElements.length).keys()])
         // Try for full match first
-        for (let matcherIndex = 0; matcherIndex < matchers.length; matcherIndex++) {
-            const [matcher, originalMatcherIndex] = matchers[matcherIndex]
-            findBestMatchForMatcher(true, context, matcher, originalMatcherIndex, actualElements,
+        for (let matcherIndex = 0; matcherIndex < orderedMatchers.length; matcherIndex++) {
+            const [matcher, originalMatcherIndex] = orderedMatchers[matcherIndex]
+            findBestMatchForMatcher(false, context, matcher, originalMatcherIndex, actualElements,
                 unassignedActualElements, unassignedMatchers, assignments)
         }
         // Try for partial matches with the rest
-        for (let matcherIndex = 0; matcherIndex < matchers.length; matcherIndex++) {
-            const [matcher, originalMatcherIndex] = matchers[matcherIndex]
-            findBestMatchForMatcher(false, context, matcher, originalMatcherIndex, actualElements,
+        for (let matcherIndex = 0; matcherIndex < orderedMatchers.length; matcherIndex++) {
+            const [matcher, originalMatcherIndex] = orderedMatchers[matcherIndex]
+            findBestMatchForMatcher(true, context, matcher, originalMatcherIndex, actualElements,
                 unassignedActualElements, unassignedMatchers, assignments)
         }
         return {
@@ -54,7 +55,7 @@ export module bestMatcherAssignments {
     }
 
     // See doc above for the details of this
-    const findBestMatchForMatcher = <T>(fullMatchOnly: boolean,
+    const findBestMatchForMatcher = <T>(partiallyMatching: boolean,
                                         context: ContextOfValidationError,
                                         matcher: DiffMatcher<T>,
                                         originalMatcherIndex: number,
@@ -71,9 +72,11 @@ export module bestMatcherAssignments {
                 const mismatches: Mismatched[] = []
                 const matchResult = matcher.mismatches(context, mismatches, actualElement)
                 if (matchResult.matchRate > 0) {
-                    const partialMatchAllowed = !fullMatchOnly &&
+                    const matcherAllowed = partiallyMatching || !(matcher instanceof AnyMatcher)
+                    const matcherPassed = matchResult.passed() || matcherAllowed
+                    const partialMatchAllowed = partiallyMatching &&
                         (ofType.isUndefined(bestMatchResult) || matchResult.matchRate > bestMatchResult.matchRate)
-                    if (matchResult.passed() || partialMatchAllowed) {
+                    if (matcherPassed || partialMatchAllowed) {
                         bestMatchResult = matchResult
                         bestAssignedActualIndex = actualIndex
                         bestMismatches = mismatches
@@ -94,6 +97,12 @@ export module bestMatcherAssignments {
                 mismatches: bestMismatches
             })
         }
+    }
+
+    export const emptyAssignment: Assignations<any> = {
+        assignments: [],
+        unassignedActualElements: [],
+        unassignedMatchers: []
     }
 }
 
