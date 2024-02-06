@@ -49,7 +49,7 @@ describe("AllOfMatcher:", () => {
             const validation = validateThat(3).satisfies(expected)
             assertThat(validation.passed()).is(false)
             assertThat(validation.errors).is([
-                `{actual: 3, expected: {instanceOf: "Date"}}`
+                `actual: 3, expected: {instanceOf: "Date"}`
             ])
         })
     })

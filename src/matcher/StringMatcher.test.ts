@@ -102,11 +102,11 @@ describe("StringMatcher:", () => {
             assertThat("a").failsWith("b",
                 {[MatchResult.was]: "a", [MatchResult.expected]: "b"})
 
-            const mismatched: Array<Mismatched> = []
+            const mismatched: string[] = []
             const matcher = match.string.match("b");
             (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, "a")
             assertThat(mismatched).is([
-                {actual: "a", expected: "b"}
+                'actual: "a", expected: "b"'
             ])
         })
     })
@@ -124,7 +124,7 @@ describe("StringMatcher:", () => {
             const validation = validateThat("b").satisfies(expected)
             assertThat(validation.passed()).is(false)
             assertThat(validation.errors).is([
-                `{actual: "b", expected: "c"}`
+                `actual: "b", expected: "c"`
             ])
         })
 
@@ -132,7 +132,7 @@ describe("StringMatcher:", () => {
             const validation = validateThat("b").satisfies(expected)
             assertThat(validation.passed()).is(false)
             assertThat(validation.errors).is([
-                `{actual: "b", expected: {"match.string.startsWith": "a"}}`
+                `actual: "b", expected: {"match.string.startsWith": "a"}`
             ])
         })
     })

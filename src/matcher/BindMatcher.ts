@@ -16,7 +16,7 @@ export class BindMatcher<T> extends DiffMatcher<T> {
     }
 
     // Doesn't save the binding when we running a trial
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: T): MatchResult {
         if (this.boundValueMatcher === undefined) {
             if (this.matcher) {
                 const result = this.matcher.mismatches(context, mismatched, actual)

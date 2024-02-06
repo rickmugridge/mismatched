@@ -16,7 +16,6 @@ import {MatchResult} from "../MatchResult";
 import {DateMatcher} from "../matcher/DateMatcher";
 import {ToBeUnquotedMatcher} from "../matcher/ToBeUnquotedMatcher";
 import {ItIsMatcher} from "../matcher/ItIsMatcher"
-import * as util from "util"
 
 let level = 0
 const references: Set<any> = new Set()
@@ -127,7 +126,7 @@ class SelfReferenceMatcher<T> extends DiffMatcher<T> {
         return new SelfReferenceMatcher()
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: T): MatchResult {
         if (this.boundValue === undefined) {
             this.boundValue = actual
             const matchResult = this.matcher.matches(actual);

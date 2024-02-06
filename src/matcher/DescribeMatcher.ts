@@ -12,7 +12,7 @@ export class DescribeMatcher<T> extends DiffMatcher<T> {
         return new DescribeMatcher(matchMaker(matcher), description)
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: T): MatchResult {
         const matchResult = this.matcher.mismatches(context, [], actual);
         if (matchResult.passed()) {
             return MatchResult.good(matchResult.compares);

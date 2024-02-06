@@ -27,33 +27,33 @@ const es = diff.getPatch([1, 2, 3], [2, 3, 4]);
  */
 
 export const mapDeltas = (deltas: PatchItem<any>[], actualElementsCount: number): DeltaMapping[] => {
+    // PrettyPrinter.logToConsole({deltas, at: "mapDeltas.ts:30"}) // todo RM Remove
+
     let results: DeltaMapping[] = []
     let actualIndex = 0
     let addedCount = 0 // This tracks how many items (matchers) that diff has added
     deltas.forEach(delta => {
         // delta has oldPos: number, and items: any[]
-        const start = Math.min(delta.oldPos + addedCount, actualElementsCount)
         switch (delta.type) {
             case "add":
                 // Matchers have been added. We ignore those now and put them at the end.
                 // Add actual elements that were not mentioned up to that point, but did match
-                for (let i = actualIndex; i < start; i++) {
-                    results.push({matched: i})
-                    actualIndex++
+                const start = Math.min(delta.oldPos + addedCount, actualElementsCount)
+                while (actualIndex < start) {
+                    results.push({matched: actualIndex++})
                 }
-                addedCount += delta.items.length
+                // addedCount += delta.items.length - 1
                 break
             case "remove":
                 // Actual elements are missing, and so are "removed"
                 // Add actual elements that were not mentioned up to that point
-                for (let i = actualIndex; i < start; i++) {
-                    results.push({matched: i})
-                    actualIndex++
+                const start2 = Math.min(delta.oldPos + addedCount, actualElementsCount)
+                while (actualIndex < start2) {
+                    results.push({matched: actualIndex++})
                 }
                 // Mark the actual elements as expected
                 delta.items.forEach(() => {
-                    results.push({actualRemoved: actualIndex})
-                    actualIndex++
+                    results.push({actualRemoved: actualIndex++})
                 })
                 break
         }

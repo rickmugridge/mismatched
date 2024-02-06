@@ -125,14 +125,14 @@ describe("set:", () => {
                 const validation = validateThat(actual).satisfies(expected);
                 assertThat(validation.passed()).is(false);
                 assertThat(validation.errors).is([
-                    '{"actual[1][0]": "s", expected: "ofType.number"}']);
+                    'actual[1][0]: "s", expected: "ofType.number"']);
             });
 
             it("fails as not an array", () => {
                 const validation = validateThat(false).satisfies(expected);
                 assertThat(validation.passed()).is(false);
                 assertThat(validation.errors).is([
-                    `{actual: false, expected: "set expected"}`
+                    `actual: false, expected: "set expected"`
                 ])
             });
         });
@@ -176,7 +176,7 @@ describe("set:", () => {
                 const validation = validateThat(actual).satisfies(match.aSet.subset(expected));
                 assertThat(validation.passed()).is(false);
                 assertThat(validation.errors).is([
-                    '{"actual[1][0]": "s", expected: "ofType.number"}']);
+                    'actual[1][0]: "s", expected: "ofType.number"']);
             });
         });
     });

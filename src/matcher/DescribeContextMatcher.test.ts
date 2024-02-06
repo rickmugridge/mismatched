@@ -1,8 +1,7 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
-import {Mismatched} from "./Mismatched";
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("DescribeContextMatcher()", () => {
@@ -26,7 +25,7 @@ describe("DescribeContextMatcher()", () => {
         });
 
         it("mismatches: errors", () => {
-            const mismatched: Array<Mismatched> = [];
+            const mismatched: string[] = [];
             (expected as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, 2);
             assertThat(mismatched).is(["4 of four"]);
         });

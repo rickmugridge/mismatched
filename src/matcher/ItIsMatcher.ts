@@ -7,7 +7,7 @@ export class ItIsMatcher extends DiffMatcher<any> {
         super();
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: any): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: any): MatchResult {
         if (actual === this.expected) {
             return MatchResult.good(1);
         }

@@ -17,12 +17,12 @@ export class AnyOfMatcher<T> extends DiffMatcher<T> {
         return new AnyOfMatcher(matchers.map(m => matchMaker(m)));
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<string>, actual: T): MatchResult {
         const matchers = this.matchers
 
-        function* anyOfGenerator(): Generator<[ContextOfValidationError, MatchResult, Array<Mismatched>]> {
+        function* anyOfGenerator(): Generator<[ContextOfValidationError, MatchResult, string[]]> {
             for (const matcher of matchers) {
-                const nestedMismatched: Array<Mismatched> = []
+                const nestedMismatched: Array<string> = []
                 const matchResult = matcher.mismatches(context, nestedMismatched, actual)
                 yield [context, matchResult, nestedMismatched]
             }

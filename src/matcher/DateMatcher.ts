@@ -9,7 +9,7 @@ export class DateMatcher extends DiffMatcher<Date> {
         super()
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Date): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: Date): MatchResult {
         if (ofType.isDate(actual) && actual.getTime() === this.expected.getTime()) {
             return MatchResult.good(1);
         }

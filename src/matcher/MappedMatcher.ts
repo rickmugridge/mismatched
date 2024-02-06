@@ -14,7 +14,7 @@ export class MappedMatcher<T, U> extends DiffMatcher<T> {
         return new MappedMatcher(map, matchMaker(matcher), description);
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: T): MatchResult {
         try {
             const mappedActual = this.map(actual);
             const matchResult = this.matcher.mismatches(context, mismatched, mappedActual);

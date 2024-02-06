@@ -3,6 +3,7 @@ import {isNull, isUndefined} from "util";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "..";
 import {Mismatched} from "./Mismatched";
+import {ofType} from "../ofType"
 
 export class OptionalNullMatcher<T> extends DiffMatcher<T> {
     private constructor(private matcher: DiffMatcher<T>) {
@@ -10,8 +11,8 @@ export class OptionalNullMatcher<T> extends DiffMatcher<T> {
         this.specificity = matcher.specificity
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
-        if (isUndefined(actual) || isNull(actual)) {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: T): MatchResult {
+        if (ofType.isUndefinedOrNull(actual)) {
             return MatchResult.good(1);
         }
         return this.matcher.mismatches(context, mismatched, actual);

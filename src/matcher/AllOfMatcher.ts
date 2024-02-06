@@ -1,7 +1,6 @@
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {matchMaker} from "../matchMaker/matchMaker";
 import {MatchResult} from "../MatchResult";
-import {Mismatched} from "./Mismatched";
 import {AnyMatcher} from "./AnyMatcher";
 
 export class AllOfMatcher<T> extends DiffMatcher<T> {
@@ -24,11 +23,11 @@ export class AllOfMatcher<T> extends DiffMatcher<T> {
         }
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<string>, actual: T): MatchResult {
         const incorrectMatchers: Array<DiffMatcher<T>> = []
         let compares = 0
         let matches = 0
-        const localMismatched: Array<Mismatched> = []
+        const localMismatched: Array<string> = []
         this.matchers.forEach(m => {
             let matchResult = m.mismatches(context, localMismatched, actual)
             if (!matchResult.passed()) {

@@ -13,16 +13,16 @@ export class ExactlyOneOfMatcher<T> extends DiffMatcher<T> {
         return new ExactlyOneOfMatcher(matchers.map(m => matchMaker(m)))
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: T): MatchResult {
         let compares = 0
         let matches = 0
         let countOfMatchersThatMatched = 0
-        let localMismatched: Array<Mismatched> = []
+        let localMismatched: string[] = []
         let bestMisMatchRate: number = 0
         let bestMismatchResult: MatchResult | undefined
-        let bestMismatched: Mismatched[] | undefined
+        let bestMismatched: string[] | undefined
         this.matchers.forEach(m => {
-            const localMismatched: Array<Mismatched> = []
+            const localMismatched: string[] = []
             const matchResult = m.mismatches(context, localMismatched, actual)
             if (matchResult.passed()) {
                 countOfMatchersThatMatched += 1

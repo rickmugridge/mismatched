@@ -23,7 +23,7 @@ export class SetMatcher<T> extends DiffMatcher<Set<T>> {
     }
 
     mismatches(context: ContextOfValidationError,
-               mismatched: Array<Mismatched>,
+               mismatched: string[],
                actual: Set<T> | Array<T> | Map<T, T>): MatchResult {
         if (ofType.isSet(actual) || ofType.isArray(actual) || ofType.isMap(actual)) {
             const actualValues = Array.from(actual.values());

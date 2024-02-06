@@ -82,7 +82,7 @@ describe("OfTypeMatcher:", () => {
             const validation = validateThat(false).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{actual: false, expected: "ofType.number"}`
+                `actual: false, expected: "ofType.number"`
             ]);
         });
     });

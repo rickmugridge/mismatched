@@ -9,7 +9,7 @@ export class NotMatcher<T> extends DiffMatcher<T> {
         this.specificity = matcher.specificity
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: T): MatchResult {
         const matchResult = this.matcher.matches(actual);
         if (matchResult.passed()) {
             mismatched.push(Mismatched.makeExpectedMessage(context, actual, this.describe()));

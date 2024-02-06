@@ -22,7 +22,7 @@ export abstract class DiffMatcher<T> {
         return this.mismatches(new ContextOfValidationError().inTrial(), [], actual);
     }
 
-    abstract mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult;
+    abstract mismatches(context: ContextOfValidationError, mismatched: string[], actual: T): MatchResult;
 
     abstract describe(): any;
 }

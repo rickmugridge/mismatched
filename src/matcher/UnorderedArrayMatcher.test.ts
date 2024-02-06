@@ -105,8 +105,8 @@ describe("unorderedArray:", () => {
                     .satisfies(match.array.unordered(expected))
                 assertThat(validation.passed()).is(false)
                 assertThat(validation.errors).is([
-                    '{"actual[1]": ["s"], unexpected: "s"}',
-                    '{"actual[1]": ["s"], missing: "ofType.number"}'
+                    'actual[1]: ["s"], unexpected: "s"',
+                    'actual[1]: ["s"], missing: "ofType.number"'
                 ])
             })
 
@@ -115,7 +115,7 @@ describe("unorderedArray:", () => {
                     .satisfies(match.array.unordered(expected))
                 assertThat(validation.passed()).is(false)
                 assertThat(validation.errors).is([
-                    `{actual: false, expected: "array expected"}`
+                    `actual: false, expected: "array expected"`
                 ])
             })
         })
@@ -161,8 +161,8 @@ describe("unorderedArray:", () => {
                     .satisfies(match.array.unorderedContains(expected))
                 assertThat(validation.passed()).is(false)
                 assertThat(validation.errors).is([
-                    '{"actual[1]": ["s"], unexpected: "s"}',
-                    '{"actual[1]": ["s"], missing: "ofType.number"}'
+                    'actual[1]: ["s"], unexpected: "s"',
+                    'actual[1]: ["s"], missing: "ofType.number"'
                 ])
             })
         })

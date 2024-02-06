@@ -1,7 +1,6 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
-import {Mismatched} from "./Mismatched";
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
@@ -33,10 +32,10 @@ describe("MappedMatcher()", () => {
         });
 
         it("mismatches: errors", () => {
-            const mismatched: Array<Mismatched> = [];
+            const mismatched: string[] = [];
             (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, 3);
             assertThat(mismatched).is([
-                {actual: undefined, expected: 2}
+                'actual: undefined, expected: 2'
             ]);
         });
 
@@ -49,7 +48,9 @@ describe("MappedMatcher()", () => {
     });
 
     describe("validateThat():", () => {
-        const matcher = match.mapped((a: {m:number}) => a.m, match.ofType.number(), {extract: "m"});
+        const matcher = match.mapped((a: {
+            m: number
+        }) => a.m, match.ofType.number(), {extract: "m"});
         it("succeeds", () => {
             const validation = validateThat({m: 2}).satisfies(matcher);
             assertThat(validation.passed()).is(true);
@@ -59,7 +60,7 @@ describe("MappedMatcher()", () => {
             const validation = validateThat({m: false}).satisfies(matcher);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{actual: false, expected: "ofType.number"}`
+                `actual: false, expected: "ofType.number"`
             ]);
         });
     });

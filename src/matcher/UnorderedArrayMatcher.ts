@@ -29,7 +29,7 @@ export class UnorderedArrayMatcher<T> extends DiffMatcher<T[]> {
     }
 
     mismatches(context: ContextOfValidationError,
-               mismatched: Array<Mismatched>,
+               mismatched: string[],
                actualArray: T[]): MatchResult {
         if (ofType.isArray(actualArray)) {
             if (actualArray.length === 0 && this.matchers.length === 0) {

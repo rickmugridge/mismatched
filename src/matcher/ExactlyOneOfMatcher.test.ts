@@ -20,7 +20,7 @@ describe("ExactlyOneOfMatcher", () => {
                 a: {b: 3, c: wasExpected(undefined, 4)}
             })
         assertThat(validateThat(actual).is(matcher).errors)
-            .is(['{"actual.a.c": undefined, expected: 4}'])
+            .is(['actual.a.c: undefined, expected: 4'])
     })
 
     it("fails with one, as field missing", () => {
@@ -53,6 +53,6 @@ describe("ExactlyOneOfMatcher", () => {
         assertThat(actual).failsWith(matcher,
             {a: {b: wasExpected(4, 3)}})
         assertThat(validateThat(actual).is(matcher).errors)
-            .is(['{"actual.a.b": 4, expected: 3}'])
+            .is(['actual.a.b: 4, expected: 3'])
     })
 })

@@ -212,7 +212,7 @@ describe("BindMatcher:", () => {
             const validation = validateThat(3).satisfies(bind);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{actual: 3, expected: false}`
+                `actual: 3, expected: false`
             ])
         })
     })

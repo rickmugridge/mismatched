@@ -15,7 +15,7 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
         return new ArrayMatcher<T>(expected.map(e => matchMaker(e)));
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: Array<T>): MatchResult {
         if (!ofType.isArray(actual)) {
             mismatched.push(Mismatched.makeExpectedMessage(context, actual, "array expected"));
             return MatchResult.wasExpected(actual, this.describe(), 1, 0);
@@ -40,7 +40,7 @@ export class ArrayMatcher<T> extends DiffMatcher<Array<T>> {
             }
             if (pair.matcher.isNone() && pair.actual.isSome()) { // unexpected
                 compares += 1
-                mismatched.push(Mismatched.makeUnexpectedMessage(context, actual, pair.actual.get()))
+                mismatched.push(Mismatched.wasUnexpected(context, actual, pair.actual.get()))
                 return {[MatchResult.unexpected]: pair.actual.get()}
             }
             if (pair.matcher.isSome() && pair.actual.isSome()) { // (partial) match

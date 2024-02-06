@@ -59,8 +59,8 @@ describe("obj.some:", () => {
             const validation = validateThat({f: "2", g: 3, h: 45}).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{"actual.f": "2", expected: "ofType.number"}`,
-                `{"actual.g": 3, expected: "ofType.boolean"}`
+                `actual.f: "2", expected: "ofType.number"`,
+                `actual.g: 3, expected: "ofType.boolean"`
             ]);
         });
 
@@ -68,7 +68,7 @@ describe("obj.some:", () => {
             const validation = validateThat({f: "2"}).satisfies({f: 3});
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '{"actual.f": "2", expected: 3}'
+                'actual.f: "2", expected: 3'
             ]);
         });
     });

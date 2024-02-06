@@ -1,8 +1,7 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
-import {Mismatched} from "./Mismatched";
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("NotMatcher()", () => {
@@ -22,11 +21,11 @@ describe("NotMatcher()", () => {
         });
 
         it("mismatches: errors", () => {
-            const mismatched: Array<Mismatched> = [];
+            const mismatched: string[] = [];
             const matcher = match.not(2);
             (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, 2);
             assertThat(mismatched).is([
-                {actual: 2, expected: {not: 2}}
+                'actual: 2, expected: {not: 2}'
             ]);
         });
     });
@@ -43,7 +42,7 @@ describe("NotMatcher()", () => {
             const validation = validateThat(3).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{actual: 3, expected: {not: "ofType.number"}}`
+                `actual: 3, expected: {not: "ofType.number"}`
             ]);
         });
     });

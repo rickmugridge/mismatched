@@ -19,11 +19,11 @@ describe("OptionalNullMatcher:", () => {
         });
 
         it("Mismatches: errors", () => {
-            const mismatched: Array<Mismatched> = [];
+            const mismatched: string[] = [];
             const matcher = match.optionalNull(3);
             (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, 4);
             assertThat(mismatched).is([
-                {actual: 4, expected: 3}
+                'actual: 4, expected: 3'
             ]);
         });
     });
@@ -50,7 +50,7 @@ describe("OptionalNullMatcher:", () => {
             const validation = validateThat({f: "wrong"}).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{"actual.f": "wrong", expected: "ofType.number"}`
+                `actual.f: "wrong", expected: "ofType.number"`
             ]);
         });
 
@@ -60,7 +60,7 @@ describe("OptionalNullMatcher:", () => {
             });
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '{"actual.name.title": 4, expected: "s"}'
+                'actual.name.title: 4, expected: "s"'
             ]);
          });
     });

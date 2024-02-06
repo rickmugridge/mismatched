@@ -9,7 +9,7 @@ export class ToBeUnquotedMatcher extends DiffMatcher<any> {
         super();
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: any): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: any): MatchResult {
         if (ofType.isObject(actual)) {
             if (actual[PrettyPrinter.symbolForPseudoCall] === this.expected) {
                 return MatchResult.good(1);

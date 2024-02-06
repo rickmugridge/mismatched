@@ -10,7 +10,7 @@ export class ErrorMatcher<T> extends DiffMatcher<T> {
         this.specificity = matcher.specificity
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: T): MatchResult {
         const typeMatchResult = instanceOfMatcher.instanceOf(Error).mismatches(context, mismatched, actual);
         if (!typeMatchResult.passed()) {
             return typeMatchResult;

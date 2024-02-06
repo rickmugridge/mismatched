@@ -1,7 +1,6 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
-import {Mismatched} from "./Mismatched";
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
@@ -47,11 +46,11 @@ describe("array.match:", () => {
             })
 
             it('does not match: length difference: errors', () => {
-                const mismatched: Array<Mismatched> = []
+                const mismatched: string[] = []
                 const matcher = match.array.match(["a", "b", "c"]);
                 (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, ["a", "b"]);
                 assertThat(mismatched).is([
-                    {actual: ["a", "b"], missing: "c"}
+                    'actual: ["a", "b"], missing: "c"'
                 ]);
             });
         });
@@ -176,7 +175,7 @@ describe("array.match:", () => {
             const validation = validateThat([]).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '{actual: [], missing: "ofType.number"}'
+                'actual: [], missing: "ofType.number"'
             ]);
         });
 
@@ -185,7 +184,7 @@ describe("array.match:", () => {
             const validation = validateThat([1]).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '{actual: [1], unexpected: 1}'
+                'actual: [1], unexpected: 1'
             ]);
         });
 
@@ -194,8 +193,8 @@ describe("array.match:", () => {
             const validation = validateThat(["s"]).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '{actual: ["s"], unexpected: "s"}',
-                '{actual: ["s"], missing: "ofType.number"}'
+                'actual: ["s"], unexpected: "s"',
+                'actual: ["s"], missing: "ofType.number"'
             ]);
         });
 
@@ -203,8 +202,8 @@ describe("array.match:", () => {
             const validation = validateThat([1, 2, [3, ["s"]]]).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '{"actual[2][1]": ["s"], unexpected: "s"}',
-                '{"actual[2][1]": ["s"], missing: "ofType.number"}'
+                'actual[2][1]: ["s"], unexpected: "s"',
+                'actual[2][1]: ["s"], missing: "ofType.number"'
             ]);
         });
 
@@ -212,10 +211,10 @@ describe("array.match:", () => {
             const validation = validateThat([undefined, 2, [3, ["s"]]]).satisfies(expected)
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '{actual: [undefined, 2, [3, ["s"]]], unexpected: undefined}',
-                '{actual: [undefined, 2, [3, ["s"]]], missing: "ofType.number"}',
-                '{"actual[2][1]": ["s"], unexpected: "s"}',
-                '{"actual[2][1]": ["s"], missing: "ofType.number"}'
+                'actual: [undefined, 2, [3, ["s"]]], unexpected: undefined',
+                'actual: [undefined, 2, [3, ["s"]]], missing: "ofType.number"',
+                'actual[2][1]: ["s"], unexpected: "s"',
+                'actual[2][1]: ["s"], missing: "ofType.number"'
             ]);
         });
 
@@ -223,7 +222,7 @@ describe("array.match:", () => {
             const validation = validateThat(false).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{actual: false, expected: "array expected"}`
+                `actual: false, expected: "array expected"`
             ])
         });
     });

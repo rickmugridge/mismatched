@@ -14,6 +14,8 @@ export const defaultLineWidth = 80;
 export const defaultMaxComplexity = 30;
 export const defaultMaxTilesCount = 10000;
 
+let recursiveCalling = false
+
 export class PrettyPrinter {
     static symbolForPseudoCall = Symbol("pseudoCall");
     static symbolForMockName = Symbol("mockName");
@@ -38,7 +40,7 @@ export class PrettyPrinter {
 
     static isMock(value: any): boolean {
         try {
-            // Succeeds if that symbol is defined. Only for a mock object Proxy
+            // Succeeds if that symbol is defined. Only true for a mock object Proxy
             const v = value[PrettyPrinter.symbolForMockName]
             return ofType.isDefined(v)
         } catch (e) {
@@ -159,10 +161,14 @@ export class PrettyPrinter {
                 // Error doesn't have a proper property 'message'
                 return this.tileObject(context, {errorMessage: value.message});
             }
-            const matcher = Array.from(PrettyPrinter.customPrettyPrinters.keys())
-                .find(matcher => matcher.matches(value).passed());
-            if (matcher) {
-                return new SimpleTile(PrettyPrinter.customPrettyPrinters.get(matcher)!(value));
+            if (!recursiveCalling) {
+                recursiveCalling = true
+                const matcher = Array.from(PrettyPrinter.customPrettyPrinters.keys())
+                    .find(matcher => matcher.matches(value).passed());
+                recursiveCalling = false
+                if (matcher) {
+                    return new SimpleTile(PrettyPrinter.customPrettyPrinters.get(matcher)!(value));
+                }
             }
             const fields = this.selfReference.recurse(context, value, () => {
                     let keys = allKeys(value);

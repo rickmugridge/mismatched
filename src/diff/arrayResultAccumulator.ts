@@ -15,21 +15,21 @@ export type ArrayResultAccumulator = {
 export const newArrayResultAccumulator = <T>(context: ContextOfValidationError,
                                              actualElements: any[],
                                              matchers: DiffMatcher<T>[],
-                                             mismatched: Mismatched[],) => {
-    let results: any[] = []
+                                             mismatched: string[],) => {
+    let diff: any[] = []
     let compares = 1
     let matches = 1 // Count that we have 2 array as a match
 
     const addPass = (i: number, passCompares: number) => {
         compares += passCompares
         matches += passCompares
-        results.push(actualElements[i])
+        diff.push(actualElements[i])
     }
 
-    const addMatchResult = (matchResult: MatchResult, mismatches: Mismatched[]) => {
+    const addMatchResult = (matchResult: MatchResult, mismatches: string[]) => {
         compares += matchResult.compares
         matches += matchResult.matches
-        results.push(matchResult)
+        diff.push(matchResult.diff)
         mismatched.push(...mismatches)
     }
 
@@ -38,12 +38,12 @@ export const newArrayResultAccumulator = <T>(context: ContextOfValidationError,
         matches += matchResult.matches
         compares += matchResult.compares
         if (matchResult.passed()) {
-            results.push(actualElements[index])
+            diff.push(actualElements[index])
         } else {
             if (ofType.isArray(matchResult.diff)) {
-                results.push(...matchResult.diff)
+                diff.push(...matchResult.diff)
             } else {
-                results.push(matchResult.diff)
+                diff.push(matchResult.diff)
             }
             mismatched.push(...assignment.mismatches)
         }
@@ -51,24 +51,24 @@ export const newArrayResultAccumulator = <T>(context: ContextOfValidationError,
 
     const extraActual = (actualIndex: number) => {
         compares += 1
-        results.push(MatchResult.extraActual(actualElements[actualIndex])) // unexpected
+        diff.push(MatchResult.extraActual(actualElements[actualIndex])) // unexpected
         mismatched.push(Mismatched.extraActual(context, actualElements[actualIndex]))
     }
 
     const extraMatcher = (matcherIndex: number) => {
         compares += 1
-        results.push(MatchResult.extraMatcher(matchers[matcherIndex])) // expected
+        diff.push(MatchResult.extraMatcher(matchers[matcherIndex])) // expected
         mismatched.push(Mismatched.extraMatcher(context, matchers[matcherIndex]))
     }
 
     const outOfOrder = (actualIndex: number) => {
         compares += 1
-        results.push(MatchResult.outOfOrder(actualElements[actualIndex])) // unexpected
+        diff.push(MatchResult.outOfOrder(actualElements[actualIndex])) // unexpected
         mismatched.push(Mismatched.outOfOrder(context, actualElements[actualIndex]))
 
     }
 
-    const getMatchResult = () => new MatchResult(results, compares, matches)
+    const getMatchResult = () => new MatchResult(diff, compares, matches)
 
     return {
         addPass, addMatchResult,

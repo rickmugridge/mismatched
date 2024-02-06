@@ -35,17 +35,21 @@ export module BestMatcherAssignments {
 
         const unassignedMatchers: Set<number> = new Set([...Array(orderedMatchers.length).keys()])
         const unassignedActualElements: Set<number> = new Set([...Array(actualElements.length).keys()])
-        // Try for full match first
+        // Try for full match first, excluding match.any()
         for (let matcherIndex = 0; matcherIndex < orderedMatchers.length; matcherIndex++) {
             const [matcher, originalMatcherIndex] = orderedMatchers[matcherIndex]
-            findBestMatchForMatcher(false, context, matcher, originalMatcherIndex, actualElements,
-                unassignedActualElements, unassignedMatchers, assignments)
+            if (!(matcher instanceof AnyMatcher)) {
+                findBestMatchForMatcher(false, context, matcher, originalMatcherIndex, actualElements,
+                    unassignedActualElements, unassignedMatchers, assignments)
+            }
         }
         // Try for partial matches with the rest
         for (let matcherIndex = 0; matcherIndex < orderedMatchers.length; matcherIndex++) {
             const [matcher, originalMatcherIndex] = orderedMatchers[matcherIndex]
-            findBestMatchForMatcher(true, context, matcher, originalMatcherIndex, actualElements,
-                unassignedActualElements, unassignedMatchers, assignments)
+            if (unassignedMatchers.has(originalMatcherIndex)) {
+                findBestMatchForMatcher(true, context, matcher, originalMatcherIndex, actualElements,
+                    unassignedActualElements, unassignedMatchers, assignments)
+            }
         }
         return {
             assignments,
@@ -65,18 +69,16 @@ export module BestMatcherAssignments {
                                         assignments: Assignment<T>[]) => {
         let bestAssignedActualIndex = -1
         let bestMatchResult: MatchResult | undefined = undefined
-        let bestMismatches: Mismatched[] = []
+        let bestMismatches: string[] = []
         for (let actualIndex = 0; actualIndex < actualElements.length; actualIndex++) {
             const actualElement = actualElements[actualIndex]
             if (unassignedActualElements.has(actualIndex)) {
-                const mismatches: Mismatched[] = []
+                const mismatches: string[] = []
                 const matchResult = matcher.mismatches(context, mismatches, actualElement)
-                if (matchResult.matchRate > 0) {
-                    const matcherAllowed = partiallyMatching || !(matcher instanceof AnyMatcher)
-                    const matcherPassed = matchResult.passed() || matcherAllowed
-                    const partialMatchAllowed = partiallyMatching &&
-                        (ofType.isUndefined(bestMatchResult) || matchResult.matchRate > bestMatchResult.matchRate)
-                    if (matcherPassed || partialMatchAllowed) {
+                if (matchResult.passed() || matchResult.matchRate > 0.0 && partiallyMatching) {
+                    const acceptMatch = ofType.isUndefined(bestMatchResult) ||
+                        matchResult.matchRate > bestMatchResult.matchRate
+                    if (acceptMatch) {
                         bestMatchResult = matchResult
                         bestAssignedActualIndex = actualIndex
                         bestMismatches = mismatches
@@ -110,7 +112,7 @@ export type Assignment<T> = {
     actualElementIndex: number
     matcherIndex: number
     matchResult: MatchResult
-    mismatches: Mismatched[]
+    mismatches: string[]
 }
 
 export type Assignations<T> = {

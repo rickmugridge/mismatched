@@ -1,8 +1,7 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
-import {Mismatched} from "./Mismatched";
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("PredicateMatcher:", () => {
@@ -37,44 +36,44 @@ describe("PredicateMatcher:", () => {
         });
 
         it("Mismatches: errors", () => {
-            const mismatched: Array<Mismatched> = [];
+            const mismatched: string[] = [];
             const matcher = match.predicate(pred, 'failed');
             (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, "ab");
             assertThat(mismatched).is([
-                {actual: "ab", expected: "failed"}
+                'actual: "ab", expected: "failed"'
             ]);
         });
 
         it("Mismatches: exception", () => {
-            const mismatched: Array<Mismatched> = [];
+            const mismatched: string[] = [];
             const matcher = match.predicate(() => {
                 throw new Error('bad');
             });
             (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, "ab");
             assertThat(mismatched).is([
-                {actual: {exception: "bad", actual: "ab"}, expected: {predicateFailed: {arrow: "()"}}}
+                'actual: {actual: "ab", exception: "bad"}, expected: {predicateFailed: {arrow: "()"}}'
             ]);
         });
 
         it("Mismatches: exception with an object instead of an Error", () => {
-            const mismatched: Array<Mismatched> = [];
+            const mismatched: string[] = [];
             const matcher = match.predicate(() => {
                 throw {error: 'error'};
             });
             (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, "ab");
             assertThat(mismatched).is([
-                {actual: { actual: "ab", exception: '{"error":"error"}'}, expected: {predicateFailed: {arrow: "()"}}}
+                `actual: {actual: "ab", exception: '{"error":"error"}'}, expected: {predicateFailed: {arrow: "()"}}`
             ]);
         });
 
         it("Mismatches: exception with a null instead of an Error", () => {
-            const mismatched: Array<Mismatched> = [];
+            const mismatched: string[] = [];
             const matcher = match.predicate(() => {
                 throw null;
             });
             (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, "ab");
             assertThat(mismatched).is([
-                {actual: { actual: "ab", exception: 'null'}, expected: {predicateFailed: {arrow: "()"}}}
+                'actual: {actual: "ab", exception: "null"}, expected: {predicateFailed: {arrow: "()"}}'
             ]);
         });
     });
@@ -89,7 +88,7 @@ describe("PredicateMatcher:", () => {
             const validation = validateThat(-1).satisfies(matcher);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{actual: -1, expected: {predicateFailed: {arrow: "v => v > 0"}}}`
+                `actual: -1, expected: {predicateFailed: {arrow: "v => v > 0"}}`
             ]);
         });
     });

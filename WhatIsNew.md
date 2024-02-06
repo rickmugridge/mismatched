@@ -1,5 +1,10 @@
 # What is New
 
+## 6 Feb 2024 (version "2.15.0")
+
+* Fixed problem with: assertThat({}).is({})
+* Fixed problem with: assertThat(mock.object, mock.object)
+
 ## 8 Jan 2024 (version "2.13.4")
 
 * Added `match.selectMatch()` which can be used to improve error messages when matching complex subtypes, etc.

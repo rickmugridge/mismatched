@@ -5,7 +5,7 @@ import {DiffFieldMatcher} from "../matcher/DiffFieldMatcher"
 
 export const newArrayResultAccumulator = <T>(context: ContextOfValidationError,
                                              actual: T,
-                                             mismatched: Mismatched[]) => {
+                                             mismatched: string[]) => {
     let diff: any = {}
     const unexpected: any = {}
     let compares = 1

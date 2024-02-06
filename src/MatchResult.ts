@@ -2,6 +2,9 @@ import {ofType} from "./ofType";
 import {PrettyPrinter} from "./prettyPrint/PrettyPrinter";
 import {Colour} from "./utility/Colour";
 import {DiffMatcher} from "./matcher/DiffMatcher"
+import {assertThat} from "./assertThat"
+import {validateThat} from "./validateThat"
+import {matchMaker} from "./matchMaker/matchMaker"
 
 
 export class MatchResult {
@@ -107,4 +110,19 @@ export const bestMatchResultIndex = (results: MatchResult[]): number => {
         }
     })
     return bestIndex
+}
+
+export const failsWith = (actual: any, expected: any, failsWith: any, errors: string[]) => {
+    assertThat(actual).failsWith(expected, failsWith)
+    assertThat(validateThat(actual).is(expected).errors).is(errors)
+}
+
+export const matchingSame = (actual: any) => {
+    assertThat(actual).is(matchMaker(actual))
+    assertThat(validateThat(actual).is(matchMaker(actual)).errors).is([])
+}
+
+export const passesCompletely =  (actual: any, expected: any) => {
+    assertThat(actual).is(expected)
+    assertThat(validateThat(actual).is(expected).errors).is([])
 }

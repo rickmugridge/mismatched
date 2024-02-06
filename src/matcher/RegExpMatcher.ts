@@ -8,7 +8,7 @@ export class RegExpMatcher extends DiffMatcher<any> {
         super();
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: any): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: any): MatchResult {
         if (ofType.isRegExp(actual) && actual.toString() === this.expected.toString()) {
             return MatchResult.good(1);
         }

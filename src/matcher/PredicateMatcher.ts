@@ -1,4 +1,4 @@
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 import {isFunction} from "util";
 import {PrettyPrinter} from "..";
@@ -11,7 +11,7 @@ export class PredicateMatcher extends DiffMatcher<any> {
         this.specificity = 2
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: any): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: any): MatchResult {
         try {
             if (this.expected(actual)) {
                 return MatchResult.good(1);

@@ -15,7 +15,7 @@ export class ObjectSomeMatcher<T> extends DiffMatcher<T> {
         return new ObjectSomeMatcher<T>(DiffFieldMatcher.makeAll<T>(expected));
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: T): MatchResult {
         if (!ofType.isObject(actual)) {
             mismatched.push(Mismatched.makeExpectedMessage(context, actual, "object expected"));
             return MatchResult.wasExpected(actual, this.describe(), 1, 0);

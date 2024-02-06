@@ -9,7 +9,7 @@ export class AnyMatcher<T> extends DiffMatcher<T> {
         return new AnyMatcher();
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<string>, actual: T): MatchResult {
         return MatchResult.wasExpected(actual, this.describe(), 1, 1);
     }
 

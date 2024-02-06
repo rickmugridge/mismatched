@@ -39,7 +39,7 @@ describe("array.every:", () => {
             const validation = validateThat([2, 2, "3"]).satisfies(expected)
             assertThat(validation.passed()).is(false)
             assertThat(validation.errors).is([
-                `{"actual[2]": "3", expected: "ofType.number"}`
+                `actual[2]: "3", expected: "ofType.number"`
             ])
         });
 
@@ -47,7 +47,7 @@ describe("array.every:", () => {
             const validation = validateThat(3).satisfies(expected)
             assertThat(validation.passed()).is(false)
             assertThat(validation.errors).is([
-                `{actual: 3, expected: "array expected"}`
+                `actual: 3, expected: "array expected"`
             ])
         })
     })

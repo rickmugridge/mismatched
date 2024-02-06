@@ -25,11 +25,11 @@ describe("InstanceOfMatcher:", () => {
         });
 
         it("Mismatches:errors", () => {
-            const mismatched: Array<Mismatched> = [];
+            const mismatched: string[] = [];
             const matcher = match.instanceOf(Date);
             (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, "ab");
             assertThat(mismatched).is([
-                {actual: "ab", expected: {instanceOf: "Date"}}
+                'actual: "ab", expected: {instanceOf: "Date"}'
             ]);
         });
     });
@@ -46,7 +46,7 @@ describe("InstanceOfMatcher:", () => {
             const validation = validateThat(false).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{actual: false, expected: {instanceOf: "Object"}}`
+                `actual: false, expected: {instanceOf: "Object"}`
             ]);
         });
     });

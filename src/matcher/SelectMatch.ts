@@ -10,7 +10,7 @@ export class SelectMatcher<T> extends DiffMatcher<T> {
         super()
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched:string[], actual: T): MatchResult {
         try {
             const selected = this.selector(actual)
             if (ofType.isUndefinedOrNull(selected)) {

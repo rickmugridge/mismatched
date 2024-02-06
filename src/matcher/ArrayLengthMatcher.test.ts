@@ -1,6 +1,6 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
-import {Mismatched, wasExpected} from "./Mismatched";
+import {wasExpected} from "./Mismatched";
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher"
 import {validateThat} from "../validateThat"
 
@@ -18,11 +18,11 @@ describe("array.length:", () => {
         })
 
         it('does not match: errors', () => {
-            const mismatched: Array<Mismatched> = [];
+            const mismatched: string[] = [];
             const matcher = match.array.length(1);
             (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, ["a", "b"])
             assertThat(mismatched).is([
-                {actual: ["a", "b"], expected: {"array.length": 1}}
+                'actual: ["a", "b"], expected: {"array.length": 1}'
             ])
         })
     })
@@ -39,7 +39,7 @@ describe("array.length:", () => {
             const validation = validateThat(["b", "b", "b"]).satisfies(expected)
             assertThat(validation.passed()).is(false)
             assertThat(validation.errors).is([
-                `{actual: ["b", "b", "b"], expected: {"array.length": 2}}`
+                `actual: ["b", "b", "b"], expected: {"array.length": 2}`
             ])
         })
     })

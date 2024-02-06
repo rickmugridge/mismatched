@@ -58,7 +58,7 @@ export module ArrayDiff {
     export const matchResulting = <T>(context: ContextOfValidationError,
                                       actualElements: any[],
                                       matchers: DiffMatcher<T>[],
-                                      mismatched: Mismatched[]): MatchResult => {
+                                      mismatched: string[]): MatchResult => {
         const [deltaMappings, assignations, assignedActualElements] =
             determineMatchResultOrDeltaMappings(context, actualElements, matchers)
 
@@ -71,7 +71,7 @@ export module ArrayDiff {
             if (ofType.isDefined(mapping["matched"])) {
                 const assignment: Assignment<T> | undefined = assignedActualElements.get(actualElements[i])
                 if (ofType.isDefined(assignment)) {
-                    const assignment = assignations.assignments[i]
+                    // const assignment = assignations.assignments[i]
                     if (assignment.matchResult.passed()) {
                         resultAccumulator.addPass(i, assignment.matchResult.matches)
                     } else {

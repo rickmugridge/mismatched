@@ -12,7 +12,7 @@ export class DiffFieldMatcher<T> extends DiffMatcher<T> {
         this.specificity = matcher.specificity
     }
 
-    mismatches(context: ContextOfValidationError, errors: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, errors: string[], actual: T): MatchResult {
         return this.matcher.mismatches(context.add("." + this.fieldName.toString()), errors, actual[this.fieldName]);
     }
 

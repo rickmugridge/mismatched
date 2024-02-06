@@ -9,15 +9,11 @@ import {match} from "../match"
 import {MatchResult} from "../MatchResult"
 
 const context = new ContextOfValidationError("test")
-const check = (actual: any, matcher: any): [ArrayResultAccumulator, Assignations<any>, Mismatched[]] => {
-    const result = ArrayDiff.determineMatchResultOrDeltaMappings(
-        context, [actual], [matchMaker(matcher)])
-    if (result.isLeft()) {
-        throw new Error("But that matched")
-    }
+const check = (actual: any, matcher: any): [ArrayResultAccumulator, Assignations<any>, string[]] => {
     const [deltaMappings, assignations, assignedActualElements] =
-        result.get()
-    const finalMismatched: Mismatched[] = []
+        ArrayDiff.determineMatchResultOrDeltaMappings(
+            context, [actual], [matchMaker(matcher)])
+    const finalMismatched: string[] = []
     const resultAccumulator = newArrayResultAccumulator(
         context, [actual], [matchMaker(matcher)], finalMismatched)
     return [resultAccumulator, assignations, finalMismatched]
@@ -34,7 +30,7 @@ describe("arrayResultAccumulator", () => {
         const result = accumulator.getMatchResult()
 
         assertThat(finalMismatched).is([
-            {"test.a": 1, expected: 2}])
+            'test.a: 1, expected: 2'])
         assertThat(result.diff).is(
             [{a: {[MatchResult.was]: 1, [MatchResult.expected]: 2}}])
         assertThat(result.matchRate).is(0.6)

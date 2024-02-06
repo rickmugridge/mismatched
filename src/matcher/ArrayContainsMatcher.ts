@@ -11,12 +11,12 @@ export class ArrayContainsMatcher<T> extends DiffMatcher<Array<T>> {
         this.specificity = matcher.specificity
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: Array<string>, actual: Array<T>): MatchResult {
         const matcher = this.matcher
 
-        function* anyOfGenerator(): Generator<[ContextOfValidationError, MatchResult, Array<Mismatched>]> {
+        function* anyOfGenerator(): Generator<[ContextOfValidationError, MatchResult, string[]]> {
             for (const a of actual) {
-                const nestedMismatched: Array<Mismatched> = []
+                const nestedMismatched: Array<string> = []
                 const matchResult = matcher.mismatches(context, nestedMismatched, a)
                 yield [context, matchResult, nestedMismatched]
             }

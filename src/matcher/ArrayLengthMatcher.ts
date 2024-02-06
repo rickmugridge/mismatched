@@ -7,7 +7,7 @@ export class ArrayLengthMatcher<T> extends DiffMatcher<Array<T>> {
         super()
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: Array<T>): MatchResult {
         if (actual.length === this.expected) {
             return MatchResult.good(1)
         }

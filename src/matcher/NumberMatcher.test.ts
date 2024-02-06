@@ -78,7 +78,7 @@ describe("NumberMatcher:", () => {
             const validation = validateThat(-4).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{actual: -4, expected: {"number.greater": 0}}`
+                `actual: -4, expected: {"number.greater": 0}`
             ]);
         });
     });

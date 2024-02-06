@@ -15,7 +15,7 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
         return new ObjectMatcher<T>(obj, DiffFieldMatcher.makeAll<T>(obj));
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: T): MatchResult {
         if (!ofType.isObject(actual)) {
             mismatched.push(Mismatched.makeExpectedMessage(context, actual, "object expected"))
             return MatchResult.wasExpected(actual, this.describe(), 1, 0)
@@ -74,7 +74,7 @@ export class ObjectMatcher<T extends object> extends DiffMatcher<T> {
         })
         // compares = compares === 0 ? 1 : compares
         if (wasUnexpected) {
-            mismatched.push(Mismatched.makeUnexpectedMessage(context, actual, unexpected))
+            mismatched.push(Mismatched.wasUnexpected(context, actual, unexpected))
             diff[MatchResult.unexpected] = unexpected
         }
         if (errors === 0) {

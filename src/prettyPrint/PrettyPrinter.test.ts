@@ -319,7 +319,14 @@ describe("PrettyPrinter():", () => {
             (hide: Hide) => 'Hide(' + hide.f + ')');
         assertThat(prettyPrinter.render({d: new Hide(12, 1566509915958, 1566509915958), e: 3}))
             .is("{d: Hide(12), e: 3}");
-        assertThat(prettyPrinter.render({outer: {outer: {d: new Hide(12, 1566509915958, 1566509915958), e: 3}}}))
+        assertThat(prettyPrinter.render({
+            outer: {
+                outer: {
+                    d: new Hide(12, 1566509915958, 1566509915958),
+                    e: 3
+                }
+            }
+        }))
             .is("{outer: {outer: {d: Hide(12), e: 3}}}");
     });
 
@@ -349,10 +356,7 @@ describe("PrettyPrinter():", () => {
     });
 
     it("Uses mock name", () => {
-        const sym = Symbol("test");
-        prettyPrinter = PrettyPrinter.make(80, 10, 100, sym);
-        const obj = new Function();
-        obj[sym] = () => "MOCK";
+        const obj = {[PrettyPrinter.symbolForMockName]: () => "MOCK"}
         assertThat(prettyPrinter.render(obj)).is(`{mock: "MOCK"}`);
         assertThat(prettyPrinter.render({obj})).is(`{obj: {mock: "MOCK"}}`);
     });

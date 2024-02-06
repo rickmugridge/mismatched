@@ -17,7 +17,7 @@ export class ObjectKeyMatcher<T> extends DiffMatcher<T> {
         return this.expectedKey.describe();
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: T): MatchResult {
         return this.expectedKey.mismatches(context, mismatched, actual);
     }
 }

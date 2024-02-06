@@ -3,6 +3,7 @@ import {ArrayDiff} from "./arrayDiff"
 import {ContextOfValidationError} from "../matcher/DiffMatcher"
 import {matchMaker} from "../matchMaker/matchMaker"
 import {assertThat} from "../assertThat"
+import {match} from "../match"
 
 const check = (actualElements: any[], matchers: any[], expected: DeltaMapping[]) => {
     const result = ArrayDiff.determineMatchResultOrDeltaMappings(
@@ -36,7 +37,47 @@ describe("mapDeltas", () => {
     })
 
     it("[0, 1] and [0]", () => {
-        check([0, 1], [0], [{matched: 0}, {actualRemoved: 1}])
+        check([0, 1], [0],
+            [{matched: 0}, {actualRemoved: 1}])
+    })
+
+    it("[0, 1] and [*]", () => {
+        check([0, 1], [match.any()],
+            [{matched: 0}, {actualRemoved: 1}])
+    })
+
+    it("[0, 1] and [0, *]", () => {
+        check([0, 1], [0, match.any()],
+            [{matched: 0}, {matched: 1}])
+    })
+
+    it("[0] and [0, *]", () => {
+        check([0], [0, match.any()],
+            [{matched: 0}])
+    })
+
+    it("[0, 1, 2] and [0, 4, 1]", () => {
+        check([0, 1, 2], [0, 4, 1],
+            [{matched: 0}, {matched: 1}, {actualRemoved: 2}])
+    })
+
+    xit("[0, 3, 4] and [*, 0, 2]", () => {
+        check([0, 3, 4], [match.any(), 0, 2],
+            [{matched: 0}, {matched: 1}, {actualRemoved: 2}])
+    })
+
+    it("[0, 1, 2] and [0, 4, *]", () => {
+        check([0, 1, 2], [0, 4, match.any()],
+            [{matched: 0}, {matched: 1}, {actualRemoved: 2}])
+    })
+
+    it("[0, 1] and [3, *]", () => {
+        check([0, 1], [3, match.any()],
+            [{matched: 0}, {actualRemoved: 1}])
+    })
+
+    it("[1, undefined] and [2, undefined]", () => {
+        check([1, undefined], [2, undefined], [{actualRemoved: 0}, {matched: 1}])
     })
 
     it("Lots of differences #1", () => {

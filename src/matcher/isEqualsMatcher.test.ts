@@ -1,8 +1,7 @@
 import {match} from "../match";
 import {assertThat} from "../assertThat";
 import {MatchResult} from "../MatchResult";
-import {Mismatched} from "./Mismatched";
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("IsEqualsMatcher:", () => {
@@ -68,11 +67,11 @@ describe("IsEqualsMatcher:", () => {
             });
 
             it('number: errors', () => {
-                const mismatched: Array<Mismatched> = [];
+                const mismatched: string[] = [];
                 const matcher = match.isEquals(3.5);
                 (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, 3.4);
                 assertThat(mismatched).is([
-                    {actual: 3.4, expected: 3.5}
+                    'actual: 3.4, expected: 3.5'
                 ]);
             });
 
@@ -117,7 +116,7 @@ describe("IsEqualsMatcher:", () => {
             const validation = validateThat(false).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{actual: false, expected: {a: 3}}`
+                `actual: false, expected: {a: 3}`
             ]);
         });
     });

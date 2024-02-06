@@ -10,7 +10,7 @@ export class OptionalMatcher<T> extends DiffMatcher<T> {
         this.specificity = matcher.specificity
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched:string[], actual: T): MatchResult {
         if (ofType.isUndefined(actual)) {
             return MatchResult.good(1);
         }

@@ -3,14 +3,14 @@ import {bestMatchResultIndex, MatchResult} from "./MatchResult"
 import {Mismatched} from "./matcher/Mismatched"
 
 export const matchBestOf = <T>(topLevelContext: ContextOfValidationError,
-                               mismatched: Array<Mismatched>,
+                               mismatched: string[],
                                actual: T,
                                topLevelMatcher: DiffMatcher<T>,
-                               matchGenerator: Generator<[ContextOfValidationError,MatchResult, Array<Mismatched>]>): MatchResult => {
+                               matchGenerator: Generator<[ContextOfValidationError, MatchResult, string[]]>): MatchResult => {
     const keyPartialMatchResults: Array<MatchResult> = []
-    const keyPartialMismatched: Array<Mismatched> = []
+    const keyPartialMismatched: string[] = []
     const partialMatchResults: Array<MatchResult> = []
-    const partialMismatched: Array<Mismatched> = []
+    const partialMismatched: string[] = []
     let compares = 1;
     let matches = 0;
     while (true) {
@@ -24,10 +24,10 @@ export const matchBestOf = <T>(topLevelContext: ContextOfValidationError,
         if (matchResult.matches > 0) {
             if (matchResult.matchedObjectKey) {
                 keyPartialMatchResults.push(matchResult)
-                keyPartialMismatched.push(nestedMismatched)
+                keyPartialMismatched.push(...nestedMismatched)
             } else {
                 partialMatchResults.push(matchResult)
-                partialMismatched.push(nestedMismatched)
+                partialMismatched.push(...nestedMismatched)
             }
         }
         compares += matchResult.compares

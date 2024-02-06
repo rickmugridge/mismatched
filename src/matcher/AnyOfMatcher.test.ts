@@ -56,7 +56,7 @@ describe("AnyOfMatcher:", () => {
             const validation = validateThat(false).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{actual: false, expected: {anyOf: [{instanceOf: "Date"}, "ofType.number"]}}`
+                `actual: false, expected: {anyOf: [{instanceOf: "Date"}, "ofType.number"]}`
             ])
         })
 
@@ -67,7 +67,7 @@ describe("AnyOfMatcher:", () => {
             const validation = validateThat({f: 3}).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '[{"actual.g": undefined, expected: 4}]'
+                'actual.g: undefined, expected: 4'
             ]);
         });
 
@@ -79,7 +79,7 @@ describe("AnyOfMatcher:", () => {
             const validation = validateThat(actual).satisfies(match.anyOf([matchTypeA, matchTypeB]));
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '[{"actual.f": 4, expected: "ofType.string"}]'
+                'actual.f: 4, expected: "ofType.string"'
             ]);
         });
 
@@ -91,7 +91,7 @@ describe("AnyOfMatcher:", () => {
             const validation = validateThat(actual).satisfies(match.anyOf([matchTypeA, matchTypeB]));
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '[{"actual.f": 4, expected: "ofType.string"}]'
+                'actual.f: 4, expected: "ofType.string"'
             ]);
         });
 
@@ -107,7 +107,7 @@ describe("AnyOfMatcher:", () => {
             });
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '[{"actual.b.a.f": 4, expected: "ofType.string"}]'
+                'actual.b.a.f: 4, expected: "ofType.string"'
             ]);
         });
 
@@ -118,7 +118,7 @@ describe("AnyOfMatcher:", () => {
             const validation = validateThat({type: 'a', f: 4}).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                '[{"actual.f": 4, expected: 3}]'
+                'actual.f: 4, expected: 3'
             ])
         })
 

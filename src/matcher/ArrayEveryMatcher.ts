@@ -10,7 +10,7 @@ export class ArrayEveryMatcher<T> extends DiffMatcher<Array<T>> {
         this.specificity = expected.specificity
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: Array<T>): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: Array<T>): MatchResult {
         if (ofType.isArray(actual)) {
             if (actual.length === 0) {
                 return new MatchResult(undefined, 1, 1)

@@ -45,7 +45,7 @@ describe("array.contains:", () => {
             const validation = validateThat(["1", "2", "3"]).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{actual: ["1", "2", "3"], expected: {"array.contains": "ofType.number"}}`
+                `actual: ["1", "2", "3"], expected: {"array.contains": "ofType.number"}`
             ])
         });
 
@@ -53,7 +53,7 @@ describe("array.contains:", () => {
             const validation = validateThat(4).satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{actual: 4, expected: "array expected"}`
+                `actual: 4, expected: "array expected"`
             ])
         });
     });

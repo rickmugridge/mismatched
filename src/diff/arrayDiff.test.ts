@@ -1,275 +1,262 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {ContextOfValidationError} from "../matcher/DiffMatcher";
-import {PrettyPrinter} from "../prettyPrint/PrettyPrinter"
-import * as diff from "fast-array-diff";
 import {MatchResult} from "../MatchResult"
 import {matchMaker} from "../matchMaker/matchMaker"
-import {Mismatched} from "../matcher/Mismatched"
 import {ArrayDiff} from "./arrayDiff"
 
 const context = new ContextOfValidationError("test")
-const compare = (v1: number, v2: number): boolean => v1 === v2
-const check = (actuals: any[], matchers: any[]): [MatchResult, Mismatched[]] => {
-    const mismatched: Mismatched[] = []
+const passes = (actuals: any[], matchers: any[], matches: number) => {
+    const mismatched: string[] = []
     const result = ArrayDiff.matchResulting(context,
         actuals, matchers.map(matchMaker), mismatched)
-    return [result, mismatched]
+    assertThat(result.matches).is(matches)
+    assertThat(mismatched).is([])
 }
-const mapMatchResultToMatchRate = (expectedRate: number) =>
-    match.mapped((mr: MatchResult) => mr.matchRate,
-        expectedRate, `MatchResult with a matchRate of ${expectedRate}`)
+
+const fails = (actualElements: any[], matchers: any[], diffExpected: any,
+               matchesExpected: number, comparesExpected: number, mismatchedExpected: string[]) => {
+    const mismatched: string[] = []
+    const result = ArrayDiff.matchResulting(context, actualElements,
+        matchers.map(matchMaker), mismatched)
+    assertThat({
+        mismatched,
+        diff: result.diff,
+        matches: result.matches,
+        compares: result.compares
+    })
+        .is({
+            mismatched: mismatchedExpected,
+            diff: diffExpected,
+            matches: matchesExpected,
+            compares: comparesExpected
+        })
+}
 
 describe("arrayDiff", () => {
     describe("same length", () => {
         it("[] matched by []", () => {
-            const [result, mismatched] =
-                check([], [])
-            assertThat(result).is({
-                diff: {},
-                compares: 1, matches: 1, matchRate: 1.0, matchedObjectKey: false
-            } as MatchResult)
-            assertThat(mismatched).is([])
+            passes([], [], 1)
         })
 
         it("[1] matched by [1]", () => {
-            const [result, mismatched] =
-                check([1], [1])
-            assertThat(result).is({
-                diff: [1],
-                compares: 2, matches: 2, matchRate: 1.0, matchedObjectKey: false
-            } as MatchResult)
-            assertThat(mismatched).is([])
+            passes([1], [1], 2)
         })
 
         it("[undefined] matched by [undefined]", () => {
-            const [result, mismatched] =
-                check([undefined], [undefined])
-            assertThat(result).is({
-                diff: [undefined],
-                compares: 2, matches: 2, matchRate: 1.0, matchedObjectKey: false
-            } as MatchResult)
-            assertThat(mismatched).is([])
+            passes([undefined], [undefined], 2)
         })
 
         it("[null] matched by [null]", () => {
-            const [result, mismatched] =
-                check([null], [null])
-            assertThat(result).is({
-                diff: [null],
-                compares: 2, matches: 2, matchRate: 1.0, matchedObjectKey: false
-            } as MatchResult)
-            assertThat(mismatched).is([])
+            passes([null], [null], 2)
         })
 
         it("[] matched by [133]", () => {
-            const [result, mismatched] =
-                check([], [133])
-
-            assertThat(result).is({
-                diff: [expected(133)],
-                compares: 2, matches: 1, matchRate: 0.5, matchedObjectKey: false
-            } as MatchResult)
-            assertThat(mismatched).is([
-                "test: expected: 133"
-            ])
+            fails([], [133],
+                [expected(133)],
+                1, 2, ["test: expected: 133"])
         })
 
         it("[1] matched by []", () => {
-            const [result, mismatched] =
-                check([1], [])
-            assertThat(result).is({
-                diff: [unexpected(1)],
-                compares: 2, matches: 1, matchRate: 0.5, matchedObjectKey: false
-            } as MatchResult)
-            assertThat(mismatched).is([
-                "test: unexpected: 1"
-            ])
+            fails([1], [],
+                [unexpected(1)],
+                1, 2, ["test: unexpected: 1"])
         })
-
     })
 
     describe("same length not matching", () => {
         it("[2] matched by [133]", () => {
-            const [result, mismatched] =
-                check([2], [133])
-            assertThat(mismatched).is([
-                "test: unexpected: 2",
-                "test: expected: 133"
-            ])
-            assertThat(result).is({
-                diff: [unexpected(2), expected(133)],
-                compares: 3, matches: 1, matchRate: 1 / 3, matchedObjectKey: false
-            } as MatchResult)
+            fails([2], [133],
+                [unexpected(2), expected(133)],
+                1, 3, [
+                    "test: unexpected: 2",
+                    "test: expected: 133"
+                ])
         })
 
         it("[undefined] matched by [1]", () => {
-            const [result, mismatched] =
-                check([undefined], [144])
-            assertThat(result).is({
-                diff: [unexpected(undefined), expected(144)],
-                compares: 3, matches: 1, matchRate: 1 / 3, matchedObjectKey: false
-            } as MatchResult)
-            assertThat(mismatched).is([
-                "test: unexpected: undefined",
-                "test: expected: 144"
-            ])
+            fails([undefined], [144],
+                [unexpected(undefined), expected(144)],
+                1, 3, [
+                    "test: unexpected: undefined",
+                    "test: expected: 144"
+                ])
         })
 
         it("[1] matched by [undefined]", () => {
-            const [result, mismatched] =
-                check([1], [undefined])
-            assertThat(result).is({
-                diff: [unexpected(1), expected(undefined)],
-                compares: 3, matches: 1, matchRate: 1 / 3, matchedObjectKey: false
-            } as MatchResult)
-            assertThat(mismatched).is([
-                "test: unexpected: 1",
-                "test: expected: undefined"
-            ])
+            fails([1], [undefined],
+                [unexpected(1), expected(undefined)],
+                1, 3, [
+                    "test: unexpected: 1",
+                    "test: expected: undefined"
+                ])
         })
 
-        it("[1, 3, 4] matched by [1, 2, 4]", () => {
-            const [result, mismatched] =
-                check([1, 3, 4], [1, 2])
-            assertThat(result).is({
-                diff: [1, unexpected(3), unexpected(4), expected(2)],
-                compares: 5, matches: 2, matchRate: 2 / 5, matchedObjectKey: false
-            } as MatchResult)
-            assertThat(mismatched).is([
-                "test: unexpected: 3",
-                "test: unexpected: 4",
-                "test: expected: 2"
-            ])
+        it("[1, 3, 4] matched by [1, 2]", () => {
+            fails([1, 3, 4], [1, 2],
+                [1, unexpected(3), unexpected(4), expected(2)],
+                2, 5, [
+                    "test: unexpected: 3",
+                    "test: unexpected: 4",
+                    "test: expected: 2"
+                ])
         })
 
         it("[1,undefined] matched by [1, 2]", () => {
-            const [result, mismatched] =
-                check([1, undefined], [1, 2])
-            assertThat(result).is({
-                diff: [1, unexpected(undefined), expected(2)],
-                compares: 4, matches: 2, matchRate: 1 / 2, matchedObjectKey: false
-            } as MatchResult)
-            assertThat(mismatched).is([
-                "test: unexpected: undefined",
-                "test: expected: 2"
-            ])
+            fails([1, undefined], [1, 2],
+                [1, unexpected(undefined), expected(2)],
+                2, 4, [
+                    "test: unexpected: undefined",
+                    "test: expected: 2"
+                ])
         })
 
         it("[1, undefined] matched by [2, undefined]", () => {
-            const [result, mismatched] =
-                check([1, undefined], [2, undefined])
-            assertThat(result).is({
-                diff: [unexpected(1), undefined, expected(2)],
-                compares: 3, matches: 1, matchRate: 1 / 3, matchedObjectKey: false
-            } as MatchResult)
-            assertThat(mismatched).is([
-                "test: unexpected: 1",
-                "test: expected: 2"
-            ])
-        })
-
-        it("[{f:2}] matched by [{f:1}]", () => {
-            const [result, mismatched] =
-                check([{f: 2}], [{f: 1}])
-            assertThat(result).is({
-                diff: [unexpected(1), expected(undefined)],
-                compares: 3, matches: 1, matchRate: 1 / 3, matchedObjectKey: false
-            } as MatchResult)
-        });
-
-        it("[2] matched by [0]", () => {
-            const [result, mismatched] =
-                check([2], [0])
-            assertThat(result).is({
-                diff: [unexpected(1), expected(undefined)],
-                compares: 3, matches: 1, matchRate: 1 / 3, matchedObjectKey: false
-            } as MatchResult)
+            fails([1, undefined], [2, undefined],
+                [unexpected(1), undefined, expected(2)],
+                2, 4, [
+                    "test: unexpected: 1",
+                    "test: expected: 2"
+                ])
         })
 
         it("[0, 2] matched by [0, 1]", () => {
-            const [result, mismatched] =
-                check([0, 2], [0, 1])
-            assertThat(result).is({
-                diff: [unexpected(1), expected(undefined)],
-                compares: 3, matches: 1, matchRate: 1 / 3, matchedObjectKey: false
-            } as MatchResult)
+            fails([0, 2], [0, 1],
+                [0, unexpected(2), expected(1)],
+                2, 4, [
+                    "test: unexpected: 2", "test: expected: 1"])
+        })
+
+        it("[{f:2}] matched by [{f:1}]", () => {
+            fails([{f: 2}], [{f: 1}], [{
+                f: {
+                    [MatchResult.was]: 2,
+                    [MatchResult.expected]: 1
+                }
+            }], 1.5, 2.5, ['test.f: 2, expected: 1'])
         })
 
         it("[{id: 1, f: 2}] matched by [{id: match.obj.key(1), f: 1}]", () => {
-            const [result, mismatched] =
-                check([{id: 1, f: 2}], [{id: match.obj.key(1), f: 1}])
-            assertThat(result).is({
-                diff: [unexpected(1), expected(undefined)],
-                compares: 3, matches: 1, matchRate: 1 / 3, matchedObjectKey: false
-            } as MatchResult)
+            fails([{id: 1, f: 2}], [{id: match.obj.key(1), f: 1}], [{
+                id: 1,
+                f: {[MatchResult.was]: 2, [MatchResult.expected]: 1}
+            }], 2.5, 3.5, ['test.f: 2, expected: 1'])
         })
     })
 
-    describe("More actuals", () => {
+    describe("More actual elements", () => {
         it("[10, {id: 1, f: 2}, 20] matched by [{id: match.obj.key(1), f: 1}]", () => {
-            const [result, mismatched] =
-                check([10, {id: 1, f: 2}, 20], [{id: match.obj.key(1), f: 1}])
-            assertThat(result).is({
-                diff: [unexpected(1), expected(undefined)],
-                compares: 3, matches: 1, matchRate: 1 / 3, matchedObjectKey: false
-            } as MatchResult)
+            fails([10, {id: 1, f: 2}, 20], [{id: match.obj.key(1), f: 1}], [unexpected(10),
+                {id: 1, f: {[MatchResult.was]: 2, [MatchResult.expected]: 1}},
+                unexpected(20)], 2.5, 5.5, [
+                "test: unexpected: 10",
+                "test.f: 2, expected: 1",
+                "test: unexpected: 20"])
         })
 
     })
 
     describe("More matchers", () => {
         it("[1] matched by [1, 2]", () => {
-            const [result, mismatched] =
-                check([1], [1, 2])
-            assertThat(mismatched).is([
-                {["test: Missing"]: 2}
-            ])
-            assertThat(result).is({
-                diff: [1, expected(2)],
-                compares: 2, matches: 0, matchRate: 0.0, matchedObjectKey: false
-            } as MatchResult)
+            fails([1], [1, 2], [1, expected(2)], 2, 3, ["test: expected: 2"])
         })
 
         it("[2] matched by [1, 2]", () => {
-            PrettyPrinter.logToConsole({
-                r: diff.getPatch([2], [1, 2], compare),
-                at: "arrayDiff.test.ts:19"
-            }) // todo RM Remove
-            const [result, mismatched] =
-                check([2], [1, 2])
-
-            assertThat(mismatched).is([
-                {["test: Missing"]: 1}
-            ])
-            assertThat(result).is({
-                diff: [unexpected(1), expected(undefined)],
-                compares: 3, matches: 1, matchRate: 1 / 3, matchedObjectKey: false
-            } as MatchResult)
+            fails([2], [1, 2], [2, expected(1)], 2, 3, ["test: expected: 1"])
         })
 
         it("[{id: 1, f: 2}] matched by [30, {id: match.obj.key(1), f: 1}, 40]", () => {
-            const [result, mismatched] =
-                check([{id: 1, f: 2}], [30, {id: match.obj.key(1), f: 1}, 40])
-            assertThat(result).is({
-                diff: [unexpected(1), expected(undefined)],
-                compares: 3, matches: 1, matchRate: 1 / 3, matchedObjectKey: false
-            } as MatchResult)
-        });
-
-        it("[{id: 1, f: 2}] matched by [30, 'A', 30, {id: match.obj.key(1), f: 1}, 40]", () => {
-            const [result, mismatched] =
-                check([{id: 1, f: 2}], [30, 'A', 30, {id: match.obj.key(1), f: 1}, 40])
-            assertThat(result).is({
-                diff: [unexpected(1), expected(undefined)],
-                compares: 3, matches: 1, matchRate: 1 / 3, matchedObjectKey: false
-            } as MatchResult)
+            fails([{id: 1, f: 2}], [30, {id: match.obj.key(1), f: 1}, 40], [
+                {id: 1, f: {[MatchResult.was]: 2, [MatchResult.expected]: 1}},
+                expected(30),
+                expected(40)], 2.5, 5.5, [
+                "test.f: 2, expected: 1",
+                "test: expected: 30",
+                "test: expected: 40"])
         })
     })
 
     describe("With any()", () => {
-        it("add here", () => {
-            assertThat(true).is(false)
+        it("[1, 3, 4] matched by [1, 2, *]", () => {
+            fails([1, 3, 4], [1, 2, match.any()],
+                [1, 3, unexpected(4), expected(2)],
+                3, 5, [
+                    "test: unexpected: 4",
+                    "test: expected: 2"
+                ])
+        })
+
+        xit("[1, 3, 4] matched by [*, 1, 2]", () => {
+            fails([1, 3, 4], [match.any(), 1, 2],
+                [1, 3, unexpected(4)],
+                2, 5, [
+                    "test: unexpected: 4",
+                    "test: expected: 2"
+                ])
+        })
+    })
+
+    describe("With undefined", () => {
+        it("[1, 3, 4] matched by [1, 2, undefined]", () => {
+            fails([1, 3, 4], [1, 2, undefined],
+                [1,
+                    unexpected(3),
+                    unexpected(4),
+                    expected(2),
+                    expected(undefined),
+                ],
+                2, 6, [
+                    "test: unexpected: 3",
+                    "test: unexpected: 4",
+                    "test: expected: 2",
+                    "test: expected: undefined"
+                ])
+        })
+
+        it("[1, 3, 4] matched by [1, undefined, 2]", () => {
+            fails([1, 3, 4], [1, undefined, 2],
+                [1,
+                    unexpected(3),
+                    unexpected(4),
+                    expected(undefined),
+                    expected(2),
+                ],
+                2, 6, [
+                    "test: unexpected: 3",
+                    "test: unexpected: 4",
+                    "test: expected: undefined",
+                    "test: expected: 2",
+                ])
+        })
+
+        it("[1, undefined, 4] matched by [1, 2]", () => {
+            fails([1, undefined, 4], [1, 2],
+                [
+                    1,
+                    unexpected(undefined),
+                    unexpected(4),
+                    expected(2),
+                ],
+                2, 5, [
+                    "test: unexpected: undefined",
+                    "test: unexpected: 4",
+                    "test: expected: 2",
+                ])
+        })
+
+        it("[1, undefined, 4] matched by [undefined, 2]", () => {
+            fails([1, undefined, 4], [undefined, 2],
+                [
+                    unexpected(1),
+                    undefined,
+                    unexpected(4),
+                    expected(2),
+                ],
+                2, 5, [
+                    "test: unexpected: 1",
+                    "test: unexpected: 4",
+                    "test: expected: 2",
+                ])
         })
     })
 })
@@ -279,4 +266,9 @@ const expected = (value: any): any => {
 }
 const unexpected = (value: any): any => {
     return {[MatchResult.unexpected]: value}
+
+}
+
+const wrongOrder = (value: any): any => {
+    return {[MatchResult.wrongOrder]: value}
 }

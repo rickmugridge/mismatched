@@ -12,7 +12,7 @@ export class DescribeContextMatcher<T> extends DiffMatcher<T> {
         return new DescribeContextMatcher(describeContext, matchMaker(matcher))
     }
 
-    mismatches(context: ContextOfValidationError, mismatched: Array<Mismatched>, actual: T): MatchResult {
+    mismatches(context: ContextOfValidationError, mismatched: string[], actual: T): MatchResult {
         const newContext = new ContextOfValidationError(
             this.describeContext(context.outerContext(), actual), true)
         return this.matcher.mismatches(newContext, mismatched, actual);

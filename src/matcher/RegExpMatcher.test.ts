@@ -1,8 +1,7 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
-import {Mismatched} from "./Mismatched";
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 
 describe("RegExpMatcher:", () => {
@@ -22,11 +21,11 @@ describe("RegExpMatcher:", () => {
         });
 
         it("Mismatches: errors", () => {
-            const mismatched: Array<Mismatched> = [];
+            const mismatched: string[] = [];
             const matcher = match.regEx.match(/c/);
             (matcher as DiffMatcher<any>).mismatches(new ContextOfValidationError(), mismatched, "ab");
             assertThat(mismatched).is([
-                {actual: "ab", expected: "/c/"}
+                'actual: "ab", expected: "/c/"'
             ]);
         });
     });
@@ -43,7 +42,7 @@ describe("RegExpMatcher:", () => {
             const validation = validateThat("Ab").satisfies(expected);
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
-                `{actual: "Ab", expected: "/a./"}`
+                `actual: "Ab", expected: "/a./"`
             ]);
         });
     });
