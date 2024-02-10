@@ -1,6 +1,10 @@
 # What is New
 
-## 6 Feb 2024 (version "2.15.0")
+## 10 Feb 2024 (version "2.15.2")
+
+* Array matching now uses a fuzzy diff algorithm to give better results.
+
+## 6 Feb 2024 (version "2.15.0")**
 
 * Fixed problem with: assertThat({}).is({})
 * Fixed problem with: assertThat(mock.object, mock.object)

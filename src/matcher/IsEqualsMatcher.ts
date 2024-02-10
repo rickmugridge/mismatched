@@ -5,6 +5,7 @@ import {Mismatched} from "./Mismatched";
 export class IsEqualsMatcher extends DiffMatcher<any> {
     private constructor(private expected: any) {
         super();
+        this.specificity = 20
     }
 
     mismatches(context: ContextOfValidationError, mismatched: string[], actual: any): MatchResult {

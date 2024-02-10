@@ -44,6 +44,32 @@ describe("bestMatcherAssignments", () => {
             })
     })
 
+    it("[1, 0] matched by [2, 0]", () => {
+        assertThat(determine([1, 0], [2, 0]))
+            .is({
+                assignments: [{
+                    actualElementIndex: 1, matcherIndex: 1,
+                    matchResult: mapMatchResultToMatchRate(1.0),
+                    mismatches: []
+                }],
+                unassignedActualElements: [0],
+                unassignedMatchers: [0]
+            })
+    })
+
+    it("[1, undefined] matched by [2, undefined]", () => {
+        assertThat(determine([1, undefined], [2, undefined]))
+            .is({
+                assignments: [{
+                    actualElementIndex: 1, matcherIndex: 1,
+                    matchResult: mapMatchResultToMatchRate(1.0),
+                    mismatches: []
+                }],
+                unassignedActualElements: [0],
+                unassignedMatchers: [0]
+            })
+    })
+
     it("[1, 2] matched by []", () => {
         assertThat(determine([1, 2], []))
             .is({
@@ -59,6 +85,25 @@ describe("bestMatcherAssignments", () => {
                 assignments: [],
                 unassignedActualElements: [0],
                 unassignedMatchers: [0]
+            })
+    })
+
+    it("[2, 2] matched by [2, 2]", () => {
+        assertThat(determine([2, 2], [2, 2]))
+            .is({
+                assignments: [
+                    {
+                        actualElementIndex: 0, matcherIndex: 0,
+                        matchResult: mapMatchResultToMatchRate(1.0),
+                        mismatches: []
+                    },
+                    {
+                        actualElementIndex: 1, matcherIndex: 1,
+                        matchResult: mapMatchResultToMatchRate(1.0),
+                        mismatches: []
+                    }],
+                unassignedActualElements: [],
+                unassignedMatchers: []
             })
     })
 
@@ -220,7 +265,7 @@ describe("bestMatcherAssignments", () => {
                     {
                         actualElementIndex: 0, matcherIndex: 0,
                         matchResult: mapMatchResultToMatchRate(4 / 6),
-                        mismatches: ['test.b: 2, expected: 3']
+                        mismatches: ["test[0].b: 2, expected: 3"]
                     }
                 ],
                 unassignedActualElements: [],
@@ -294,6 +339,28 @@ describe("bestMatcherAssignments", () => {
             })
     })
 
+    it("[1, 2] matched by [2, match.number.greater(0)]", () => {
+        assertThat(determine(
+            [1, 2],
+            [2, match.number.greater(0)]))
+            .is({
+                assignments: [
+                    {
+                        actualElementIndex: 1, matcherIndex: 0,
+                        matchResult: mapMatchResultToMatchRate(1.0),
+                        mismatches: []
+                    },
+                    {
+                        actualElementIndex: 0, matcherIndex: 1,
+                        matchResult: mapMatchResultToMatchRate(1.0),
+                        mismatches: []
+                    },
+                ],
+                unassignedActualElements: [],
+                unassignedMatchers: []
+            })
+    })
+
     it("[{a: 1, b: 2}, {a: 2, b: 3}] matched by [{a: 1, b: 22}, {a: 2, b: 3, c: 4, d: 5}]", () => {
         assertThat(determine(
             [{a: 1, b: 2}, {a: 2, b: 3}],
@@ -301,12 +368,11 @@ describe("bestMatcherAssignments", () => {
             .is({
                 assignments: [
                     {
-                        actualElementIndex: 1,
-                        matcherIndex: 1,
+                        actualElementIndex: 1, matcherIndex: 1,
                         matchResult: mapMatchResultToMatchRate(4 / 6),
                         mismatches: [
-                            'test.c: undefined, expected: 4',
-                            'test.d: undefined, expected: 5']
+                            "test[1].c: undefined, expected: 4",
+                            "test[1].d: undefined, expected: 5"]
                     }
                 ],
                 unassignedActualElements: [],
@@ -329,16 +395,16 @@ describe("bestMatcherAssignments", () => {
                     matcherIndex: 1,
                     matchResult: mapMatchResultToMatchRate(4 / 6),
                     mismatches: [
-                        'test.c: undefined, expected: 4',
-                        'test.d: undefined, expected: 5']
+                        "test[1].c: undefined, expected: 4",
+                        "test[1].d: undefined, expected: 5"]
                 },
                 {
                     actualElementIndex: 2,
                     matcherIndex: 2,
                     matchResult: mapMatchResultToMatchRate(2.5 / 4.5),
                     mismatches: [
-                        'test.a: 3, expected: 1',
-                        'test.c: undefined, expected: 3'
+                        "test[2].a: 3, expected: 1",
+                        "test[2].c: undefined, expected: 3"
                     ]
                 },
             ],

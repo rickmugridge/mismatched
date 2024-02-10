@@ -52,19 +52,19 @@ export const newArrayResultAccumulator = <T>(context: ContextOfValidationError,
     const extraActual = (actualIndex: number) => {
         compares += 1
         diff.push(MatchResult.extraActual(actualElements[actualIndex])) // unexpected
-        mismatched.push(Mismatched.extraActual(context, actualElements[actualIndex]))
+        mismatched.push(Mismatched.extraActual(context.add(`[${actualIndex}]`), actualElements[actualIndex]))
     }
 
     const extraMatcher = (matcherIndex: number) => {
         compares += 1
         diff.push(MatchResult.extraMatcher(matchers[matcherIndex])) // expected
-        mismatched.push(Mismatched.extraMatcher(context, matchers[matcherIndex]))
+        mismatched.push(Mismatched.extraMatcher(context.add(`[]`), matchers[matcherIndex]))
     }
 
     const outOfOrder = (actualIndex: number) => {
         compares += 1
         diff.push(MatchResult.outOfOrder(actualElements[actualIndex])) // unexpected
-        mismatched.push(Mismatched.outOfOrder(context, actualElements[actualIndex]))
+        mismatched.push(Mismatched.outOfOrder(context.add(`[]`), actualElements[actualIndex]))
 
     }
 

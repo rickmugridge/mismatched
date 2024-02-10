@@ -61,9 +61,9 @@ describe("mapDeltas", () => {
             [{matched: 0}, {matched: 1}, {actualRemoved: 2}])
     })
 
-    xit("[0, 3, 4] and [*, 0, 2]", () => {
+    it("[0, 3, 4] and [*, 0, 2]", () => {
         check([0, 3, 4], [match.any(), 0, 2],
-            [{matched: 0}, {matched: 1}, {actualRemoved: 2}])
+            [{matched: 0}, {actualRemoved: 1}, {actualRemoved: 2}])
     })
 
     it("[0, 1, 2] and [0, 4, *]", () => {

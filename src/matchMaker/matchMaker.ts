@@ -2,7 +2,6 @@ import {ContextOfValidationError, DiffMatcher} from "../matcher/DiffMatcher";
 import {ObjectMatcher} from "../matcher/ObjectMatcher";
 import {ofType} from "../ofType";
 import {IsEqualsMatcher} from "../matcher/IsEqualsMatcher";
-import {ArrayMatcher} from "../matcher/ArrayMatcher";
 import {RegExpMatcher} from "../matcher/RegExpMatcher";
 import {StringMatcher} from "../matcher/StringMatcher";
 import {numberMatcher} from "../matcher/NumberMatcher";
@@ -16,6 +15,7 @@ import {MatchResult} from "../MatchResult";
 import {DateMatcher} from "../matcher/DateMatcher";
 import {ToBeUnquotedMatcher} from "../matcher/ToBeUnquotedMatcher";
 import {ItIsMatcher} from "../matcher/ItIsMatcher"
+import {ArrayMatcher} from "../matcher/ArrayMatcher"
 
 let level = 0
 const references: Set<any> = new Set()

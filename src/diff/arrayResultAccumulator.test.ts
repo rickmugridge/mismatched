@@ -1,11 +1,9 @@
 import {ArrayResultAccumulator, newArrayResultAccumulator} from "./arrayResultAccumulator"
 import {ContextOfValidationError} from "../matcher/DiffMatcher"
-import {Mismatched} from "../matcher/Mismatched"
 import {ArrayDiff} from "./arrayDiff"
 import {assertThat} from "../assertThat"
 import {Assignations} from "./BestMatcherAssignments"
 import {matchMaker} from "../matchMaker/matchMaker"
-import {match} from "../match"
 import {MatchResult} from "../MatchResult"
 
 const context = new ContextOfValidationError("test")
@@ -18,9 +16,6 @@ const check = (actual: any, matcher: any): [ArrayResultAccumulator, Assignations
         context, [actual], [matchMaker(matcher)], finalMismatched)
     return [resultAccumulator, assignations, finalMismatched]
 }
-const mapMatchResultToMatchRate = (expectedRate: number) =>
-    match.mapped((mr: MatchResult) => mr.matchRate,
-        expectedRate, `MatchResult with a matchRate of ${expectedRate}`)
 
 describe("arrayResultAccumulator", () => {
     it("wasExpected", () => {
@@ -30,7 +25,7 @@ describe("arrayResultAccumulator", () => {
         const result = accumulator.getMatchResult()
 
         assertThat(finalMismatched).is([
-            'test.a: 1, expected: 2'])
+            'test[0].a: 1, expected: 2'])
         assertThat(result.diff).is(
             [{a: {[MatchResult.was]: 1, [MatchResult.expected]: 2}}])
         assertThat(result.matchRate).is(0.6)
@@ -46,7 +41,7 @@ describe("arrayResultAccumulator", () => {
             [{[MatchResult.unexpected]: {a: 1}}])
         assertThat(result.matchRate).is(0.5)
         assertThat(finalMismatched).is([
-            "test: unexpected: {a: 1}"])
+            "test[0]: unexpected: {a: 1}"])
     })
 
     it("outOfOrder", () => {
@@ -59,7 +54,7 @@ describe("arrayResultAccumulator", () => {
             [{[MatchResult.wrongOrder]: {a: 1}}])
         assertThat(result.matchRate).is(0.5)
         assertThat(finalMismatched).is([
-            "test: out of order: {a: 1}"])
+            "test[]: out of order: {a: 1}"])
     })
 
     it("extraMatcher", () => {
@@ -72,6 +67,6 @@ describe("arrayResultAccumulator", () => {
             [{[MatchResult.expected]: {a: 2}}])
         assertThat(result.matchRate).is(0.5)
         assertThat(finalMismatched).is([
-            "test: expected: {a: 2}"])
+            "test[]: expected: {a: 2}"])
     })
 })

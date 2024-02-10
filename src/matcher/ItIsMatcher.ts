@@ -1,10 +1,11 @@
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 import {Mismatched} from "./Mismatched";
 
 export class ItIsMatcher extends DiffMatcher<any> {
     private constructor(private expected: any) {
         super();
+        this.specificity = 20
     }
 
     mismatches(context: ContextOfValidationError, mismatched: string[], actual: any): MatchResult {

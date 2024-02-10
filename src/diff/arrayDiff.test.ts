@@ -51,16 +51,20 @@ describe("arrayDiff", () => {
             passes([null], [null], 2)
         })
 
+        it("[2, 2] matched by [2, 2]", () => {
+            passes([2, 2], [2, 2], 3)
+        })
+
         it("[] matched by [133]", () => {
             fails([], [133],
                 [expected(133)],
-                1, 2, ["test: expected: 133"])
+                1, 2, ["test[]: expected: 133"])
         })
 
         it("[1] matched by []", () => {
             fails([1], [],
                 [unexpected(1)],
-                1, 2, ["test: unexpected: 1"])
+                1, 2, ["test[0]: unexpected: 1"])
         })
     })
 
@@ -69,8 +73,8 @@ describe("arrayDiff", () => {
             fails([2], [133],
                 [unexpected(2), expected(133)],
                 1, 3, [
-                    "test: unexpected: 2",
-                    "test: expected: 133"
+                    "test[0]: unexpected: 2",
+                    "test[]: expected: 133"
                 ])
         })
 
@@ -78,8 +82,8 @@ describe("arrayDiff", () => {
             fails([undefined], [144],
                 [unexpected(undefined), expected(144)],
                 1, 3, [
-                    "test: unexpected: undefined",
-                    "test: expected: 144"
+                    "test[0]: unexpected: undefined",
+                    "test[]: expected: 144"
                 ])
         })
 
@@ -87,8 +91,8 @@ describe("arrayDiff", () => {
             fails([1], [undefined],
                 [unexpected(1), expected(undefined)],
                 1, 3, [
-                    "test: unexpected: 1",
-                    "test: expected: undefined"
+                    "test[0]: unexpected: 1",
+                    "test[]: expected: undefined"
                 ])
         })
 
@@ -96,9 +100,9 @@ describe("arrayDiff", () => {
             fails([1, 3, 4], [1, 2],
                 [1, unexpected(3), unexpected(4), expected(2)],
                 2, 5, [
-                    "test: unexpected: 3",
-                    "test: unexpected: 4",
-                    "test: expected: 2"
+                    "test[1]: unexpected: 3",
+                    "test[2]: unexpected: 4",
+                    "test[]: expected: 2"
                 ])
         })
 
@@ -106,8 +110,17 @@ describe("arrayDiff", () => {
             fails([1, undefined], [1, 2],
                 [1, unexpected(undefined), expected(2)],
                 2, 4, [
-                    "test: unexpected: undefined",
-                    "test: expected: 2"
+                    "test[1]: unexpected: undefined",
+                    "test[]: expected: 2"
+                ])
+        })
+
+        it("[1, 0] matched by [2, 0]", () => {
+            fails([1, 0], [2, 0],
+                [unexpected(1), 0, expected(2)],
+                2, 4, [
+                    "test[0]: unexpected: 1",
+                    "test[]: expected: 2"
                 ])
         })
 
@@ -115,8 +128,8 @@ describe("arrayDiff", () => {
             fails([1, undefined], [2, undefined],
                 [unexpected(1), undefined, expected(2)],
                 2, 4, [
-                    "test: unexpected: 1",
-                    "test: expected: 2"
+                    "test[0]: unexpected: 1",
+                    "test[]: expected: 2"
                 ])
         })
 
@@ -124,7 +137,8 @@ describe("arrayDiff", () => {
             fails([0, 2], [0, 1],
                 [0, unexpected(2), expected(1)],
                 2, 4, [
-                    "test: unexpected: 2", "test: expected: 1"])
+                    "test[1]: unexpected: 2",
+                    "test[]: expected: 1"])
         })
 
         it("[{f:2}] matched by [{f:1}]", () => {
@@ -133,14 +147,16 @@ describe("arrayDiff", () => {
                     [MatchResult.was]: 2,
                     [MatchResult.expected]: 1
                 }
-            }], 1.5, 2.5, ['test.f: 2, expected: 1'])
+            }], 1.5, 2.5, [
+                'test[0].f: 2, expected: 1'])
         })
 
         it("[{id: 1, f: 2}] matched by [{id: match.obj.key(1), f: 1}]", () => {
             fails([{id: 1, f: 2}], [{id: match.obj.key(1), f: 1}], [{
                 id: 1,
                 f: {[MatchResult.was]: 2, [MatchResult.expected]: 1}
-            }], 2.5, 3.5, ['test.f: 2, expected: 1'])
+            }], 2.5, 3.5, [
+                'test[0].f: 2, expected: 1'])
         })
     })
 
@@ -149,20 +165,24 @@ describe("arrayDiff", () => {
             fails([10, {id: 1, f: 2}, 20], [{id: match.obj.key(1), f: 1}], [unexpected(10),
                 {id: 1, f: {[MatchResult.was]: 2, [MatchResult.expected]: 1}},
                 unexpected(20)], 2.5, 5.5, [
-                "test: unexpected: 10",
-                "test.f: 2, expected: 1",
-                "test: unexpected: 20"])
+                "test[0]: unexpected: 10",
+                "test[1].f: 2, expected: 1",
+                "test[2]: unexpected: 20"])
         })
 
     })
 
     describe("More matchers", () => {
         it("[1] matched by [1, 2]", () => {
-            fails([1], [1, 2], [1, expected(2)], 2, 3, ["test: expected: 2"])
+            fails([1], [1, 2],
+                [1, expected(2)], 2, 3,
+                ["test[]: expected: 2"])
         })
 
         it("[2] matched by [1, 2]", () => {
-            fails([2], [1, 2], [2, expected(1)], 2, 3, ["test: expected: 1"])
+            fails([2], [1, 2],
+                [2, expected(1)], 2, 3,
+                ["test[]: expected: 1"])
         })
 
         it("[{id: 1, f: 2}] matched by [30, {id: match.obj.key(1), f: 1}, 40]", () => {
@@ -170,9 +190,9 @@ describe("arrayDiff", () => {
                 {id: 1, f: {[MatchResult.was]: 2, [MatchResult.expected]: 1}},
                 expected(30),
                 expected(40)], 2.5, 5.5, [
-                "test.f: 2, expected: 1",
-                "test: expected: 30",
-                "test: expected: 40"])
+                "test[0].f: 2, expected: 1",
+                "test[]: expected: 30",
+                "test[]: expected: 40"])
         })
     })
 
@@ -181,17 +201,18 @@ describe("arrayDiff", () => {
             fails([1, 3, 4], [1, 2, match.any()],
                 [1, 3, unexpected(4), expected(2)],
                 3, 5, [
-                    "test: unexpected: 4",
-                    "test: expected: 2"
+                    "test[2]: unexpected: 4",
+                    "test[]: expected: 2"
                 ])
         })
 
-        xit("[1, 3, 4] matched by [*, 1, 2]", () => {
+        it("[1, 3, 4] matched by [*, 1, 2]", () => {
             fails([1, 3, 4], [match.any(), 1, 2],
-                [1, 3, unexpected(4)],
+                [1, wrongOrder(3), unexpected(4), expected(2)],
                 2, 5, [
-                    "test: unexpected: 4",
-                    "test: expected: 2"
+                    "test[]: out of order: 3",
+                    "test[2]: unexpected: 4",
+                    "test[]: expected: 2"
                 ])
         })
     })
@@ -206,10 +227,10 @@ describe("arrayDiff", () => {
                     expected(undefined),
                 ],
                 2, 6, [
-                    "test: unexpected: 3",
-                    "test: unexpected: 4",
-                    "test: expected: 2",
-                    "test: expected: undefined"
+                    "test[1]: unexpected: 3",
+                    "test[2]: unexpected: 4",
+                    "test[]: expected: 2",
+                    "test[]: expected: undefined"
                 ])
         })
 
@@ -222,10 +243,10 @@ describe("arrayDiff", () => {
                     expected(2),
                 ],
                 2, 6, [
-                    "test: unexpected: 3",
-                    "test: unexpected: 4",
-                    "test: expected: undefined",
-                    "test: expected: 2",
+                    "test[1]: unexpected: 3",
+                    "test[2]: unexpected: 4",
+                    "test[]: expected: undefined",
+                    "test[]: expected: 2",
                 ])
         })
 
@@ -238,9 +259,9 @@ describe("arrayDiff", () => {
                     expected(2),
                 ],
                 2, 5, [
-                    "test: unexpected: undefined",
-                    "test: unexpected: 4",
-                    "test: expected: 2",
+                    "test[1]: unexpected: undefined",
+                    "test[2]: unexpected: 4",
+                    "test[]: expected: 2",
                 ])
         })
 
@@ -253,9 +274,9 @@ describe("arrayDiff", () => {
                     expected(2),
                 ],
                 2, 5, [
-                    "test: unexpected: 1",
-                    "test: unexpected: 4",
-                    "test: expected: 2",
+                    "test[0]: unexpected: 1",
+                    "test[2]: unexpected: 4",
+                    "test[]: expected: 2",
                 ])
         })
     })

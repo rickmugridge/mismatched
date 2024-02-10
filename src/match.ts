@@ -1,5 +1,4 @@
 import {IsEqualsMatcher} from "./matcher/IsEqualsMatcher";
-import {ArrayMatcher} from "./matcher/ArrayMatcher";
 import {ObjectMatcher} from "./matcher/ObjectMatcher";
 import {RegExpMatcher} from "./matcher/RegExpMatcher";
 import {AnyOfMatcher} from "./matcher/AnyOfMatcher";
@@ -32,6 +31,7 @@ import {dateMatcher} from "./matcher/DateMatcher";
 import {enumFixer} from "./identifySources/enumFixer";
 import {SelectMatcher} from "./matcher/SelectMatch";
 import {ExactlyOneOfMatcher} from "./matcher/ExactlyOneOfMatcher"
+import {ArrayMatcher} from "./matcher/ArrayMatcher"
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),

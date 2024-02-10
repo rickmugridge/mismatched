@@ -2,6 +2,7 @@ import {match} from "../match";
 import {assertThat} from "../assertThat";
 import {validateThat} from "../validateThat";
 import {wasExpected} from "./Mismatched"
+import {MatchResult} from "../MatchResult"
 
 describe("BindMatcher:", () => {
     describe("assertThat():", () => {
@@ -108,8 +109,10 @@ describe("BindMatcher:", () => {
                     colours: [
                         {id: "615fa1d3-2c79-4f46-a06a-0d04cdc9c0eb", type: "Red"},
                         {
-                            id: "615fa1d3-2c79-4f46-a06a-0d04cdc9c0eb",
-                            type: wasExpected("Green", "Red")
+                            [MatchResult.wrongOrder]: {
+                                id: "615fa1d3-2c79-4f46-a06a-0d04cdc9c0eb",
+                                type: "Green"
+                            }
                         },
                         {id: "615fa1d3-2c79-4f46-a06a-0d04cdc9c0eb", type: "Red"}
                     ]

@@ -1,5 +1,4 @@
 import {ContextOfValidationError, DiffMatcher} from "../matcher/DiffMatcher"
-import {Mismatched} from "../matcher/Mismatched"
 import {MatchResult} from "../MatchResult"
 import {ofType} from "../ofType"
 import {AnyMatcher} from "../matcher/AnyMatcher"
@@ -74,7 +73,8 @@ export module BestMatcherAssignments {
             const actualElement = actualElements[actualIndex]
             if (unassignedActualElements.has(actualIndex)) {
                 const mismatches: string[] = []
-                const matchResult = matcher.mismatches(context, mismatches, actualElement)
+                const matchResult = matcher.mismatches(context.add(`[${actualIndex}]`),
+                    mismatches, actualElement)
                 if (matchResult.passed() || matchResult.matchRate > 0.0 && partiallyMatching) {
                     const acceptMatch = ofType.isUndefined(bestMatchResult) ||
                         matchResult.matchRate > bestMatchResult.matchRate

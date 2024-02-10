@@ -5,7 +5,6 @@ import {MatchResult} from "../MatchResult";
 import {Option, Some} from "prelude-ts";
 import {Assignations, Assignment, BestMatcherAssignments} from "./BestMatcherAssignments"
 import {ofType} from "../ofType"
-import {Mismatched} from "../matcher/Mismatched"
 import {DeltaMapping, mapDeltas} from "./mapDeltas"
 import {newArrayResultAccumulator} from "./arrayResultAccumulator"
 
@@ -22,7 +21,7 @@ import {newArrayResultAccumulator} from "./arrayResultAccumulator"
             actual elements and the matchers.
  */
 
-type Triple<T> = [DeltaMapping[], Assignations<T>, Map<T, Assignment<T>>]
+type Triple<T> = [DeltaMapping[], Assignations<T>, Map<number, Assignment<T>>]
 
 export module ArrayDiff {
     // exported for testing only
@@ -36,19 +35,22 @@ export module ArrayDiff {
         }
         // 1. Find the best matcher/element assignments:
         const assignations: Assignations<T> = BestMatcherAssignments.determine(context, actualElements, matchers)
-        const assignedActualElements: Map<T, Assignment<T>> = new Map()
-        assignations.assignments.forEach(a => {
-            assignedActualElements.set(actualElements[a.actualElementIndex], a)
+        const assignedActualElements: Map<number, Assignment<T>> = new Map() // By actualElements index
+        assignations.assignments.forEach(assignment => {
+            assignedActualElements.set(assignment.actualElementIndex, assignment)
         })
 
         // 2. Run the diff:
-        const compare = (value: T, matcher: DiffMatcher<T>): boolean => {
-            const assign = assignedActualElements.get(value)
-            return ofType.isDefined(assign) && matchers[assign.matcherIndex] === matcher
+        const compare = (actualIndex: number, matcherIndex: number): boolean => {
+            const assign = assignedActualElements.get(actualIndex)
+            return ofType.isDefined(assign) && assign.matcherIndex === matcherIndex
         }
 
+        const actualElementIndexes: number[] = Object.keys(actualElements).map(s => parseInt(s))
+        const matcherIndexes: number[] = Object.keys(matchers).map(s => parseInt(s))
+
         // 3. Get patch deltas.
-        const deltas = diff.getPatch(actualElements, matchers, compare)
+        const deltas = diff.getPatch(actualElementIndexes, matcherIndexes, compare)
 
         // 4. Map the deltas into a useful form for reporting the outcomes of the fuzzy diff:
         const mappedDeltas = mapDeltas(deltas, actualElements.length)
@@ -69,9 +71,8 @@ export module ArrayDiff {
         const resultAccumulator = newArrayResultAccumulator(context, actualElements, matchers, mismatched)
         deltaMappings.forEach((mapping, i) => {
             if (ofType.isDefined(mapping["matched"])) {
-                const assignment: Assignment<T> | undefined = assignedActualElements.get(actualElements[i])
+                const assignment: Assignment<T> | undefined = assignedActualElements.get(i)
                 if (ofType.isDefined(assignment)) {
-                    // const assignment = assignations.assignments[i]
                     if (assignment.matchResult.passed()) {
                         resultAccumulator.addPass(i, assignment.matchResult.matches)
                     } else {
@@ -81,7 +82,7 @@ export module ArrayDiff {
                     resultAccumulator.extraActual(i) // Not expected to happen
                 }
             } else { // actualRemoved
-                let possiblyOutOfOrder: Assignment<T> | undefined = assignedActualElements.get(actualElements[i])
+                let possiblyOutOfOrder: Assignment<T> | undefined = assignedActualElements.get(i)
                 if (ofType.isDefined(possiblyOutOfOrder)) {
                     resultAccumulator.outOfOrder(i)
                 } else {
@@ -97,87 +98,3 @@ export module ArrayDiff {
         return resultAccumulator.getMatchResult()
     }
 }
-export const arrayDiff22 = <T>(matchers: DiffMatcher<T>[], actuals: any[]): PossibleMatch<T>[] => {
-    // Assumes we don't share Matchers:
-    const doubleMap = new DoubleMap<T, DiffMatcher<T>, MatchResult>()
-    const compare = (value: T, matcher: DiffMatcher<T>) => {
-        const matchResult = doubleMap.get(value, matcher);
-        if (matchResult) {
-            return matchResult.passed() || matchResult.matchedObjectKey;
-        }
-        const matchResult2 = matcher.trialMatches(value);
-        doubleMap.set(value, matcher, matchResult2);
-        return matchResult2.passed() || matchResult2.matchedObjectKey;
-    }
-
-    const includeMatcher = (pair: PossibleMatch<T>, matcher: DiffMatcher<T>) => {
-        if (pair.actual.isSome()) {
-            const result = doubleMap.get(pair.actual.getOrThrow(), matcher);
-            if (result) {
-                pair.matcher = Option.of(matcher)
-            }
-        }
-    }
-
-    const deltas = diff.getPatch(actuals, matchers, compare);
-    const result: PossibleMatch<T>[] = actuals.map((actual, index) =>
-        ({
-            actual: new Some(actual), // as Option.of(undefined) === Option.none()
-            actualIndex: index,
-            matcher: Option.none()
-        }))
-    let expectedOffset = 0;
-    let actualOffset = 0;
-    let removes = 0;
-    let previousIndex = 0;
-    deltas.forEach(delta => {
-        const start = delta.oldPos + actualOffset;
-        switch (delta.type) {
-            case "add": // expected
-                for (let i = previousIndex; i < start; i++) {
-                    includeMatcher(result[i], matchers[expectedOffset])
-                    expectedOffset += 1
-                }
-                const insert: PossibleMatch<T>[] = (delta.items as DiffMatcher<T>[]).map(matcher =>
-                    ({actual: Option.none(), matcher: Option.of(matcher)}))
-                result.splice(start, 0, ...insert);
-                actualOffset += delta.items.length;
-                previousIndex = delta.oldPos + actualOffset;
-                expectedOffset += delta.items.length;
-                break;
-            case "remove": // unexpected
-                for (let i = previousIndex; i < delta.oldPos + actualOffset; i++) {
-                    includeMatcher(result[i], matchers[expectedOffset])
-                    expectedOffset += 1
-                }
-                const end = start + delta.items.length
-                removes += delta.items.length
-                previousIndex = end;
-                break;
-        }
-    })
-    for (let i = previousIndex; i < result.length; i++) {
-        includeMatcher(result[i], matchers[expectedOffset])
-        expectedOffset += 1
-    }
-    for (let j = 0; j < result.length - 1; j++) {
-        if (unexpected(result[j]) && expected(result[j + 1])) {
-            const matchResult = result[j + 1].matcher.getOrThrow().matches(result[j].actual.getOrThrow())
-            if (matchResult.matchRate > 0) {
-                // Combine them
-                result[j].matcher = result[j + 1].matcher
-                result.splice(j + 1, 1)
-            }
-        }
-    }
-    return result
-}
-
-export interface PossibleMatch<T> {
-    actual: Option<T>
-    matcher: Option<DiffMatcher<T>>
-    actualIndex?: number // This is always set on return from arrayDiff()
-}
-
-const unexpected = <T>(possible: PossibleMatch<T>) => possible.actual.isSome() && possible.matcher.isNone()
-const expected = <T>(possible: PossibleMatch<T>) => possible.actual.isNone() && possible.matcher.isSome()

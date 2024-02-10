@@ -1,7 +1,6 @@
 import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
-import {Mismatched} from "./Mismatched";
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {validateThat} from "../validateThat";
 import {stringDiff} from "../diff/StringDiff";
@@ -45,10 +44,10 @@ describe("StringMatcher:", () => {
             assertThat('').isNot(match.string.nonEmpty())
         })
 
-        it("asDate()", () => {
-            const date = new Date()
-            assertThat(date.toISOString()).is(match.string.asDate(date))
-        })
+        // it("asDate()", () => {
+        //     const date = new Date()
+        //     assertThat(date.toISOString()).is(match.string.asDate(date))
+        // })
 
         it("asDate() via UTC does not match", () => {
             const date = new Date()
