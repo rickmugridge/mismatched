@@ -3,7 +3,7 @@
 ## How to match an object where some expected fields are unknown eg, randomly generated?
 
  * Use `match.any()` for those fields within the object (nested to any level). 
- * See [Matchers](./MATCHERS.md) for further details
+ * See [Matchers](MATCHERS.md) for further details
  * Eg, in the following, we don't know the value of `other` ahead of time, or we don't care about that in the test:
 ```
      assertThat(actual).is({
@@ -55,19 +55,19 @@ I only use approach #3 if I'm really only interested in one field of the whole o
 
 The simplest approach is to define your own matcher using `PredicateMatcher`.
 
-* See [Custom Matchers](./CustomMatchers.md) for an example and further details.
+* See [Custom Matchers](CustomMatchers.md) for an example and further details.
 
 ## How to handle matching when the same unknown value can appear at multiple points in matching, such as with ids?
 
  * Create a `match.bind()` and use that in each of the places where you expect that (unknown) value to appear.
- * See [Binding Matcher](./BindingMatcher.md) for an example and further details.
+ * See [Binding Matcher](BindingMatcher.md) for an example and further details.
 
 ## How to match when the order of elements in an array may vary (eg, results from a query)?
 
  * If the elements form a bag (ie, it has duplicated elements), use `match.array.unordered()`.
-   See [Array Matchers](./ArrayMatchers.md) for further details.
+   See [Array Matchers](ArrayMatchers.md) for further details.
  * If the elements form a set, use `match.aSet.match()` which compares the actual as a set against the expected set.
-   See [Set Matchers](./SetMatchers.md) for further details.
+   See [Set Matchers](SetMatchers.md) for further details.
 
 ## What if we're only interested in a subset of the elements in an array or set?
 
@@ -84,7 +84,7 @@ It can't match the JSON directly, for reasons such as:
 So it's difficult to match it within the JSON string without a messy regExp, which is confusing.
 What's a better way of doing that?
 
- * See [MappedMatcher](./MappedMatcher.md) for a general solution.
+ * See [MappedMatcher](MappedMatcher.md) for a general solution.
 
 ## When larger arrays or sets of complex objects fail to match, it can be tricky working out what went wrong
 
@@ -113,11 +113,11 @@ Yes, indeed. As matchers are of type `any`, they can be used where you like. For
 
 ## When matching complex objects, it can be hard to work out where specific values come from. What can I do?
 
-* See [DecompiledActual](./DecompiledActual.md) for a general solution.
+* See [DecompiledActual](DecompiledActual.md) for a general solution.
 
 ## Can `mismatched` be used for validation?
 
-Yes, see [ValidateThat](./ValidateThat.md)
+Yes, see [ValidateThat](ValidateThat.md)
 
 ## How well is `mismatched` tested?
 
@@ -127,7 +127,7 @@ See `SetMatcher.test.ts`, for example.
 
 # How does `mismatched` work?
 
-* See [MismatchedAtWork](./MismatchedAtWork.md) for some high level details.
+* See [MismatchedAtWork](MismatchedAtWork.md) for some high level details.
 
 # How can I partially match on the message of an Error? `assertThat().throws()` doesn't work.
 
@@ -158,7 +158,7 @@ But this does:
 
 I want to match part of the object with that JSON, but it's tricky with string matching. What can I do?
 
-* See [MappedMatcher](./MappedMatcher.md) for a general solution.
+* See [MappedMatcher](MappedMatcher.md) for a general solution.
 
 # How can I match objects that contain self-references?
 

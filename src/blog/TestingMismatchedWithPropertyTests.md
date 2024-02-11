@@ -1,14 +1,16 @@
-# Testing Mismatched With Property Tests
+# Testing Mismatched With Property Tests 29 December 2022
 
 Property tests are an elegant way to perform tests that verify general properties of some data or code.
 We use property test framework `fast-check` here.
 
-For property tests, we define how examples of a given type are to be randomly generated, and then use those examples to verify certain properties of the type.
+For property tests, we define how examples of a given type are to be randomly generated, and then use 
+those examples to verify certain properties of the type.
 For example, we can use property tests to verify that:
   * A sorted array is the same length as the original
   * A sorted arrays has the exact same elements as the original, rearranged
   * A string created by concatenating strings A and B will have A at the start, B at the end, and A/B within it
-  * Encoding a value, such as to JSON, and then decoding it will give the same result (with restrictions on the JS values - eg, symbols and functions are not allowed)
+  * Encoding a value, such as to JSON, and then decoding it will give the same result 
+    (with restrictions on the JS values - eg, symbols and functions are not allowed)
   * The result of an efficient algorithm is the same as the result of a equivalent simple but slow algorithm
   * A validly-generated value of some type satisfies the validation code for that type, whereas an invalid value will not
 
@@ -50,7 +52,7 @@ export const anyJavascriptValue = () => fc.oneof(fc.string(), fc.char(), fc.stri
 ```
 
 The first test says that if we create any array of a JS value, we can match it against itself.
-See [How Mismatch Works](./HowItWorks.md) for details of how the matchMaker turns a value into a corresponding Matcher.
+See [How Mismatch Works](../docs/HowItWorks.md) for details of how the matchMaker turns a value into a corresponding Matcher.
 By default, this test will run with 200 distinct examples.
 
 The second test says that if we create any array of a JS value, we can't match it against the same array with an extra (unique) value in it.

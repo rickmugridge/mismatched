@@ -36,6 +36,10 @@ export class MatchResult {
         return {[MatchResult.wrongOrder]: actual}
     }
 
+   static outOfOrderWithPartialMatch(matchResult: MatchResult): any {
+        return {[MatchResult.wrongOrder]: matchResult}
+    }
+
     static wasExpected(was: any, expected: any, compares: any, matches: any): MatchResult {
         return new MatchResult({
                 [MatchResult.was]: handleSymbol(was),

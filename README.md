@@ -3,21 +3,21 @@
 `mismatched` is a Typescript-based assertion and matcher framework, with a sophisticated compositional approach.
 Available at https://github.com/rickmugridge/mismatched.
 
-This can be used:
-   - for `mismatched` assertions with [assertThat()](./ASSERTTHAT.md).
-   - as matcher for arguments in mocked calls in [`thespian`](https://github.com/rickmugridge/)
-   - for data validation with [validateThat()](./ValidateThat.md)
+`mismatched` can be used:
+   - for `mismatched` assertions with [assertThat()](src/docs/AssertThat.md).
+   - as matcher for arguments in mocked calls in [`thespian`](https://github.com/rickmugridge/thespian)
+   - for data validation with [validateThat()](src/docs/ValidateThat.md)
 
-For latest changes, see [What is New](./WhatIsNew.md).
+For latest changes, see [What is New](src/docs/WhatIsNew.md).
 
 Also see: 
-  * [FAQ](./FAQ.md)
-  * [assertThat()](./ASSERTTHAT.md)
-  * [validateThat()](./ValidateThat.md)
-  * [matchers](./MATCHERS.md)
-  * [PrettyPrinter](./PRETTYPRINTER.md)
-  * [Diff Tree](./DIFFTREE.md)
-  * [How Mismatch Works](./HowItWorks.md)
+  * [FAQ](src/docs/FAQ.md)
+  * [assertThat()](src/docs/AssertThat.md)
+  * [validateThat()](src/docs/ValidateThat.md)
+  * [matchers](src/docs/MATCHERS.md)
+  * [PrettyPrinter](src/docs/PRETTYPRINTER.md)
+  * [Diff Tree](src/docs/DiffTree.md)
+  * [How Mismatch Works](src/docs/HowItWorks.md)
 
 ## Example Assertions:
 
@@ -62,7 +62,7 @@ We can see above that:
    - Eg, because we don't care about some part of it (eg, a field which is randomly generated)
    - Eg, because we don't need to be too specific (some number, some array)
   
-when matching fails, and the changes are minor, it provides feedback as a [diff tree](DIFFTREE.md) 
+when matching fails, and the changes are minor, it provides feedback as a [diff tree](src/docs/DIFFTREE.md) 
 (looks to be related to a Haskell tree-diff). Eg:
 
 ![failed](MatchFail.png)
@@ -71,15 +71,15 @@ When the `address.number` was 3 but was expected to be 4.
 
 ## Matchers
 
-There are many built-in matchers. See [Matchers](./MATCHERS.md). 
+There are many built-in matchers. See [Matchers](src/docs/MATCHERS.md). 
 This includes a section on writing custom matchers.
 
 ## Displaying the results of mismatches
 
 We aim to provide useful output when a match fails. 
-[PrettyPrinter](PRETTYPRINTER.md) does this.
+[PrettyPrinter](src/docs/PRETTYPRINTER.md) does this.
 
-The results are provided as a JS object, which shows what matched and what didn't in a [diff tree](DIFFTREE.md).
+The results are provided as a JS object, which shows what matched and what didn't in a [diff tree](src/docs/DIFFTREE.md).
 It does not display it in JSON format.
 Instead, it is displayed as plain JS, so that it's easy to copy parts of it if a test is not right.
 
@@ -103,7 +103,7 @@ Here's a simple example of validations (see the micro tests for individual match
     });
 ```
 
-See [validateThat()](./ValidateThat.md) for further details.
+See [validateThat()](src/docs/ValidateThat.md) for further details.
 
 ## Automated tests for mismatched itself
 
@@ -117,4 +117,4 @@ There are also property tests. To run:
    npm run prop-test
 ```
 
-See [Testing Mismatched with Property Tests](./TestingMismatchedWithPropertyTests.md) for further details.
+See [Testing Mismatched with Property Tests](src/blog/TestingMismatchedWithPropertyTests.md) for further details.

@@ -1,8 +1,6 @@
 import {ContextOfValidationError, DiffMatcher} from "../matcher/DiffMatcher";
 import * as diff from "fast-array-diff";
-import {DoubleMap} from "./DoubleMap";
 import {MatchResult} from "../MatchResult";
-import {Option, Some} from "prelude-ts";
 import {Assignations, Assignment, BestMatcherAssignments} from "./BestMatcherAssignments"
 import {ofType} from "../ofType"
 import {DeltaMapping, mapDeltas} from "./mapDeltas"
@@ -83,8 +81,12 @@ export module ArrayDiff {
                 }
             } else { // actualRemoved
                 let possiblyOutOfOrder: Assignment<T> | undefined = assignedActualElements.get(i)
-                if (ofType.isDefined(possiblyOutOfOrder)) {
-                    resultAccumulator.outOfOrder(i)
+                if (ofType.isDefined(possiblyOutOfOrder) && possiblyOutOfOrder.matchResult.matches > 0.1) {
+                    if (possiblyOutOfOrder.matchResult.passed()) {
+                        resultAccumulator.outOfOrder(i)
+                    } else {
+                        resultAccumulator.outOfOrderWithPartialMatch(i, possiblyOutOfOrder.matchResult)
+                    }
                 } else {
                     resultAccumulator.extraActual(i)
                 }

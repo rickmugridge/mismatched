@@ -12,15 +12,15 @@
 ## 8 Jan 2024 (version "2.13.4")
 
 * Added `match.selectMatch()` which can be used to improve error messages when matching complex subtypes, etc.
-  See [`Matching Subtypes](./MatchingSubtypes.md)
+  See [`Matching Subtypes](MatchingSubtypes.md)
 
 ## 3 Jan 2024 (version "2.13.4")
 
-* Extended [`primitiveBuilder`](./PrimitiveBuilder.md) with arrayOf(), setOf(), mapOf()
+* Extended [`primitiveBuilder`](PrimitiveBuilder.md) with arrayOf(), setOf(), mapOf()
 
 ## 2 Jan 2024
 
-* Added [`primitiveBuilder`](./PrimitiveBuilder.md)
+* Added [`primitiveBuilder`](PrimitiveBuilder.md)
 
 *## 20 December 2023
 
@@ -34,12 +34,12 @@
 
 ## 18 December 2023
 
-* Date (see [Matchers](./MATCHERS.md)):
+* Date (see [Matchers](MATCHERS.md)):
     * Addition of DateMatcher, which matches Dates properly (given that Date, along with Error, is a weird object)
     * Added `match.date.before()`, which checks that the actual Date is before the expected Date
     * Added `match.date.after()`, which checks that the actual Date is after the expected Date
 
-* String (see [String Matchers](./StringMatchers.md)):
+* String (see [String Matchers](StringMatchers.md)):
     * Added `match.string.asDate()` that parses the actual string and checks it against the expected Date (or matcher)
     * Added `match.string.asSplit()` that splits the actual string based on a separator, and checks the resulting
       string[] against the expected array (or matcher)
@@ -66,7 +66,7 @@
 
 ## 26 November 2021
 
-* Documented `assertThat().throwsError()` in [assertThat](./ASSERTTHAT.md) and [FAQ](./FAQ.md).
+* Documented `assertThat().throwsError()` in [assertThat](ASSERTTHAT.md) and [FAQ](FAQ.md).
 * Added maximum size for objects etc. in PrettyPrinter to avoid heap overflow.
 
 ## 19 November 2021
@@ -76,9 +76,9 @@
 
 ## 31 October 2021
 
-* Extended the [FAQ](./FAQ.md) considerably, including [Custom Matchers](./CustomMatchers.md)
-  and [DecompiledActual](./DecompiledActual.md)
-* Added  [MismatchedAtWork](./MismatchedAtWork.md)
+* Extended the [FAQ](FAQ.md) considerably, including [Custom Matchers](CustomMatchers.md)
+  and [DecompiledActual](DecompiledActual.md)
+* Added  [MismatchedAtWork](MismatchedAtWork.md)
 * Revised the algorithms for matching arrays:
     * Used fast-diff for all matching
 * Revised the algorithms for matching sets and unordered arrays (bags):
@@ -95,7 +95,7 @@
 
 * Added `match.object.key()` to improve diffs and to narrow down `validateThat` errors when matching subtypes
   with `match.anyOf()`.
-* See `anyOf()` in [MATCHERS](./MATCHERS.md)
+* See `anyOf()` in [MATCHERS](MATCHERS.md)
 
 ## 26 April 2021
 
@@ -111,14 +111,14 @@
 * Sometimes, it's difficult to match directly on an object or a part of it. This matcher allows the actual value to be
   mapped and the matcher is applied to the result.
 
-* See [MappedMatcher](./MappedMatcher.md)
+* See [MappedMatcher](MappedMatcher.md)
 
 ## 19 March 2021 (2.6.5)
 
 * Added `match.decompiledActual(actual, contributors, enums)`. This provides a very useful form that can be used as the
   expected part in an `assertThat()`. It takes an actual result and replaces values within it by any contributors or
   enums used. A contributor is some value/object/array that was used as an input into testing some code.
-  See [Decompiled Actual](./DecompiledActual.md) for an example to make sense of this.
+  See [Decompiled Actual](DecompiledActual.md) for an example to make sense of this.
 * Added `match.uuid()` for matching a string containing a UUID.
 
 ## 12 March 2021
@@ -135,7 +135,7 @@
 
 * Added `match.array.unordered()` and `match.array.unorderedContains()` to handle matching of arrays, disregarding
   order. There may be duplicate elements.
-* See [Array Matchers](./ArrayMatchers.md)
+* See [Array Matchers](ArrayMatchers.md)
 
 ## 27 February 2021
 
@@ -143,6 +143,6 @@
     * Take an optional matcher argument, which then has to match the first use
     * Once it matches once, it builds a matcher from that, to match subsequent uses. This allows it to bind and then
       match objects/arrays.
-    * See [Binding Matcher](./BindingMatcher.md)
+    * See [Binding Matcher](BindingMatcher.md)
 
-[Home](./README.md)
+[Home](../../README.md)

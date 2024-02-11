@@ -31,6 +31,14 @@ describe("fast-array-diff", () => {
         // Was                          "bcdefhi"
         assertThat(result).is("[a]bc<defh>[EFG]i[j]");
     });
+
+    it("Out of order eg", () => {
+        const deltas = diff.getPatch([1, 2, 3], [3, 2, 4], compare)
+        assertThat(deltas).is([
+            {type: "remove", oldPos: 0, newPos: 0, items: [1, 2]},
+            {type: "add", oldPos: 3, newPos: 1, items: [2, 4]}
+        ])
+    })
 });
 
 function compare(a, b) {

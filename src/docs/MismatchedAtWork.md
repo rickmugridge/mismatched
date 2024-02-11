@@ -1,4 +1,4 @@
-# Mismatched at Work
+# Mismatched at Work: Compiling
 
 In the following, we distinguish between:
  * `actual` - the value that resulted from calling the code under test (applied recursively)
@@ -6,7 +6,7 @@ In the following, we distinguish between:
 
 ## matchMaker
 
-`matchMaker` is responsible for creating a `matcher` for an arbitrary expected object.
+`matchMaker` is responsible for creating a `matcher` for an arbitrary expected object (compiling).
 
 It walks over expected JS objects as follows:
  * For an object, it walks over the fields and creates a field matcher for each (recursively). 
@@ -38,15 +38,16 @@ The argument to `is()` is mapped into a matcher corresponding roughly to:
               FieldMatcher("number", match.isEqual(3)), 
               FieldMatcher("street", match.string.startsWith("Oak St")),
               FieldMatcher("other", match.any())
-         ]));
+         ]),
+         ArrayMatcher([match.isEqual(1), match.isEqual(2)]));
 ```
 
 ## Matchers
 
-There are about 22 matchers. For a summary of available matchers, see `src/match.ts`.
+There are about 59 matchers. For a summary of available matchers, see `src/match.ts`.
 
 Many of the built-in matchers, such as `match.string.startsWith()`,  simply use `PredicateMatcher`
- * See [Custom Matchers](./CustomMatchers.md) for how to build your own matchers with this.
+ * See [Custom Matchers](CustomMatchers.md) for how to build your own matchers with this.
 
 Most of the complexity of `mismatched` is in aiming to provide high quality diffs when things don't quite match.
 

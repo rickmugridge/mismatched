@@ -9,6 +9,7 @@ export type ArrayResultAccumulator = {
     extraActual(actualIndex: number): void
     extraMatcher(matcherIndex: number): void
     outOfOrder(actualIndex: number): void
+    outOfOrderWithPartialMatch(actualIndex: number, matchResult: MatchResult): void
     getMatchResult(): MatchResult
 }
 
@@ -68,12 +69,20 @@ export const newArrayResultAccumulator = <T>(context: ContextOfValidationError,
 
     }
 
+    const outOfOrderWithPartialMatch = (actualIndex: number, matchResult: MatchResult) => {
+        compares += matchResult.compares
+        matches += matchResult.matches
+        diff.push(MatchResult.outOfOrderWithPartialMatch(matchResult.diff)) // unexpected
+        mismatched.push(Mismatched.outOfOrder(context.add(`[]`), actualElements[actualIndex]))
+
+    }
+
     const getMatchResult = () => new MatchResult(diff, compares, matches)
 
     return {
         addPass, addMatchResult,
         wasExpected, extraActual,
-        extraMatcher, outOfOrder,
+        extraMatcher, outOfOrder, outOfOrderWithPartialMatch,
         getMatchResult,
     }
 }

@@ -16,7 +16,7 @@ and any calculations.
 That can take a lot of detailed time to define what we expect.
 Writing the validations can be painful, so I'm incline to start with these steps:
 
-* Create the various objects needed. I use [builders](./PrimitiveBuilder.md) for doing this,
+* Create the various objects needed. I use [builders](PrimitiveBuilder.md) for doing this,
   as well prepared examples.
   Note that these values could be inserted and then accessed via a database.
 * Run the code to produce the expected `result`

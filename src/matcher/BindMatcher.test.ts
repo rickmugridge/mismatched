@@ -111,7 +111,7 @@ describe("BindMatcher:", () => {
                         {
                             [MatchResult.wrongOrder]: {
                                 id: "615fa1d3-2c79-4f46-a06a-0d04cdc9c0eb",
-                                type: "Green"
+                                type: wasExpected("Green", "Red")
                             }
                         },
                         {id: "615fa1d3-2c79-4f46-a06a-0d04cdc9c0eb", type: "Red"}

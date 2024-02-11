@@ -413,4 +413,24 @@ describe("bestMatcherAssignments", () => {
         })
     })
 
+    it("assertThat([1, 2, 3]).is([3, 2, 4]", () => {
+        const result = determine(
+            [1, 2, 3],
+            [3, 2, 4])
+        assertThat(result).is({
+            assignments: [
+                {
+                    actualElementIndex: 2, matcherIndex: 0,
+                    matchResult: mapMatchResultToMatchRate(1.0), mismatches: []
+                },
+                {
+                    actualElementIndex: 1, matcherIndex: 1,
+                    matchResult: mapMatchResultToMatchRate(1.0),
+                    mismatches: []
+                },
+            ],
+            unassignedActualElements: [0],
+            unassignedMatchers: [2]
+        })
+    })
 })

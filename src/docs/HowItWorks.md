@@ -299,7 +299,7 @@ We also need to lay out the result nicely. But `JSON.stringify()`:
 * With formatting - array and object layout can be too wide (too much detail) or too long (too much scrolling).
 
 So `mismatched` contains a pretty printer for JS values, called `PrettyPrinter`.
-See [PrettyPrinter](./src/prettyPrint/HowPrettyPrinterWorks.md) for further details.
+See [PrettyPrinter](../prettyPrint/HowPrettyPrinterWorks.md) for further details.
 
 For example, the following illustrates how `PrettyPrinter` gets a balance, avoiding too wide and too long:
 

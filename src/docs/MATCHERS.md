@@ -22,7 +22,7 @@ This is used by default when matching a primitive type (other than a string or N
             });
 ```
 
-See [Equal Matchers](./EqualMatchers.md) for further details of structural and identity equality.
+See [Equal Matchers](EqualMatchers.md) for further details of structural and identity equality.
 
 ## Array Matchers
 
@@ -54,7 +54,7 @@ Other array matching:
 * `match.array.unordered()`: Allow for the array to be unordered (allows for duplicate entries)
 * `match.array.unorderedContains()`: Check a subset of an unordered array (allows for duplicate entries)
 
-See [Array Matchers](./ArrayMatchers.md) for further details.
+See [Array Matchers](ArrayMatchers.md) for further details.
 
 ## Set Matchers
 
@@ -75,7 +75,7 @@ Set matching:
 * `match.aSet.match()` matches the whole set
 * `match.aSet.subset()` matches a subset
 
-See [Set Matchers](./SetMatchers.md) for further details.
+See [Set Matchers](SetMatchers.md) for further details.
 
 ## Object Matchers
 
@@ -103,7 +103,7 @@ Object matching:
 * `match.obj.match()` matches the whole object
 * `match.obj.has()` matches some fields of the object
 
-See [Object Matchers](./ObjectMatchers.md) for further details.
+See [Object Matchers](ObjectMatchers.md) for further details.
 
 ## String Matchers
 
@@ -133,7 +133,7 @@ String matching:
 * `match.asDecimal()` parses a string as a number and matches that
 * `match.fromJson()` JSON parses a string as a value and matches that
 
-See [String Matchers](./StringMatchers.md) for further details.
+See [String Matchers](StringMatchers.md) for further details.
 
 ## Number Matchers
 
@@ -163,7 +163,7 @@ Number matchers:
 * `match.number.inRange()`
 * `match.number.nan()`
 
-See [Number Matchers](./NumberMatchers.md) for further details.
+See [Number Matchers](NumberMatchers.md) for further details.
 
 ### RegExp Matcher
 
@@ -331,7 +331,7 @@ For examples:
     });
 ```
 
-See [Number Matchers](./NumberMatchers.md) for further examples.
+See [Number Matchers](NumberMatchers.md) for further examples.
 
 ### Predicate Matcher
 
@@ -355,21 +355,21 @@ be.
 
 So we can use a binding matcher.
 
-See [Binding Matcher](./BindingMatcher.md) for an example and further details.
+See [Binding Matcher](BindingMatcher.md) for an example and further details.
 
 ### Mapping Matcher
 
 Sometimes, it's difficult to match directly on an object or a part of it.
 This matcher allows the actual value to be mapped and the matcher is applied to the result.
 
-See [MappedMatcher](./MappedMatcher.md) for an example and further details.
+See [MappedMatcher](MappedMatcher.md) for an example and further details.
 
 ### Select Matcher
 
 This is only needed when tests with complex objects/array fail to match and lead to messy details.
 This is used to specify which matcher to use with an object, based on its subtype or id, etc.
 
-See [`Matching Subtypes](./MatchingSubtypes.md).
+See [`Matching Subtypes](MatchingSubtypes.md).
 
 ## Writing Custom Matchers
 
@@ -389,7 +389,7 @@ Simple matchers can use `match.predicate`. For examples:
  ```
 
 Writing a matcher that composes over matchers can be more complex.
-See [Custom Matchers](./CustomMatchers.md) for further details.
+See [Custom Matchers](CustomMatchers.md) for further details.
 
 # The `match` const provides a good summary of the matchers:
 

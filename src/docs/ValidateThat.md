@@ -22,12 +22,12 @@ Here's two simple examples of validations (see the micro tests for individual ma
     });
 ```
 
-This makes use of the same matchers as above: [Matchers](./MATCHERS.md).
+This makes use of the same matchers as above: [Matchers](MATCHERS.md).
 
 Notice how the errors indicate where any mismatch occurs within the `actual` value. 
 Eg, "actual.f" refers to the `f` field of the supplied object.
 
-`match.array.every()` is particularly useful here for validating all array elements (see [Array Matchers](./ArrayMatchers.md)).
+`match.array.every()` is particularly useful here for validating all array elements (see [Array Matchers](ArrayMatchers.md)).
 
 ## `validateThat()`
 
