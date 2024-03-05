@@ -179,12 +179,12 @@ describe("bestMatcherAssignments", () => {
                         mismatches: []
                     },
                     {
-                        actualElementIndex: 1, matcherIndex: 2,
+                        actualElementIndex: 2, matcherIndex: 2,
                         matchResult: mapMatchResultToMatchRate(1.0),
                         mismatches: []
                     }
                 ],
-                unassignedActualElements: [2],
+                unassignedActualElements: [1],
                 unassignedMatchers: [1]
             })
     })
@@ -214,12 +214,12 @@ describe("bestMatcherAssignments", () => {
             .is({
                 assignments: [
                     {
-                        actualElementIndex: 0, matcherIndex: 1,
+                        actualElementIndex: 1, matcherIndex: 1,
                         matchResult: mapMatchResultToMatchRate(1.0),
                         mismatches: []
                     }
                 ],
-                unassignedActualElements: [1],
+                unassignedActualElements: [0],
                 unassignedMatchers: [0]
             })
     })
@@ -373,10 +373,15 @@ describe("bestMatcherAssignments", () => {
                         mismatches: [
                             "test[1].c: undefined, expected: 4",
                             "test[1].d: undefined, expected: 5"]
+                    },
+                    {
+                        actualElementIndex: 0, matcherIndex: 0,
+                        matchResult: mapMatchResultToMatchRate(2 / 3),
+                        mismatches: ["test[0].b: 2, expected: 22"]
                     }
                 ],
                 unassignedActualElements: [],
-                unassignedMatchers: [0]
+                unassignedMatchers: []
             })
     })
 
@@ -431,6 +436,23 @@ describe("bestMatcherAssignments", () => {
             ],
             unassignedActualElements: [0],
             unassignedMatchers: [2]
+        })
+    })
+
+    it("assertThat([1, 2]).is([2, 2]", () => {
+        const result = determine(
+            [1, 2],
+            [2, 2])
+        assertThat(result).is({
+            assignments: [
+                {
+                    actualElementIndex: 1, matcherIndex: 0,
+                    matchResult: mapMatchResultToMatchRate(1.0),
+                    mismatches: []
+                },
+            ],
+            unassignedActualElements: [0],
+            unassignedMatchers: [1]
         })
     })
 })

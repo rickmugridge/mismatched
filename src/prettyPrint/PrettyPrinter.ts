@@ -133,7 +133,7 @@ export class PrettyPrinter {
     private tileObject(context: string, value: object): Tile {
         try {
             if (this.tilesCount > this.maxTilesCount) {
-                return new SimpleTile("... ********* this object has been truncated *********");
+                return new SimpleTile(`... ********* this object has been truncated as too many tiles ${this.tilesCount} > ${this.maxTilesCount} *********`);
             }
             const callName = (value as any)[PrettyPrinter.symbolForPseudoCall];
             let valueArgs = (value as any).args;
@@ -173,7 +173,7 @@ export class PrettyPrinter {
             const fields = this.selfReference.recurse(context, value, () => {
                     let keys = allKeys(value);
                     if (keys.length > this.maxTilesCount - this.tilesCount) {
-                        return [new FieldTile("note", new SimpleTile("... ********* this object has been truncated *********"))];
+                        return [new FieldTile("note", new SimpleTile(`... ********* this object has been truncated as too many keys ${keys.length} *********`))];
                     }
                     return keys.map(key => {
                         const renderedKey = PropertyName.render(key);

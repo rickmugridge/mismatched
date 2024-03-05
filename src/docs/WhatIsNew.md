@@ -1,5 +1,9 @@
 # What is New
 
+## 6 March 2024 (version "2.15.4")
+
+* Allow for recursive matching during validation (docs to follow, once completed)
+
 ## 10 Feb 2024 (version "2.15.2")
 
 * Array matching now uses a fuzzy diff algorithm to give better results.

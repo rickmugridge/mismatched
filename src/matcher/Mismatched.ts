@@ -3,28 +3,26 @@ import {handleSymbol, MatchResult} from "../MatchResult";
 import {PrettyPrinter} from "../prettyPrint/PrettyPrinter"
 
 export module Mismatched {
-    const pp = PrettyPrinter.make()
-
     export const makeExpectedMessage = (context: ContextOfValidationError, actual: any, expected: any): string =>
-        `${context.outerContext()}: ${pp.render(actual)}, expected: ${pp.render(expected)}`
+        `${context.outerContext()}: ${PrettyPrinter.make().render(actual)}, expected: ${PrettyPrinter.make().render(expected)}`
 
     export const wasExpected = (context: ContextOfValidationError, actual: any, matcher: DiffMatcher<any>) =>
-        `${context.outerContext()}: ${pp.render(actual)}, expected: ${pp.render(matcher.describe())}`
+        `${context.outerContext()}: ${PrettyPrinter.make().render(actual)}, expected: ${PrettyPrinter.make().render(matcher.describe())}`
 
     export const makeMissing = (context: ContextOfValidationError, actual: any, expected: any): string =>
-        `${context.outerContext()}: ${pp.render(actual)}, missing: ${pp.render(expected)}`
+        `${context.outerContext()}: ${PrettyPrinter.make().render(actual)}, missing: ${PrettyPrinter.make().render(expected)}`
 
     export const extraMatcher = (context: ContextOfValidationError, matcher: DiffMatcher<any>) =>
-        `${context.outerContext()}: expected: ${pp.render(matcher.describe())}`
+        `${context.outerContext()}: expected: ${PrettyPrinter.make().render(matcher.describe())}`
 
     export const extraActual = (context: ContextOfValidationError, actual: any) =>
-        `${context.outerContext()}: unexpected: ${pp.render(actual)}`
+        `${context.outerContext()}: unexpected: ${PrettyPrinter.make().render(actual)}`
 
     export const outOfOrder = (context: ContextOfValidationError, actual: any) =>
-        `${context.outerContext()}: out of order: ${pp.render(actual)}`
+        `${context.outerContext()}: out of order: ${PrettyPrinter.make().render(actual)}`
 
     export const wasUnexpected = (context: ContextOfValidationError, actual: any, unexpected: any) =>
-        `${context.outerContext()}: ${pp.render(actual)}, unexpected: ${pp.render(unexpected)}`
+        `${context.outerContext()}: ${PrettyPrinter.make().render(actual)}, unexpected: ${PrettyPrinter.make().render(unexpected)}`
 }
 
 // Used for testing the result when matching fails

@@ -1,7 +1,6 @@
 import {match} from "../match";
 import {testing} from "../testing"
 
-
 const t = testing
 describe("arrayDiff", () => {
     describe("same length", () => {
@@ -166,9 +165,9 @@ describe("arrayDiff", () => {
     describe("With any()", () => {
         it("[1, 3, 4] matched by [1, 2, *]", () => {
             t.fails([1, 3, 4], [1, 2, match.any()],
-                [1, 3, t.unexpected(4), t.expected(2)],
+                [1,  t.unexpected(3),4, t.expected(2)],
                 3, 5, [
-                    "test[2]: unexpected: 4",
+                    "test[1]: unexpected: 3",
                     "test[]: expected: 2"
                 ])
         })

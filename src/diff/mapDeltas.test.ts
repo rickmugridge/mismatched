@@ -68,12 +68,12 @@ describe("mapDeltas", () => {
 
     it("[0, 1, 2] and [0, 4, *]", () => {
         check([0, 1, 2], [0, 4, match.any()],
-            [{matched: 0}, {matched: 1}, {actualRemoved: 2}])
+            [{matched: 0}, {actualRemoved: 1}, {matched: 2}])
     })
 
     it("[0, 1] and [3, *]", () => {
         check([0, 1], [3, match.any()],
-            [{matched: 0}, {actualRemoved: 1}])
+            [{actualRemoved: 0}, {matched: 1}])
     })
 
     it("[1, undefined] and [2, undefined]", () => {

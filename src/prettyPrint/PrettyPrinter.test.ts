@@ -437,8 +437,13 @@ describe("PrettyPrinter():", () => {
                 named: "thing",
                 array: ["1", 2, [3, 4, 5]]
             }], [7, 6, 5, 4, 3]])).is(`[
-  1, 2, [1, 2, {note: ... ********* this object has been truncated *********}], 
-  [... ********* this array has been truncated *********]
+  1, 2, 
+  [
+    1, 2, 
+    {
+      note: ... ********* this object has been truncated as too many keys 2 *********
+    }
+  ], [... ********* this array has been truncated *********]
 ]`);
         });
     });

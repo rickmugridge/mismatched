@@ -14,8 +14,6 @@ export function assertThat<T>(actual: T) {
     return new Assertion<T>(actual);
 }
 
-const printer = PrettyPrinter.make();
-
 class Assertion<T> {
     private message = "Mismatched";
 
@@ -69,6 +67,7 @@ class Assertion<T> {
         }
         const matchResult = assertThat(result.diff).match(message);
         if (!matchResult.passed()) {
+            const printer = PrettyPrinter.make();
             throw new Error(`Incorrect error message: 
 actual:   '${printer.render(result.diff)}' 
 expected: '${printer.render(message)}'`);
@@ -78,7 +77,7 @@ expected: '${printer.render(message)}'`);
     // This is used internally for testing error messages:
     failsWithRendering(expected: any, rendered: string) {
         const result = this.match(expected);
-        assertThat(printer.render(result.diff)).is(rendered);
+        assertThat(PrettyPrinter.make().render(result.diff)).is(rendered);
     }
 
     throws(expected: any = match.any()) {

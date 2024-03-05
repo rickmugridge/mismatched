@@ -3,15 +3,44 @@ import {matchMaker} from "./matchMaker/matchMaker"
 import {assertThat} from "./assertThat"
 import {ContextOfValidationError} from "./matcher/DiffMatcher"
 import {handleSymbol, MatchResult} from "./MatchResult"
+import {match} from "./match"
 
 export module testing {
     const context = new ContextOfValidationError("test")
 
+    export const pass = (actual: any, matcher: any, matches: number) => {
+        const mismatched: string[] = []
+        const matchResult = matchMaker(matcher).mismatches(context, mismatched, actual)
+        assertThat(matchResult.matches).is(matches)
+        assertThat(mismatched).is([])
+    }
+
+    export const fail = (actual: any, matcher: any,
+                         mismatchedExpected: string[],
+                         matchesExpected: number,
+                         comparesExpected: number,
+                         diffExpected: any = match.any()) => {
+        const mismatched: string[] = []
+        const matchResult = matchMaker(matcher).mismatches(context, mismatched, actual)
+        assertThat({
+            mismatched,
+            matches: matchResult.matches,
+            compares: matchResult.compares,
+            diff: matchResult.diff
+        })
+            .is({
+                mismatched: mismatchedExpected,
+                matches: matchesExpected,
+                compares: comparesExpected,
+                diff: diffExpected
+            })
+    }
+
     export const passes = (actualElements: any[], matchers: any[], matches: number) => {
         const mismatched: string[] = []
-        const result = ArrayDiff.matchResulting(context,
+        const matchResult = ArrayDiff.matchResulting(context,
             actualElements, matchers.map(matchMaker), mismatched)
-        assertThat(result.matches).is(matches)
+        assertThat(matchResult.matches).is(matches)
         assertThat(mismatched).is([])
     }
 
@@ -33,6 +62,7 @@ export module testing {
                 compares: comparesExpected
             })
     }
+
     export const wasExpected = (was: any, expected: any) => ({
         [MatchResult.was]: handleSymbol(was),
         [MatchResult.expected]: handleSymbol(expected)

@@ -32,6 +32,8 @@ import {enumFixer} from "./identifySources/enumFixer";
 import {SelectMatcher} from "./matcher/SelectMatch";
 import {ExactlyOneOfMatcher} from "./matcher/ExactlyOneOfMatcher"
 import {ArrayMatcher} from "./matcher/ArrayMatcher"
+import {OptionalRecursiveMatcher} from "./matcher/OptionalRecursiveMatcher"
+import {ArrayEveryRecursiveMatcher} from "./matcher/ArrayEveryRecursiveMatcher"
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -40,6 +42,7 @@ export const match = {
         match: (expected: Array<DiffMatcher<any> | any>) => ArrayMatcher.make(expected),
         contains: (expected: DiffMatcher<any> | any) => ArrayContainsMatcher.make(expected),
         every: (expected: DiffMatcher<any> | any) => ArrayEveryMatcher.make(expected),
+        everyRecursive: (expected: () => DiffMatcher<any> | any) => ArrayEveryRecursiveMatcher.make(expected),
         length: (expected: number) => ArrayLengthMatcher.make(expected),
         unordered: (expected: Array<DiffMatcher<any> | any>) => UnorderedArrayMatcher.make(expected),
         unorderedContains: (expected: Array<DiffMatcher<any> | any>) => UnorderedArrayMatcher.make(expected, true),
@@ -87,6 +90,7 @@ export const match = {
     exactlyOneOf: (matchers: Array<DiffMatcher<any> | any>) => ExactlyOneOfMatcher.make(matchers),
     allOf: (matchers: Array<DiffMatcher<any> | any>) => AllOfMatcher.make(matchers),
     optional: (matcher: DiffMatcher<any> | any) => OptionalMatcher.make(matcher),
+    optionalRecursive: (matcher: () => DiffMatcher<any> | any) => OptionalRecursiveMatcher.make(matcher),
     optionalNull: (matcher: DiffMatcher<any> | any) => OptionalNullMatcher.make(matcher),
     not: (matcher: DiffMatcher<any> | any) => NotMatcher.make(matcher),
     instanceOf: (expected: Function) => instanceOfMatcher.instanceOf(expected),
