@@ -38,10 +38,20 @@ export class ArrayEveryRecursiveMatcher<T> extends DiffMatcher<Array<T>> {
     }
 
     describe(): any {
-        return {"array.everyRecursive": this.expected().describe()}
+        return "array.everyRecursive"
     }
 
     static make<T>(expected: () => DiffMatcher<T> | any): any {
         return new ArrayEveryRecursiveMatcher<T>(() => matchMaker(expected()))
     }
 }
+
+export const recursiveDelay = <T>(fn: () => T): () => T =>
+    () => {
+        if (ofType.isDefined((fn as any).value)) {
+            return (fn as any).value
+        }
+        const value: T = fn();
+        (fn as any).value = value
+        return value
+    }

@@ -33,7 +33,7 @@ import {SelectMatcher} from "./matcher/SelectMatch";
 import {ExactlyOneOfMatcher} from "./matcher/ExactlyOneOfMatcher"
 import {ArrayMatcher} from "./matcher/ArrayMatcher"
 import {OptionalRecursiveMatcher} from "./matcher/OptionalRecursiveMatcher"
-import {ArrayEveryRecursiveMatcher} from "./matcher/ArrayEveryRecursiveMatcher"
+import {ArrayEveryRecursiveMatcher, recursiveDelay} from "./matcher/ArrayEveryRecursiveMatcher"
 
 export const match = {
     isEquals: (expected: any) => IsEqualsMatcher.make(expected),
@@ -119,5 +119,6 @@ export const match = {
         DescribeMatcher.make(matcher, description),
     identifySources: (actual: any, contributors: object, enums: object = {}): any =>
         identifySources(actual, contributors, enums),
-    selectMatch: <T>(selector: (t: T) => T): T => SelectMatcher.make(selector)
+    selectMatch: <T>(selector: (t: T) => T): T => SelectMatcher.make(selector),
+    delay: <T>(fn: () => T): () => T => recursiveDelay(fn)
 }

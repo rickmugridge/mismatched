@@ -12,10 +12,14 @@ describe("AnyOfMatcher:", () => {
         });
 
         it("Mismatches", () => {
-            assertThat({a: 2}).isNot(match.anyOf([])); // Base case of nothing matching
             assertThat("ab")
                 .failsWith(match.anyOf([match.instanceOf(Date)]),
                     wasExpected("ab", {instanceOf: "Date"}))
+        });
+
+        it("Mismatches as none match", () => {
+            assertThat({a: 2}).isNot(match.anyOf([]));
+            assertThat({a: 2}).isNot(match.anyOf([3]));
         });
 
         it("Mismatches with multiple anyOf() with at least one partially matching", () => {

@@ -10,9 +10,14 @@ export module testing {
 
     export const pass = (actual: any, matcher: any, matches: number) => {
         const mismatched: string[] = []
-        const matchResult = matchMaker(matcher).mismatches(context, mismatched, actual)
-        assertThat(matchResult.matches).is(matches)
-        assertThat(mismatched).is([])
+        const diffMatcher = matchMaker(matcher)
+        const matchResult = diffMatcher.mismatches(context, mismatched, actual)
+        // assertThat(matchResult.matches).is(matches)
+        // assertThat(mismatched).is([])
+        assertThat({
+            matches: matchResult.matches,
+            mismatched
+        }).is({matches, mismatched: []})
     }
 
     export const fail = (actual: any, matcher: any,

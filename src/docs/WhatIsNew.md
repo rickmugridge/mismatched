@@ -1,5 +1,9 @@
 # What is New
 
+## 10 March 2024 (version "2.15.5")
+
+* Continue with allowing recursive matching during validation, adding `match.delay()` (docs to follow, once completed)
+
 ## 6 March 2024 (version "2.15.4")
 
 * Allow for recursive matching during validation (docs to follow, once completed)
@@ -70,7 +74,7 @@
 
 ## 26 November 2021
 
-* Documented `assertThat().throwsError()` in [assertThat](ASSERTTHAT.md) and [FAQ](FAQ.md).
+* Documented `assertThat().throwsError()` in [assertThat](AssertThat.md) and [FAQ](FAQ.md).
 * Added maximum size for objects etc. in PrettyPrinter to avoid heap overflow.
 
 ## 19 November 2021

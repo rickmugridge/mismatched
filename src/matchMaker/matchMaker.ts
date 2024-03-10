@@ -64,6 +64,9 @@ export function matchMaker(expected: DiffMatcher<any> | any): DiffMatcher<any> {
             return ItIsMatcher.make(expected);
         }
         if (ofType.isFunction(expected)) {
+            if (level === 1) {
+                throw new Error(`Unable to match against function "${expected.name}()" at the top level (functions are otherwise ignored in matching objects)`)
+            }
             return AnyMatcher.make();
         }
         if (ofType.isError(expected)) {

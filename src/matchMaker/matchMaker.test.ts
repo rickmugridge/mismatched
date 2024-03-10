@@ -6,7 +6,6 @@ import {RegExpMatcher} from "../matcher/RegExpMatcher";
 import {matchMaker} from "./matchMaker";
 import {StringMatcher} from "../matcher/StringMatcher";
 import {PrettyPrinter} from "../index";
-import {AnyMatcher} from "../matcher/AnyMatcher";
 import {PredicateMatcher} from "../matcher/PredicateMatcher";
 import {CustomiseMismatcher} from "./CustomiseMismatcher";
 import {DateMatcher} from "../matcher/DateMatcher";
@@ -42,10 +41,6 @@ describe("matchMaker():", () => {
     it("matcher", () => {
         const matcher = match.isEquals(3);
         assertThat(matchMaker(matcher)).is(isEqualsMatcher);
-    });
-
-    it("lambda", () => {
-        assertThat(matchMaker(() => 3)).is(match.instanceOf((AnyMatcher)));
     });
 
     it("registered matcher", () => {
