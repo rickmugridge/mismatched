@@ -1,5 +1,11 @@
 # What is New
 
+## 5 April 2024 (version "3.0.0")
+
+* Export `ofType` through `index.ts`. 
+* Allow for `null` argument in `ofType.isUndefinedOrNull()`. 
+* Breaking Change. Change the implementation of `ofType.isDefined()` to exclude both undefined and null.
+
 ## 10 March 2024 (version "2.15.5")
 
 * Continue with allowing recursive matching during validation, adding `match.delay()` (docs to follow, once completed)

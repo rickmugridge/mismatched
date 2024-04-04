@@ -1,4 +1,5 @@
 export {match} from "./match";
+export {ofType} from "./ofType";
 export {assertThat, assertException} from "./assertThat";
 export {validateThat, ValidationResult} from "./validateThat";
 export {MatchResult} from "./MatchResult";

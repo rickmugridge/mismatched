@@ -1,5 +1,7 @@
 const isUndefined = (v: any): v is undefined => typeof v === "undefined"
 
+const isUndefinedOrNull = <T>(v: T | undefined | null): v is undefined | null => isUndefined(v) || v === null
+
 const isObject = (v: any): v is object =>
     v !== null && !isArray(v) && typeof v === "object" && !(v instanceof RegExp)
 
@@ -26,7 +28,7 @@ export const ofType = {
     isString: (v: any): v is string => typeof v === 'string' || v instanceof String,
     isSymbol: (v: any): v is symbol => typeof v === 'symbol',
     isUndefined,
-    isUndefinedOrNull: <T>(v: T | undefined): v is undefined => isUndefined(v) || v === null,
-    isDefined: <T>(v: T | undefined): v is T => !isUndefined(v),
+    isUndefinedOrNull,
+    isDefined: <T>(v: T | undefined | null): v is T => !isUndefinedOrNull(v),
     isDate: (v: any): v is Date => v instanceof Date && !isNaN(v.getTime()),
 }

@@ -19,12 +19,29 @@ describe("ofType:", () => {
         });
     });
 
+    describe("isUndefinedOrNull", () => {
+        it("is so", () => {
+            expect(ofType.isUndefinedOrNull(undefined), true);
+            expect(ofType.isUndefinedOrNull(null), true);
+        });
+        it("is not so", () => {
+            expect(ofType.isUndefinedOrNull(1), false);
+            expect(ofType.isUndefinedOrNull(true), false);
+            expect(ofType.isUndefinedOrNull("a"), false);
+            expect(ofType.isUndefinedOrNull(/a/), false);
+            expect(ofType.isUndefinedOrNull(Symbol()), false);
+            expect(ofType.isUndefinedOrNull({}), false);
+            expect(ofType.isUndefinedOrNull([]), false);
+            expect(ofType.isUndefinedOrNull(() => 4), false);
+        });
+    });
+
     describe("isDefined", () => {
         it("is not so", () => {
             expect(ofType.isDefined(undefined), false);
+            expect(ofType.isDefined(null), false);
         });
         it("is so", () => {
-            expect(ofType.isDefined(null), true);
             expect(ofType.isDefined(1), true);
             expect(ofType.isDefined(true), true);
             expect(ofType.isDefined("a"), true);
