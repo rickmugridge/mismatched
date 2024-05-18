@@ -1,7 +1,6 @@
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
-import {isFunction} from "util";
-import {PrettyPrinter} from "..";
+import {ofType, PrettyPrinter} from "..";
 import {Mismatched} from "./Mismatched";
 import {exceptionMessage} from "../prettyPrint/PrettyPrinter";
 
@@ -31,7 +30,7 @@ export class PredicateMatcher extends DiffMatcher<any> {
 
     static make<T>(predicate: (v: any) => boolean,
                    description: any = PrettyPrinter.functionDetails(predicate)): any {
-        if (!isFunction(predicate)) {
+        if (!ofType.isFunction(predicate)) {
             throw new Error("Predicate supplied must be a function");
         }
         return new PredicateMatcher(predicate, description);

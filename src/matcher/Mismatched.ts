@@ -9,6 +9,9 @@ export module Mismatched {
     export const wasExpected = (context: ContextOfValidationError, actual: any, matcher: DiffMatcher<any>) =>
         `${context.outerContext()}: ${PrettyPrinter.make().render(actual)}, expected: ${PrettyPrinter.make().render(matcher.describe())}`
 
+    export const wasWrong = (context: ContextOfValidationError, actual: any) =>
+        `${context.outerContext()}: ${PrettyPrinter.make().render(actual)}`
+
     export const makeMissing = (context: ContextOfValidationError, actual: any, expected: any): string =>
         `${context.outerContext()}: ${PrettyPrinter.make().render(actual)}, missing: ${PrettyPrinter.make().render(expected)}`
 

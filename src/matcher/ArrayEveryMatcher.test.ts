@@ -1,54 +1,45 @@
-import {assertThat} from "../assertThat";
 import {match} from "../match";
-import {validateThat} from "../validateThat";
-import {wasExpected} from "./Mismatched"
+import {internalAssertThat} from "../utility/internalAssertThat"
+import {testing} from "../testing"
+import wasExpected = testing.wasExpected
 
 describe("array.every:", () => {
-    describe("assertThat():", () => {
+    describe("matches:", () => {
         it('empty array succeeds', () => {
-            const actual = []
-            assertThat(actual).is(match.array.every(2))
+            internalAssertThat([]).is(match.array.every(2))
         })
 
         it('number', () => {
-            const actual = [2, 2, 2]
-            assertThat(actual).is(match.array.every(2))
+            internalAssertThat([2, 2, 2]).is(match.array.every(2))
         })
 
         it('string', () => {
-            const actual = ["b", "b"]
-            assertThat(actual).is(match.array.every("b"))
-        })
-
-        it('does not match', () => {
-            const actual = ["a", "b"]
-            assertThat(actual).failsWith(match.array.every("b"),
-                [wasExpected("a", "b"), "b"])
+            internalAssertThat(["b", "b"]).is(match.array.every("b"))
         })
     })
 
-    describe("validateThat():", () => {
+    describe("mismatches:", () => {
         const expected = match.array.every(match.ofType.number())
 
-        it("succeeds", () => {
-            const validation = validateThat([2, 2, 2]).satisfies(expected)
-            assertThat(validation.passed()).is(true)
-        });
+        it('does not match', () => {
+            internalAssertThat(["a", "b"])
+                .failsWith(match.array.every("b"))
+                .wasDiff([wasExpected("a", "b"), "b"],
+                    ['actual[0]: "a", expected: "b"'])
 
-        it("fails", () => {
-            const validation = validateThat([2, 2, "3"]).satisfies(expected)
-            assertThat(validation.passed()).is(false)
-            assertThat(validation.errors).is([
-                `actual[2]: "3", expected: "ofType.number"`
-            ])
-        });
+            it("fails", () => {
+                internalAssertThat([2, 2, "3"])
+                    .failsWith(expected)
+                    .wasDiff([2, 2, wasExpected("3", "ofType.number")],
+                        ['actual[2]: "3", expected: "ofType.number"'])
+            });
 
-        it("fails as not an array", () => {
-            const validation = validateThat(3).satisfies(expected)
-            assertThat(validation.passed()).is(false)
-            assertThat(validation.errors).is([
-                `actual: 3, expected: "array expected"`
-            ])
+            it("fails as not an array", () => {
+                internalAssertThat(3)
+                    .failsWith(expected)
+                    .wasExpected(3, {"array.every": "ofType.number"},
+                        ['actual: 3, expected: "array expected"'])
+            })
         })
     })
 })

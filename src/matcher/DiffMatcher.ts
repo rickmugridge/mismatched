@@ -1,5 +1,4 @@
 import {MatchResult} from "../MatchResult";
-import {Mismatched} from "./Mismatched";
 
 export abstract class DiffMatcher<T> {
     specificity: number = 1 // This measures the specificity of the matcher. Higher is more specific.
@@ -35,6 +34,10 @@ export class ContextOfValidationError {
 
     add(s: string): ContextOfValidationError {
         return this.isUserDefined ? this : new ContextOfValidationError(this.context + s).inTrial(this.trialMatch)
+    }
+
+    mapped(): ContextOfValidationError {
+        return this.isUserDefined ? this : new ContextOfValidationError(`mapped(${this.context})`).inTrial(this.trialMatch)
     }
 
     outerContext() {

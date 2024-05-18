@@ -6,7 +6,7 @@ import {validateThat} from "../validateThat";
 describe("obj.some:", () => {
     describe("assertThat():", () => {
         describe('matches', () => {
-            it('with explicit field matchers', () => {
+            it('matches all', () => {
                 const actual = {f: 2, g: 3, h: 4};
                 assertThat(actual).is(match.obj.has({f: 2, g: 3}));
             });
@@ -24,7 +24,7 @@ describe("obj.some:", () => {
         });
 
         describe('does not match actual that is:', () => {
-            it('an object', () => {
+            it('one filed is incorrect', () => {
                 const actual = {f: 2, g: 3};
                 const expected = match.obj.has({f: 3});
                 assertThat(actual).failsWith(expected,
@@ -64,11 +64,31 @@ describe("obj.some:", () => {
             ]);
         });
 
-        it("fails to match", () => {
-            const validation = validateThat({f: "2"}).satisfies({f: 3});
+        it("fails to match as expected fields has different value", () => {
+            const validation = validateThat({f: "2", g: 4})
+                .satisfies(match.obj.has({f: 3}));
             assertThat(validation.passed()).is(false);
             assertThat(validation.errors).is([
                 'actual.f: "2", expected: 3'
+            ]);
+        });
+
+        it("fails to match as expected field is missing", () => {
+            const validation = validateThat({f: "2"})
+                .satisfies(match.obj.has({g: 3}));
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                'actual.g: undefined, expected: 3'
+            ]);
+        });
+
+        it("fails to match as expected field is missing and another field is missing", () => {
+            const validation = validateThat({f: "2", g: 4})
+                .satisfies(match.obj.has({g: 3, h: true}));
+            assertThat(validation.passed()).is(false);
+            assertThat(validation.errors).is([
+                "actual.g: 4, expected: 3",
+                "actual.h: undefined, expected: true"
             ]);
         });
     });

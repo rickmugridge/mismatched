@@ -1,5 +1,10 @@
 # What is New
 
+## 18 May 2024 (version "3.1.0")
+
+* Improve error messages with MappingMatcher, as in `match.string.asJson({a: 1})`.
+* Start shifting the way we do internal testing of mismatched
+
 ## 5 April 2024 (version "3.0.0")
 
 * Export `ofType` through `index.ts`. 

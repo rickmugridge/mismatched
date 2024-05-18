@@ -44,11 +44,6 @@ describe("StringMatcher:", () => {
             assertThat('').isNot(match.string.nonEmpty())
         })
 
-        // it("asDate()", () => {
-        //     const date = new Date()
-        //     assertThat(date.toISOString()).is(match.string.asDate(date))
-        // })
-
         it("asDate() via UTC does not match", () => {
             const date = new Date()
             assertThat(date.toUTCString()).isNot(match.string.asDate(date))
@@ -69,6 +64,8 @@ describe("StringMatcher:", () => {
 
         it("fromJson()", () => {
             assertThat('{"m":1}').is(match.string.fromJson({m: 1}))
+            const obj = {m: 1, n: {o: 2}}
+            assertThat(JSON.stringify(obj)).is(match.string.fromJson(obj))
         })
 
     })

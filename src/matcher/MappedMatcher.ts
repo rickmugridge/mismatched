@@ -1,7 +1,6 @@
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "../matchMaker/matchMaker";
-import {Mismatched} from "./Mismatched";
 
 export class MappedMatcher<T, U> extends DiffMatcher<T> {
     private constructor(private map: (t: T) => U,
@@ -15,15 +14,13 @@ export class MappedMatcher<T, U> extends DiffMatcher<T> {
     }
 
     mismatches(context: ContextOfValidationError, mismatched: string[], actual: T): MatchResult {
+        const newContext = context.mapped()
         try {
             const mappedActual = this.map(actual);
-            const matchResult = this.matcher.mismatches(context, mismatched, mappedActual);
-            if (matchResult.passed()) {
-                return MatchResult.good(1);
-            }
-            return MatchResult.wasExpected(mappedActual, this.describe(), 1, 0);
+            return this.matcher.mismatches(newContext, mismatched, mappedActual)
         } catch (e) {
-            return MatchResult.wasExpected(`mapping failed: ${e.message}`, this.describe(), 1, 0);
+            mismatched.push(`${newContext.outerContext()}: mapping failed: "${e.message}"`)
+            return MatchResult.wasExpected(`mapping failed: "${e.message}"`, this.describe(), 1, 0);
         }
     }
 

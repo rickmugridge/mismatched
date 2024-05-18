@@ -1,17 +1,10 @@
-import {assertThat} from "../assertThat";
 import {match} from "../match";
-import {validateThat} from "../validateThat";
+import {internalAssertThat} from "../utility/internalAssertThat"
 
 describe("AnyMatcher:", () => {
     it("assertThat()", () => {
-        assertThat(new Date()).is(match.any());
-        assertThat({a: 2}).is(match.any());
-        assertThat(false).is(match.any());
-    });
-
-    it("validateThat()", () => {
-        validateThat(new Date()).satisfies(match.any()).passed();
-        validateThat({a: 2}).satisfies(match.any()).passed();
-        validateThat(false).satisfies(match.any()).passed();
+        internalAssertThat(new Date()).is(match.any());
+        internalAssertThat({a: 2}).is(match.any());
+        internalAssertThat(false).is(match.any());
     });
 });
