@@ -8,23 +8,13 @@ import {match} from "./match"
 export module testing {
     const context = new ContextOfValidationError("test")
 
-    export const pass = (actual: any, matcher: any, matches: number) => {
-        const mismatched: string[] = []
-        const diffMatcher = matchMaker(matcher)
-        const matchResult = diffMatcher.mismatches(context, mismatched, actual)
-        // assertThat(matchResult.matches).is(matches)
-        // assertThat(mismatched).is([])
-        assertThat({
-            matches: matchResult.matches,
-            mismatched
-        }).is({matches, mismatched: []})
-    }
-
     export const fail = (actual: any, matcher: any,
                          mismatchedExpected: string[],
                          matchesExpected: number,
                          comparesExpected: number,
                          diffExpected: any = match.any()) => {
+        // internalAssertThat(actual).failsWith(matcher).wasDiff(diffExpected, mismatchedExpected)
+
         const mismatched: string[] = []
         const matchResult = matchMaker(matcher).mismatches(context, mismatched, actual)
         assertThat({

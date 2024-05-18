@@ -1,31 +1,31 @@
 import {match} from "../match";
-import {testing} from "../testing"
+import {internalAssertThat} from "../utility/internalAssertThat"
+import {wasExpected} from "./Mismatched"
 
 describe("array.everyRecursive()", () => {
     describe("Non-recursive", () => {
         it('empty array succeeds', () => {
-            testing.pass([], match.array.everyRecursive(() => 2), 1)
+            internalAssertThat([]).is(match.array.everyRecursive(() => 2))
         })
 
         it('number', () => {
-            testing.pass([2, 2, 2], match.array.everyRecursive(() => 2), 3)
+            internalAssertThat([2, 2, 2]).is(match.array.everyRecursive(() => 2))
         })
 
         it('string', () => {
-            testing.pass(["b", "b"], match.array.everyRecursive(() => "b"), 2)
+            internalAssertThat(["b", "b"]).is(match.array.everyRecursive(() => "b"))
         })
 
         it('one element does not match string', () => {
-            testing.fail(["a", "b"], match.array.everyRecursive(() => "b"),
-                ['test[0]: "a", expected: "b"'], 1,
-                2, [testing.wasExpected("a", "b"), "b"])
+            internalAssertThat(["a", "b"])
+                .failsWith(match.array.everyRecursive(() => "b"))
+                .wasDiff([wasExpected("a", "b"), "b"], [`actual[0]: "a", expected: "b"`])
         })
 
         it('Not an array', () => {
-            const expected = match.array.everyRecursive(() => match.ofType.number())
-            testing.fail(3, expected,
-                [`test: 3, expected: "array expected"`], 0,
-                1, testing.wasExpected(3, "array.everyRecursive"))
+            internalAssertThat(3)
+                .failsWith(match.array.everyRecursive(() => match.ofType.number()))
+                .wasDiff(wasExpected(3, "array.everyRecursive"), [`actual: 3, expected: "array expected"`])
         })
     })
 
@@ -43,7 +43,7 @@ describe("array.everyRecursive()", () => {
                 item: match.ofType.number(),
                 elements: match.array.everyRecursive(() => matcher())
             }))
-            testing.pass(r, matcher(), 7)
+            internalAssertThat(r).is(matcher())
         })
 
         it("indirectly recursive", () => {
@@ -67,7 +67,7 @@ describe("array.everyRecursive()", () => {
                 item: match.ofType.number(),
                 elements: match.array.everyRecursive(() => matcherR())
             })
-            testing.pass(r, matcherR(), 7)
+            internalAssertThat(r).is(matcherR())
         })
 
         it("recursive subtypes", () => {
@@ -95,7 +95,7 @@ describe("array.everyRecursive()", () => {
                     elements: match.array.everyRecursive(() => matcherRS())
                 }
             ]))
-            testing.pass(rs, matcherRS(), 7)
+            internalAssertThat(rs).is(matcherRS())
         })
 
         it("recursive subtypes based on fields", () => {
@@ -146,7 +146,7 @@ describe("array.everyRecursive()", () => {
                     }
                 }
             ]))
-            testing.pass(rs, matcherRS(), 13)
+            internalAssertThat(rs).is(matcherRS())
         })
     })
 })

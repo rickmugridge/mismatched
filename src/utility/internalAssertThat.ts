@@ -7,26 +7,26 @@ import {matchMaker} from "../matchMaker/matchMaker"
 import {ContextOfValidationError} from "../matcher/DiffMatcher"
 
 export function internalAssertThat<T>(actual: T) {
-    return new InternalAssertion<T>(actual);
+    return new InternalAssertion(actual);
 }
 
-class InternalAssertion<T> {
+class InternalAssertion {
     constructor(private actual: any) {
     }
 
-    is(matcher: T) {
+    is(matcher: any) {
         const mismatched: string[] = []
         const result = matchMaker(matcher).mismatches(new ContextOfValidationError(), mismatched, this.actual)
         assertThat(result.passed()).is(true)
         assertThat(mismatched).is([])
     }
 
-    failsWith(matcher: T): InternalFailure<T> {
-        return new InternalFailure<T>(this.actual, matchMaker(matcher))
+    failsWith(matcher: any): InternalFailure {
+        return new InternalFailure(this.actual, matchMaker(matcher))
     }
 }
 
-class InternalFailure<T> {
+class InternalFailure {
     constructor(private actual: any, private matcher: any) {
     }
 
