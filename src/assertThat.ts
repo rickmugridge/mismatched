@@ -10,10 +10,7 @@ import {ErrorMatcher} from "./matcher/ErrorMatcher";
 import {MatchResult} from "./MatchResult";
 import {Mismatched} from "./matcher/Mismatched";
 
-export function assertThat<T>(actual: T, allowMatcherAsArgument = false) {
-    if (!allowMatcherAsArgument && ofType.isMatcher(actual)) {
-        throw new Error("Cannot apply assertThat() to a matcher as the actual value")
-    }
+export function assertThat<T>(actual: T) {
     return new Assertion<T>(actual);
 }
 

@@ -19,11 +19,11 @@ describe("AllOfMatcher:", () => {
         internalAssertThat(34).is(match.allOf([34]))
 
         const whatever = match.ofType.array()
-        internalAssertThat(match.allOf([whatever])).is(match.itIs(whatever))
+        internalAssertThat(match.allOf([whatever]), true).is(match.itIs(whatever))
     })
 
     it("Optimise with 1 left after removing match.any()s", () => {
         const whatever = match.ofType.array()
-        internalAssertThat(match.allOf([match.any(), whatever, match.any()])).is(match.itIs(whatever))
+        internalAssertThat(match.allOf([match.any(), whatever, match.any()]), true).is(match.itIs(whatever))
     })
 })

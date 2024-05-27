@@ -1,4 +1,3 @@
-import {assertThat} from "../assertThat";
 import {IsEqualsMatcher} from "../matcher/IsEqualsMatcher";
 import {match} from "../match";
 import {ObjectMatcher} from "../matcher/ObjectMatcher";
@@ -10,37 +9,38 @@ import {PredicateMatcher} from "../matcher/PredicateMatcher";
 import {CustomiseMismatcher} from "./CustomiseMismatcher";
 import {DateMatcher} from "../matcher/DateMatcher";
 import {ItIsMatcher} from "../matcher/ItIsMatcher"
+import {internalAssertThat} from "../utility/internalAssertThat"
 
 describe("matchMaker():", () => {
     const isEqualsMatcher = match.instanceOf(IsEqualsMatcher);
 
     it("undefined", () => {
-        assertThat(matchMaker(undefined), true).is(isEqualsMatcher);
+        internalAssertThat(matchMaker(undefined), true).is(isEqualsMatcher);
     });
 
     it("null", () => {
-        assertThat(matchMaker(null), true).is(isEqualsMatcher);
+        internalAssertThat(matchMaker(null), true).is(isEqualsMatcher);
     });
 
     it("string", () => {
-        assertThat(matchMaker("a"), true).is(match.instanceOf(StringMatcher));
+        internalAssertThat(matchMaker("a"), true).is(match.instanceOf(StringMatcher));
     });
 
     it("number", () => {
-        assertThat(matchMaker(2), true).is(isEqualsMatcher);
+        internalAssertThat(matchMaker(2), true).is(isEqualsMatcher);
     });
 
     it("boolean", () => {
-        assertThat(matchMaker(true), true).is(isEqualsMatcher);
+        internalAssertThat(matchMaker(true), true).is(isEqualsMatcher);
     });
 
     it("symbol", () => {
-        assertThat(matchMaker(Symbol()), true).is(isEqualsMatcher);
+        internalAssertThat(matchMaker(Symbol()), true).is(isEqualsMatcher);
     });
 
     it("matcher", () => {
         const matcher = match.isEquals(3);
-        assertThat(matchMaker(matcher), true).is(isEqualsMatcher);
+        internalAssertThat(matchMaker(matcher), true).is(isEqualsMatcher);
     });
 
     it("registered matcher", () => {
@@ -56,25 +56,25 @@ describe("matchMaker():", () => {
         const matcher = (expected: Hide) => PredicateMatcher.make(value => expected.equals(value),
             {"Hide.equals": expected});
         CustomiseMismatcher.addCustomMatcher(match.instanceOf(Hide), matcher);
-        assertThat(matchMaker(new Hide(1, 2, 3)), true).is(match.instanceOf(PredicateMatcher));
+        internalAssertThat(matchMaker(new Hide(1, 2, 3)), true).is(match.instanceOf(PredicateMatcher));
     });
 
     it("Date", () => {
-        assertThat(matchMaker(new Date()), true).is(match.instanceOf(DateMatcher));
+        internalAssertThat(matchMaker(new Date()), true).is(match.instanceOf(DateMatcher));
     });
 
     describe("object", () => {
         it("anonymous class", () => {
-            assertThat(matchMaker({a: 3}), true).is(match.instanceOf(ObjectMatcher));
+            internalAssertThat(matchMaker({a: 3}), true).is(match.instanceOf(ObjectMatcher));
         });
 
         it("known class", () => {
-            assertThat(matchMaker({a: 1}), true).is(match.instanceOf(ObjectMatcher));
+            internalAssertThat(matchMaker({a: 1}), true).is(match.instanceOf(ObjectMatcher));
         });
     });
 
     it("regExp", () => {
-        assertThat(matchMaker(/ab/), true).is(match.instanceOf(RegExpMatcher));
+        internalAssertThat(matchMaker(/ab/), true).is(match.instanceOf(RegExpMatcher));
     });
 
     it("An expected mock object can only match itself", () => {
@@ -86,13 +86,13 @@ describe("matchMaker():", () => {
                 return undefined;
             }
         });
-        assertThat(PrettyPrinter.isMock(mock)).is(true)
-        assertThat(matchMaker(mock), true).is(match.instanceOf(ItIsMatcher))
-        assertThat(mock).is(mock)
-        assertThat(1).isNot(mock as any)
-        assertThat(mock).isNot(1)
-        assertThat(mock).isNot([1] as any)
-        assertThat(mock).isNot({a: 1} as any)
+        internalAssertThat(PrettyPrinter.isMock(mock)).is(true)
+        internalAssertThat(matchMaker(mock), true).is(match.instanceOf(ItIsMatcher))
+        internalAssertThat(mock).is(mock)
+        internalAssertThat(1).isNot(mock as any)
+        internalAssertThat(mock).isNot(1)
+        internalAssertThat(mock).isNot([1] as any)
+        internalAssertThat(mock).isNot({a: 1} as any)
     })
 
     describe('self-reference', () => {
@@ -102,7 +102,7 @@ describe("matchMaker():", () => {
             // [2, <a>}]
             const a2: any = [2]
             a2[1] = a2
-            assertThat(a).is(a2)
+            internalAssertThat(a).is(a2)
         });
 
         it("self-references to array at top level", () => {
@@ -113,7 +113,7 @@ describe("matchMaker():", () => {
             const a2: any = [2]
             a2[1] = a2
             a2[2] = a2
-            assertThat(a).is(a2)
+            internalAssertThat(a).is(a2)
         });
         it("deeper self references", () => {
             const a: any = [[1]]
@@ -123,7 +123,7 @@ describe("matchMaker():", () => {
             const a2: any = [[1]]
             a2[1] = a2[0]
             a2[2] = a2[0]
-            assertThat(a).is(a2)
+            internalAssertThat(a).is(a2)
         });
         it("at top level", () => {
             const a: any = {b: 2}
@@ -131,25 +131,25 @@ describe("matchMaker():", () => {
             // {b: 2, c: <a>}
             const a2: any = {b: 2}
             a2.c = a2
-            assertThat(a).is(a2)
+            internalAssertThat(a).is(a2)
         });
         it("deeper level", () => {
             const a: any = {b: {c: 4}}
             a.b.d = a.b
             // {b: {c: 4, d: <a.b>}}
-            assertThat(a).is(a)
+            internalAssertThat(a).is(a)
         });
         it("deeper level, twice", () => {
             const a: any = {b: {c: 4}}
             a.b.d = a.b
             a.e = {b: a.b}
             // {b: {c: 4, d: <a.b>}, e: {b: <a.b>}}
-            assertThat(a).is(a)
+            internalAssertThat(a).is(a)
         });
         it("is ok as is, but could use the same self-reference technique", () => {
             const x = {f: 1}
             const a: any = {b: {c: 4, x}, x}
-            assertThat(a).is(a)
+            internalAssertThat(a).is(a)
         });
     })
 });

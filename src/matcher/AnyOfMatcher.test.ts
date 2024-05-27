@@ -17,7 +17,7 @@ describe("AnyOfMatcher:", () => {
 
         it("Optimise away with a single matcher inside", () => {
             const whatever = match.ofType.array();
-            internalAssertThat(match.anyOf([whatever])).is(match.itIs(whatever))
+            internalAssertThat(match.anyOf([whatever]), true).is(match.itIs(whatever))
         });
     });
 

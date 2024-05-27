@@ -6,8 +6,12 @@ import {handleSymbol, MatchResult} from "../MatchResult"
 import {matchMaker} from "../matchMaker/matchMaker"
 import {ContextOfValidationError} from "../matcher/DiffMatcher"
 import {match} from "../match"
+import {ofType} from "../ofType"
 
-export function internalAssertThat<T>(actual: T) {
+export function internalAssertThat<T>(actual: T, allowMatcherAsArgument = false) {
+    if (!allowMatcherAsArgument && ofType.isMatcher(actual)) {
+        throw new Error("Cannot apply assertThat() to a matcher as the actual value")
+    }
     return new InternalAssertion(actual);
 }
 
