@@ -1,95 +1,102 @@
-import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {MatchResult} from "../MatchResult";
-import {validateThat} from "../validateThat";
+import {internalAssertThat} from "../utility/internalAssertThat"
+import {testing} from "../testing"
+import wasExpected = testing.wasExpected
 
 describe("obj.some:", () => {
-    describe("assertThat():", () => {
-        describe('matches', () => {
-            it('matches all', () => {
-                const actual = {f: 2, g: 3, h: 4};
-                assertThat(actual).is(match.obj.has({f: 2, g: 3}));
-            });
-
-            it('literal object', () => {
-                const actual = {f: 2, g: 3, h: 4};
-                assertThat(actual).is(match.obj.has({f: 2, g: 3}));
-            });
-
-            it('empty object', () => {
-                const actual = {f: 2, g: 3, h: 4};
-                assertThat(actual).is(match.obj.has({}));
-                assertThat({}).is(match.obj.has({}));
-            });
+    describe('matches', () => {
+        it('matches subsets', () => {
+            const actual = {f: 2, g: 3, h: 4};
+            internalAssertThat(actual).is(match.obj.has({f: 2, g: 3}));
+            internalAssertThat(actual).is(match.obj.has({f: 2, h: 4}));
+            internalAssertThat(actual).is(match.obj.has({f: 2}));
+            internalAssertThat(actual).is(match.obj.has({g: 3, h: 4}));
+            internalAssertThat(actual).is(match.obj.has({g: 3}));
+            internalAssertThat(actual).is(match.obj.has({h: 4}));
         });
 
-        describe('does not match actual that is:', () => {
-            it('one filed is incorrect', () => {
-                const actual = {f: 2, g: 3};
-                const expected = match.obj.has({f: 3});
-                assertThat(actual).failsWith(expected,
-                    {f: {[MatchResult.was]: 2, [MatchResult.expected]: 3}});
-            });
+        it('empty object', () => {
+            const actual = {f: 2, g: 3, h: 4};
+            internalAssertThat(actual).is(match.obj.has({}));
+            internalAssertThat({}).is(match.obj.has({}));
+        });
 
-            it('not an object', () => {
-                const actual = 3;
-                const expected = match.obj.has({f: 3});
-                assertThat(actual).failsWith(expected,
-                    {[MatchResult.was]: 3, [MatchResult.expected]: {"obj.has": {f: 3}}});
-            });
-
-            it('undefined', () => {
-                const actual = undefined;
-                const expected = match.obj.has({f: 3});
-                assertThat(actual).failsWith(expected,
-                    {[MatchResult.expected]: {"obj.has": {f: 3}}});
-            });
+        it("fails as field is not a Date", () => {
+            internalAssertThat({f: "2024-05-26T22:58:44.714Z"})
+                .is({f: match.string.asDate(match.ofType.date())})
         });
     });
 
-    describe("validateThat():", () => {
-        const expected = match.obj.has({f: match.ofType.number(), g: match.ofType.boolean()});
-
-        it("succeeds", () => {
-            const validation = validateThat({f: 2, g: true, h: 45}).satisfies(expected);
-            assertThat(validation.passed()).is(true);
+    describe('does not match:', () => {
+        it('not an object', () => {
+            const expected = match.obj.has({f: 3});
+            internalAssertThat(3)
+                .failsWith(expected)
+                .wasDiff(
+                    {[MatchResult.was]: 3, [MatchResult.expected]: {"obj.has": {f: 3}}},
+                    ['actual: 3, expected: "object expected"']);
         });
 
-        it("fails wrong types", () => {
-            const validation = validateThat({f: "2", g: 3, h: 45}).satisfies(expected);
-            assertThat(validation.passed()).is(false);
-            assertThat(validation.errors).is([
-                `actual.f: "2", expected: "ofType.number"`,
-                `actual.g: 3, expected: "ofType.boolean"`
-            ]);
+        it('undefined', () => {
+            const expected = match.obj.has({f: 3});
+            internalAssertThat(undefined).failsWith(expected).wasDiff(
+                {[MatchResult.expected]: {"obj.has": {f: 3}}},
+                ['actual: undefined, expected: "object expected"']);
         });
 
-        it("fails to match as expected fields has different value", () => {
-            const validation = validateThat({f: "2", g: 4})
-                .satisfies(match.obj.has({f: 3}));
-            assertThat(validation.passed()).is(false);
-            assertThat(validation.errors).is([
-                'actual.f: "2", expected: 3'
-            ]);
+        it('one field is incorrect', () => {
+            const actual = {f: 2, g: 3};
+            const expected = match.obj.has({f: 3});
+            internalAssertThat(actual)
+                .failsWith(expected)
+                .wasDiff(
+                    {f: {[MatchResult.was]: 2, [MatchResult.expected]: 3}},
+                    ["actual.f: 2, expected: 3"]);
         });
 
-        it("fails to match as expected field is missing", () => {
-            const validation = validateThat({f: "2"})
-                .satisfies(match.obj.has({g: 3}));
-            assertThat(validation.passed()).is(false);
-            assertThat(validation.errors).is([
-                'actual.g: undefined, expected: 3'
-            ]);
+        it("fails due to wrong types", () => {
+            const expected = match.obj.has({f: match.ofType.number(), g: match.ofType.boolean()});
+            internalAssertThat({
+                f: "2",
+                g: 3,
+                h: 45
+            }).failsWith(expected)
+                .wasDiff({
+                        f: wasExpected("2", "ofType.number"),
+                        g: wasExpected(3, "ofType.boolean")
+                    },
+                    [
+                        `actual.f: "2", expected: "ofType.number"`,
+                        `actual.g: 3, expected: "ofType.boolean"`
+                    ]);
         });
 
-        it("fails to match as expected field is missing and another field is missing", () => {
-            const validation = validateThat({f: "2", g: 4})
-                .satisfies(match.obj.has({g: 3, h: true}));
-            assertThat(validation.passed()).is(false);
-            assertThat(validation.errors).is([
-                "actual.g: 4, expected: 3",
-                "actual.h: undefined, expected: true"
-            ]);
+        it("expected field is missing", () => {
+            internalAssertThat({f: "2"})
+                .failsWith(match.obj.has({g: 3}))
+                .wasDiff({g: wasExpected(undefined, 3)},
+                    ['actual.g: undefined, expected: 3']);
+        });
+
+        it("fails to match as expected field is wrong type and another field is missing", () => {
+            internalAssertThat({f: "2", g: 4})
+                .failsWith(match.obj.has({g: 3, h: true}))
+                .wasDiff({
+                        g: wasExpected(4, 3),
+                        h: wasExpected(undefined, true)
+                    },
+                    [
+                        "actual.g: 4, expected: 3",
+                        "actual.h: undefined, expected: true"
+                    ]);
+        });
+
+        it("fails as field is not a Date", () => {
+            internalAssertThat({f: "wrong"})
+                .failsWith({f: match.string.asDate(match.ofType.date())})
+                .wasDiff({f: wasExpected(match.any(), "ofType.date")},
+                    ['mapped(actual.f): new Date(null), expected: "ofType.date"'])
         });
     });
 });

@@ -1,5 +1,9 @@
 # What is New
 
+## 27 May 2024 (version "3.2.0")
+
+* `match.string.asDate()`, etc are required to take a string as argument
+
 ## 18 May 2024 (version "3.1.0")
 
 * Improve error messages with MappingMatcher, as in `match.string.asJson({a: 1})`.

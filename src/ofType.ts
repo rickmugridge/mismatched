@@ -1,3 +1,5 @@
+import {DiffMatcher} from "./matcher/DiffMatcher"
+
 const isUndefined = (v: any): v is undefined => typeof v === "undefined"
 
 const isUndefinedOrNull = <T>(v: T | undefined | null): v is undefined | null => isUndefined(v) || v === null
@@ -18,8 +20,7 @@ export const ofType = {
     isBoolean: (v: any): v is boolean => typeof v === 'boolean',
     isError: (v: any): v is Error => v instanceof Error,
     isFunction,
-    isMatcher: (v: any): boolean =>
-        isObject(v) && !isUndefined((v as any).matches) && isFunction((v as any).matches),
+    isMatcher: (v: any): boolean => isObject(v) && v instanceof DiffMatcher,
     isNaN: isNaN,
     isNumber: (v: any): v is number => typeof v === 'number',// && isFinite(value);
     isNull: (v: any): v is null => v === null,

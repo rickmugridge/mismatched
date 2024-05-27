@@ -70,32 +70,56 @@ export const stringMatcher = {
     asDate: (expected: Date | any) => {
         const matcher = matchMaker(expected)
         return MappedMatcher.make<string, Date>(
-            (actual: string): Date => new Date(actual), matcher,
+            (actual: string): Date => {
+                if (!ofType.isString(actual)) {
+                    throw new Error("match.string.asDate() can only take a string as argument")
+                }
+                return new Date(actual)
+            }, matcher,
             "match.string.asDate")
     },
     asSplit: (separator: string, expected: string[] | any) => {
         const matcher = matchMaker(expected)
         return MappedMatcher.make<string, string[]>(
-            (actual: string): string[] => actual.split(separator), matcher,
+            (actual: string): string[] => {
+                if (!ofType.isString(actual)) {
+                    throw new Error("match.string.asSplit() can only take a string as argument")
+                }
+                return actual.split(separator)
+            }, matcher,
             `match.split('${separator}')`)
     },
     asNumber: (expected: number = new AnyMatcher() as any) => {
         const matcher = matchMaker(expected)
         return MappedMatcher.make<string, number>(
-            (actual: string): number => Number(actual),
+            (actual: string): number => {
+                if (!ofType.isString(actual)) {
+                    throw new Error("match.string.asNumber() can only take a string as argument")
+                }
+                return Number(actual)
+            },
             matcher, "match.string.asNumber")
     },
     asDecimal: (places: number, expected: number = new AnyMatcher() as any) => {
         const matcher = matchMaker(expected)
         return MappedMatcher.make<string, number>(
-            (actual: string): number =>
-                actual.split(".").length == places ? Number(actual) : NaN,
+            (actual: string): number => {
+                if (!ofType.isString(actual)) {
+                    throw new Error("match.string.asDecimal() can only take a string as argument")
+                }
+                return actual.split(".").length == places ? Number(actual) : NaN
+            },
             matcher, `match.string.asDecimal(${places})`)
     },
     fromJson: (expected: any = new AnyMatcher()) => {
         const matcher = matchMaker(expected)
         return MappedMatcher.make<string, any>(
-            (actual: string): any => JSON.parse(actual), matcher, "fromJson")
+            (actual: string): any => {
+                if (!ofType.isString(actual)) {
+                    throw new Error("match.string.fromJson() can only take a string as argument")
+                }
+                return JSON.parse(actual)
+            }, matcher, "fromJson")
     },
 }
 

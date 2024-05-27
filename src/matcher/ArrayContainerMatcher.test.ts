@@ -1,7 +1,5 @@
-import {assertThat} from "../assertThat";
 import {match} from "../match";
 import {wasExpected} from "./Mismatched";
-import {validateThat} from "../validateThat";
 import {internalAssertThat} from "../utility/internalAssertThat"
 
 describe("array.contains:", () => {
@@ -17,8 +15,6 @@ describe("array.contains:", () => {
     });
 
     describe("Mismatches:", () => {
-        const expected = match.array.contains(match.ofType.number());
-
         it('does not match', () => {
             internalAssertThat(["a", "b"])
                 .failsWith(match.array.contains("c"))
@@ -42,6 +38,8 @@ describe("array.contains:", () => {
                     ['actual: [], expected: {"array.contains": "c"}'])
         });
 
+        const expected = match.array.contains(match.ofType.number());
+
         it("fails in an element of the array", () => {
             internalAssertThat(["1", "2", "3"])
                 .failsWith(expected)
@@ -50,11 +48,10 @@ describe("array.contains:", () => {
         });
 
         it("fails as not an array", () => {
-            const validation = validateThat(4).satisfies(expected);
-            assertThat(validation.passed()).is(false);
-            assertThat(validation.errors).is([
-                `actual: 4, expected: "array expected"`
-            ])
+            internalAssertThat(4)
+                .failsWith(expected)
+                .wasExpected(4, {"array.contains": "ofType.number"},
+                    [`actual: 4, expected: "array expected"`])
         });
     });
 });

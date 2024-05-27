@@ -1,10 +1,11 @@
 // This is intended for internal testing in mismatched, not for users of mismatched.
 // Users of mismatched should use assertThat().
 
-import {assertThat} from "../assertThat"
+import {assertThat, ensureNotFunction} from "../assertThat"
 import {handleSymbol, MatchResult} from "../MatchResult"
 import {matchMaker} from "../matchMaker/matchMaker"
 import {ContextOfValidationError} from "../matcher/DiffMatcher"
+import {match} from "../match"
 
 export function internalAssertThat<T>(actual: T) {
     return new InternalAssertion(actual);
@@ -15,14 +16,24 @@ class InternalAssertion {
     }
 
     is(matcher: any) {
+        this.checkForFunction();
         const mismatched: string[] = []
         const result = matchMaker(matcher).mismatches(new ContextOfValidationError(), mismatched, this.actual)
         assertThat(result.passed()).is(true)
         assertThat(mismatched).is([])
     }
 
+    isNot<T = any>(expected: T) {
+        this.checkForFunction();
+        return this.is(match.not(matchMaker(expected)));
+    }
+
     failsWith(matcher: any): InternalFailure {
         return new InternalFailure(this.actual, matchMaker(matcher))
+    }
+
+    private checkForFunction() {
+        ensureNotFunction(this.actual);
     }
 }
 
