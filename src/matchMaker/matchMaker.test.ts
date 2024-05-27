@@ -15,32 +15,32 @@ describe("matchMaker():", () => {
     const isEqualsMatcher = match.instanceOf(IsEqualsMatcher);
 
     it("undefined", () => {
-        assertThat(matchMaker(undefined)).is(isEqualsMatcher);
+        assertThat(matchMaker(undefined), true).is(isEqualsMatcher);
     });
 
     it("null", () => {
-        assertThat(matchMaker(null)).is(isEqualsMatcher);
+        assertThat(matchMaker(null), true).is(isEqualsMatcher);
     });
 
     it("string", () => {
-        assertThat(matchMaker("a")).is(match.instanceOf(StringMatcher));
+        assertThat(matchMaker("a"), true).is(match.instanceOf(StringMatcher));
     });
 
     it("number", () => {
-        assertThat(matchMaker(2)).is(isEqualsMatcher);
+        assertThat(matchMaker(2), true).is(isEqualsMatcher);
     });
 
     it("boolean", () => {
-        assertThat(matchMaker(true)).is(isEqualsMatcher);
+        assertThat(matchMaker(true), true).is(isEqualsMatcher);
     });
 
     it("symbol", () => {
-        assertThat(matchMaker(Symbol())).is(isEqualsMatcher);
+        assertThat(matchMaker(Symbol()), true).is(isEqualsMatcher);
     });
 
     it("matcher", () => {
         const matcher = match.isEquals(3);
-        assertThat(matchMaker(matcher)).is(isEqualsMatcher);
+        assertThat(matchMaker(matcher), true).is(isEqualsMatcher);
     });
 
     it("registered matcher", () => {
@@ -56,25 +56,25 @@ describe("matchMaker():", () => {
         const matcher = (expected: Hide) => PredicateMatcher.make(value => expected.equals(value),
             {"Hide.equals": expected});
         CustomiseMismatcher.addCustomMatcher(match.instanceOf(Hide), matcher);
-        assertThat(matchMaker(new Hide(1, 2, 3))).is(match.instanceOf(PredicateMatcher));
+        assertThat(matchMaker(new Hide(1, 2, 3)), true).is(match.instanceOf(PredicateMatcher));
     });
 
     it("Date", () => {
-        assertThat(matchMaker(new Date())).is(match.instanceOf(DateMatcher));
+        assertThat(matchMaker(new Date()), true).is(match.instanceOf(DateMatcher));
     });
 
     describe("object", () => {
         it("anonymous class", () => {
-            assertThat(matchMaker({a: 3})).is(match.instanceOf(ObjectMatcher));
+            assertThat(matchMaker({a: 3}), true).is(match.instanceOf(ObjectMatcher));
         });
 
         it("known class", () => {
-            assertThat(matchMaker({a: 1})).is(match.instanceOf(ObjectMatcher));
+            assertThat(matchMaker({a: 1}), true).is(match.instanceOf(ObjectMatcher));
         });
     });
 
     it("regExp", () => {
-        assertThat(matchMaker(/ab/)).is(match.instanceOf(RegExpMatcher));
+        assertThat(matchMaker(/ab/), true).is(match.instanceOf(RegExpMatcher));
     });
 
     it("An expected mock object can only match itself", () => {
@@ -87,7 +87,7 @@ describe("matchMaker():", () => {
             }
         });
         assertThat(PrettyPrinter.isMock(mock)).is(true)
-        assertThat(matchMaker(mock)).is(match.instanceOf(ItIsMatcher))
+        assertThat(matchMaker(mock), true).is(match.instanceOf(ItIsMatcher))
         assertThat(mock).is(mock)
         assertThat(1).isNot(mock as any)
         assertThat(mock).isNot(1)

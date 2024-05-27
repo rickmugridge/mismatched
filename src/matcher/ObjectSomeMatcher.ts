@@ -12,6 +12,12 @@ export class ObjectSomeMatcher<T> extends DiffMatcher<T> {
     }
 
     static make<T extends object>(expected: object): any {
+        if (!ofType.isObject(expected)) {
+            throw new Error("Argument to match.obj.has() has to be an object.")
+        }
+       if (ofType.isMatcher(expected)) {
+            throw new Error("Argument to match.obj.has() cannot be a matcher.")
+        }
         return new ObjectSomeMatcher<T>(DiffFieldMatcher.makeAll<T>(expected));
     }
 

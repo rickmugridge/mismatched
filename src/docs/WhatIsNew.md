@@ -1,5 +1,9 @@
 # What is New
 
+## 27 May 2024 (version "3.2.1")
+
+* Throw an Error if `match.obj.has()`, etc is called with a matcher.
+
 ## 27 May 2024 (version "3.2.0")
 
 * `match.string.asDate()`, etc are required to take a string as argument
