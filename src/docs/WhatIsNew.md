@@ -1,6 +1,6 @@
 # What is New
 
-## 30 May 2024 (version "3.2.4")
+## 30 May 2024 (version "3.2.5")
 
 * Introduce match.selectivelyAssert() to help with very large tests. To be documented once used.
 
