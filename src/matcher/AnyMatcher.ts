@@ -1,6 +1,5 @@
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
-import {Mismatched} from "./Mismatched";
 
 export class AnyMatcher<T> extends DiffMatcher<T> {
     specificity = 0
