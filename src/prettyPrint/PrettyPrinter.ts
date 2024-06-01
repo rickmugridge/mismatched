@@ -9,6 +9,7 @@ import {PseudoCallTile} from "./tile/PseudoCallTile";
 import {FieldTile, ObjectTile} from "./tile/ObjectTile";
 import {DiffMatcher} from "../matcher/DiffMatcher";
 import {allKeys} from "../utility/allKeys";
+import {Colour} from "../utility/Colour"
 
 export const defaultLineWidth = 80;
 export const defaultMaxComplexity = 30;
@@ -19,6 +20,7 @@ let recursiveCalling = false
 export class PrettyPrinter {
     static symbolForPseudoCall = Symbol("pseudoCall");
     static symbolForMockName = Symbol("mockName");
+    static symbolForPreview = Symbol("preview");
     private static customPrettyPrinters = new Map<DiffMatcher<any>, (t: any) => string>();
     selfReference = new SelfReferenceChecker();
     tilesCount = 0;
@@ -169,6 +171,13 @@ export class PrettyPrinter {
                 if (matcher) {
                     return new SimpleTile(PrettyPrinter.customPrettyPrinters.get(matcher)!(value));
                 }
+            }
+            if (ofType.isDefined(value[PrettyPrinter.symbolForPreview])) {
+                const previewing = Colour.red("previewing");
+                PrettyPrinter.make().logToConsole({
+                    [previewing]: value[PrettyPrinter.symbolForPreview],
+                    preview: {...value, [PrettyPrinter.symbolForPreview]: undefined}
+                })
             }
             const fields = this.selfReference.recurse(context, value, () => {
                     let keys = allKeys(value);

@@ -1,8 +1,8 @@
 # What is New
 
-## 30 May 2024 (version "3.3.0")
+## 1 June 2024 (version "3.3.1")
 
-* Remove match.selectivelyAssert() as it's flawed as an idea.
+* Add match.preview(). This will be documented once it is verified in the field.
 
 ## 27 May 2024 (version "3.2.2")
 
