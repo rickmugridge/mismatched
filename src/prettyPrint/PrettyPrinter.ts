@@ -172,13 +172,13 @@ export class PrettyPrinter {
                     return new SimpleTile(PrettyPrinter.customPrettyPrinters.get(matcher)!(value));
                 }
             }
-            if (ofType.isDefined(value[PrettyPrinter.symbolForPreview])) {
-                const previewing = Colour.red("previewing");
-                PrettyPrinter.make().logToConsole({
-                    [previewing]: value[PrettyPrinter.symbolForPreview],
-                    preview: {...value, [PrettyPrinter.symbolForPreview]: undefined}
-                })
-            }
+            // if (ofType.isDefined(value[PrettyPrinter.symbolForPreview])) {
+            //     const previewing = Colour.red("previewing");
+            //     PrettyPrinter.make().logToConsole({
+            //         [previewing]: value[PrettyPrinter.symbolForPreview],
+            //         preview: {...value, [PrettyPrinter.symbolForPreview]: undefined}
+            //     })
+            // }
             const fields = this.selfReference.recurse(context, value, () => {
                     let keys = allKeys(value);
                     if (keys.length > this.maxTilesCount - this.tilesCount) {

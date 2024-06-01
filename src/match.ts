@@ -122,5 +122,5 @@ export const match = {
         identifySources(actual, contributors, enums),
     selectMatch: <T>(selector: (t: T) => T): T => SelectMatcher.make(selector),
     delay: <T>(fn: () => T): () => T => recursiveDelay(fn),
-    preview: <T>(matcher: T): T => PreviewMatcher.make(matcher),
+    // preview: <T>(matcher: T): T => PreviewMatcher.make(matcher),
 }
