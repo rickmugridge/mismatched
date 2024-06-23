@@ -1,5 +1,9 @@
 # What is New
 
+## 23 June 2024 (version "3.3.3")
+
+* Accept auto-PR for braces update.
+
 ## 1 June 2024 (version "3.3.1")
 
 * Add match.preview(). This will be documented once it is verified in the field.
