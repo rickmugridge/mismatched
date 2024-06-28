@@ -1,5 +1,9 @@
 # What is New
 
+## 29 June 2024 (version "3.3.5")
+
+* Speed up array matching when mostly matches. Otherwise use expensive array diffing.
+
 ## 23 June 2024 (version "3.3.3")
 
 * Accept auto-PR for braces update.

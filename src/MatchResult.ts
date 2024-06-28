@@ -32,11 +32,11 @@ export class MatchResult {
         return {[MatchResult.unexpected]: actual}
     }
 
-   static outOfOrder(actual: any): any {
+    static outOfOrder(actual: any): any {
         return {[MatchResult.wrongOrder]: actual}
     }
 
-   static outOfOrderWithPartialMatch(matchResult: MatchResult): any {
+    static outOfOrderWithPartialMatch(matchResult: MatchResult): any {
         return {[MatchResult.wrongOrder]: matchResult}
     }
 
@@ -64,10 +64,11 @@ export class MatchResult {
         const diff = PrettyPrinter.make().render({actual, diff: this.diff});
         if (MatchResult.consoleLogging) {
             console.log(diff)
-            throw new Error(message)
-        } else {
-            throw new Error(message + ":\n" + diff);
         }
+        // const matchRatio = this.compares === 0 ? 0 : (this.matches / this.compares)
+        // const mismatched = `${this.matches} matches of ${this.compares} compares: ratio = ${matchRatio}`
+        const errorCount = this.compares - this.matches
+        throw new Error(message + " (" + errorCount + "): \n" + diff);
     }
 
     differ(items: any): this {
@@ -126,7 +127,7 @@ export const matchingSame = (actual: any) => {
     assertThat(validateThat(actual).is(matchMaker(actual)).errors).is([])
 }
 
-export const passesCompletely =  (actual: any, expected: any) => {
+export const passesCompletely = (actual: any, expected: any) => {
     assertThat(actual).is(expected)
     assertThat(validateThat(actual).is(expected).errors).is([])
 }
