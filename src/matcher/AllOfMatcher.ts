@@ -1,6 +1,6 @@
 import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
-import {matchMaker} from "../matchMaker/matchMaker";
 import {MatchResult} from "../MatchResult";
+import {matchMaker} from "../matchMaker/matchMaker";
 import {AnyMatcher} from "./AnyMatcher";
 
 export class AllOfMatcher<T> extends DiffMatcher<T> {
@@ -39,13 +39,9 @@ export class AllOfMatcher<T> extends DiffMatcher<T> {
         if (incorrectMatchers.length === 0) {
             return MatchResult.good(compares)
         }
-        mismatched.push(...localMismatched)
-        if (incorrectMatchers.length === 1) {
-            // Just describe the first one as an error
-            const incorrect = incorrectMatchers[0]
-            return MatchResult.wasExpected(actual, incorrect.describe(), compares, matches)
-        }
-        return MatchResult.wasExpected(actual, this.describe(), compares, matches)
+        // Just describe the first one as an error
+        mismatched.push(localMismatched[0])
+        return MatchResult.wasExpected(actual, incorrectMatchers[0].describe(), compares, matches)
     }
 
     describe(): any {

@@ -1,5 +1,9 @@
 # What is New
 
+## 12 Jan 2025 (version "4.0.0")
+
+* match.allOf() errors: just show the first one that fails (as that is much more useful when allOf() contains an object match that fails).
+
 ## 29 June 2024 (version "3.3.5")
 
 * Speed up array matching when mostly matches. Otherwise use expensive array diffing.

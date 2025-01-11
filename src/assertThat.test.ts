@@ -74,7 +74,7 @@ describe("assertThat():", () => {
         it("Mismatches", () => {
             assertThat("ab")
                 .failsWith(match.allOf([match.isEquals(3), match.number.greater(2)]),
-                    {[MatchResult.was]: "ab", [MatchResult.expected]: {allOf: [3, {"number.greater": 2}]}});
+                    {[MatchResult.was]: "ab", [MatchResult.expected]: 3});
         });
     });
 
