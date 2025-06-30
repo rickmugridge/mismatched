@@ -1,8 +1,6 @@
-import {DiffMatcher, ContextOfValidationError} from "./DiffMatcher";
-import {isNull, isUndefined} from "util";
+import {ContextOfValidationError, DiffMatcher} from "./DiffMatcher";
 import {MatchResult} from "../MatchResult";
 import {matchMaker} from "..";
-import {Mismatched} from "./Mismatched";
 import {ofType} from "../ofType"
 
 export class OptionalNullMatcher<T> extends DiffMatcher<T> {

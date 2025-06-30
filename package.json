@@ -1,10 +1,10 @@
 {
   "name": "mismatched",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "A composable matching/assertion/validation framework in Typescript that displays mismatches as diff trees",
   "author": {
     "name": "Rick Mugridge",
-    "email": "rick.mugridge@hypr.co.nz"
+    "email": "rick.mugridge@gmail.com"
   },
   "keywords": [
     "matcher",
@@ -14,9 +14,9 @@
   "license": "Apache 2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rickmugridge/expected"
+    "url": "git+https://github.com/rickmugridge/mismatched"
   },
-  "homepage": "https://github.com/rickmugridge/expected",
+  "homepage": "https://github.com/rickmugridge/mismatched",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "engines": {
